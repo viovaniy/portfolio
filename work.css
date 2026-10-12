@@ -1,0 +1,67 @@
+.work-heading{display:flex;align-items:baseline;justify-content:space-between;gap:20px}
+.work-heading h2{margin-bottom:12px}
+.work-count{font-size:13px;color:#909094;white-space:nowrap}
+.work-note{font-size:14px;color:#929296;margin:0 0 24px;line-height:1.5}
+.work-gallery{--description-duration:500ms;--description-ease:cubic-bezier(.34,1.45,.64,1)}
+.work-track{--shadow-gutter:32px;--card-gap:20px;--row-gap:22px;--next-peek:60px;display:grid;grid-template-rows:repeat(2,auto);grid-auto-flow:column;grid-auto-columns:calc((100% - var(--next-peek) - 2*var(--card-gap))*.65);gap:var(--row-gap) var(--card-gap);list-style:none;margin:-24px calc(-1 * var(--shadow-gutter)) 0;padding:36px var(--shadow-gutter) 40px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:none;scroll-behavior:auto;scroll-padding-inline:var(--shadow-gutter);scrollbar-width:none;-webkit-overflow-scrolling:touch;cursor:grab}
+.work-track::-webkit-scrollbar{display:none}
+.work-item{min-width:0;scroll-snap-align:start;opacity:1}
+.project-file{display:block;position:relative;isolation:isolate;width:100%;aspect-ratio:1.65;border:0;border-radius:14px;padding:0;background:transparent;color:#24262a;text-align:left;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;cursor:grab;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+/* The contour is a fixed, inset mask ring, independent of animated content. */
+.project-file::before{content:"";position:absolute;inset:5.6% 1px 1px;border-radius:4% / 7%;box-shadow:0 2px 3px #212d420a,0 8px 12px -6px #212d4224;pointer-events:none;z-index:-1}
+.project-file::after,.folder-trace::before{--ring-inset:2px;content:"";position:absolute;inset:0;z-index:2;background:#aecbf1;opacity:0;pointer-events:none;-webkit-mask-image:url('assets/folder-shape.png'),url('assets/folder-shape.png');-webkit-mask-position:center,center;-webkit-mask-size:100% 100%,calc(100% - var(--ring-inset)) calc(100% - var(--ring-inset));-webkit-mask-repeat:no-repeat;-webkit-mask-composite:xor;mask-image:url('assets/folder-shape.png'),url('assets/folder-shape.png');mask-position:center,center;mask-size:100% 100%,calc(100% - var(--ring-inset)) calc(100% - var(--ring-inset));mask-repeat:no-repeat;mask-composite:exclude}
+.project-file[aria-expanded="true"]::after{opacity:.35}
+.project-file:focus-visible::after{--ring-inset:4px;opacity:1;background:#087bff}
+.folder-surface{position:absolute;inset:0;overflow:hidden;background:#f0f1f4;-webkit-mask:url('assets/folder-shape.png') center/100% 100% no-repeat;mask:url('assets/folder-shape.png') center/100% 100% no-repeat}
+.folder-cover{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;object-position:50% 44%;opacity:.84;pointer-events:none;transition:opacity .3s,transform .5s cubic-bezier(.2,.8,.2,1)}
+.work-item:nth-child(even) .folder-cover{object-position:50% 65%}
+.folder-shade{position:absolute;inset:0;background:linear-gradient(180deg,#fff0 18%,#fffffff0 80%,#fff 100%);transition:background .3s}
+.folder-tint{position:absolute;inset:0;background:#368aff;opacity:0;transition:opacity .3s}
+.project-caption{position:absolute;left:18px;right:18px;bottom:16px;display:grid;grid-template-rows:auto 0fr;transition:grid-template-rows var(--description-duration) var(--description-ease);pointer-events:none}
+.project-title{display:block;font-size:18px;line-height:1.25;font-weight:550;letter-spacing:-.45px}
+.project-details{min-height:0;overflow:hidden;visibility:hidden;opacity:0}
+.project-description{display:block;padding-top:7px;font-size:14px;line-height:1.45;color:#6c717b}
+.project-file[aria-expanded="true"],.project-file:focus-visible{z-index:1;transform:none}
+.project-file[aria-expanded="true"] .folder-cover{opacity:.42;transform:scale(1.025)}
+.project-file[aria-expanded="true"] .folder-tint{opacity:.055}
+.project-file[aria-expanded="true"] .project-caption{grid-template-rows:auto 1fr}
+.project-file[aria-expanded="true"] .project-details{visibility:visible;opacity:1}
+.project-file[aria-expanded="true"] .project-description{animation:project-description-pop-in var(--description-duration) var(--description-ease) both}
+.project-file:focus-visible{outline:none}
+@keyframes project-description-pop-in{from{transform:translateY(8px);opacity:0;filter:blur(2px)}to{transform:translateY(0);opacity:1;filter:blur(0)}}
+.work-track.is-dragging{scroll-snap-type:none;cursor:grabbing}
+.work-track.is-dragging .project-file{cursor:grabbing}
+.gallery-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid #efeff1;padding-top:18px;margin-top:6px}
+.gallery-hint,.gallery-position{color:#96969c;font-size:12px;line-height:1.4}
+.gallery-pagination{display:flex;align-items:center;gap:8px}
+.gallery-position{font-variant-numeric:tabular-nums;margin-right:9px;white-space:nowrap}
+.gallery-control{display:grid;place-items:center;width:36px;height:36px;padding:0;border:1px solid #e9e9ed;background:#fafafa;border-radius:50%;color:#777;transition:background .18s,color .18s;touch-action:manipulation}
+.gallery-control svg{width:16px;height:16px;stroke-width:1.6}
+.gallery-control:disabled{opacity:.3;cursor:default}
+.gallery-control:focus-visible{outline:2px solid #91baff;outline-offset:3px}
+@media(hover:hover){.gallery-control:hover:not(:disabled){background:#ededf0;color:#252525}}
+@media(max-width:650px){.work-track{--shadow-gutter:22px;--card-gap:12px;--row-gap:16px;--next-peek:24px;margin-top:-26px}.work-note{font-size:13px;margin-bottom:20px}.project-file{aspect-ratio:1.55}.project-caption{left:11px;right:10px;bottom:11px}.project-title{font-size:14px;letter-spacing:-.3px}.project-description{font-size:12px;line-height:1.3;padding-top:5px}.gallery-footer{gap:10px;padding-top:16px}.gallery-pagination{gap:6px}.gallery-position{margin-right:4px;font-size:11px}.gallery-hint{font-size:11px}}
+@media(max-width:380px){.work-track{--shadow-gutter:18px}.project-file{min-height:94px}.project-caption{left:9px;right:9px;bottom:9px}.project-title{font-size:13px}.project-description{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.work-item,.project-file,.folder-cover,.folder-tint,.project-caption,.gallery-control{transition:none}.project-file[aria-expanded="true"] .project-description{animation:none}.project-file,.project-file[aria-expanded="true"] .folder-cover{transform:none!important}}
+
+/* Desktop folders: 72% of the previous size; preserve mobile and tablet sizing. */
+@media(min-width:1100px){.work-track{grid-auto-columns:calc((100% - var(--next-peek) - 2*var(--card-gap))*.468)}}
+
+/* Lightweight stationary edge fades; no mask or blur repaint on every moving card. */
+.work-window{--edge-fade:64px;--edge-left:0;--edge-right:1;position:relative;display:flow-root;margin-inline:-32px}
+.work-window .work-track{margin-inline:0}
+.work-window::before,.work-window::after{content:"";position:absolute;top:0;bottom:0;width:var(--edge-fade);z-index:3;pointer-events:none}
+.work-window::before{left:0;background:linear-gradient(to right,#fff,transparent);opacity:var(--edge-left)}
+.work-window::after{right:0;background:linear-gradient(to left,#fff,transparent);opacity:var(--edge-right)}
+@media(max-width:650px){.work-window{margin-inline:-22px}}
+@media(max-width:380px){.work-window{margin-inline:-18px}}
+
+/* A travelling light follows the existing folder silhouette, including its tab. */
+@property --folder-light-angle{syntax:"<angle>";inherits:false;initial-value:0deg}
+.folder-trace{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;visibility:hidden;filter:drop-shadow(0 0 3px #369fff80);transition:opacity .24s,visibility .24s}
+.folder-trace::before{opacity:1;background:conic-gradient(from var(--folder-light-angle),transparent 0deg,transparent 240deg,#59adff18 265deg,#49a7ff88 300deg,#73c8ff 335deg,#dcf5ff 350deg,transparent 360deg)}
+.project-file:is([aria-expanded="true"],:focus-visible) .folder-trace{opacity:1;visibility:visible}
+.project-file:is([aria-expanded="true"],:focus-visible) .folder-trace::before{animation:folder-border-light 2.8s linear infinite}
+@keyframes folder-border-light{to{--folder-light-angle:360deg}}
+@media(prefers-reduced-motion:reduce){.folder-trace{transition:none;filter:none}.project-file:is([aria-expanded="true"],:focus-visible) .folder-trace::before{animation:none;background:#78baff}}
+@media(forced-colors:active){.folder-trace{display:none}.project-file:focus-visible{outline:2px solid Highlight;outline-offset:3px}}

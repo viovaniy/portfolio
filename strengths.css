@@ -1,0 +1,95 @@
+.home-section{position:relative;width:100%;display:grid;grid-template-columns:minmax(0,1fr) 390px;grid-template-areas:"profile strengths" "intro strengths";column-gap:40px;align-content:start}
+.home-copy{display:contents}
+.home-section .profile{grid-area:profile}
+.home-section .intro{grid-area:intro;min-width:0}
+.home-section .expertise{grid-area:expertise}
+.strengths{grid-area:strengths;position:relative;width:100%;max-width:476px;min-width:0;margin-top:0;align-self:start;user-select:none;-webkit-user-select:none}
+.strength-note{position:absolute;right:5%;top:-2px;z-index:1;pointer-events:none;width:100px}
+.strengths h2{text-align:right;font-size:18px;letter-spacing:-.4px;font-weight:450;color:#74767b;margin:0}
+.strength-note-arrow{display:block;width:72px;height:54px;margin:9px 6px 0 auto;stroke-width:1.3;color:#8c8e92}
+.strength-stage{height:370px;width:100%;position:relative;isolation:isolate;touch-action:pan-y;cursor:grab;outline-offset:6px;border-radius:36px}
+.strength-stage.is-dragging{cursor:grabbing}
+.strength-slot{position:absolute;left:50%;top:55%;width:238px;height:238px;transform:translate(-50%,-50%)}
+.strength-float{width:100%;height:100%;perspective:850px;animation:strength-drift 5.3s ease-in-out infinite alternate}
+.strength-card{position:relative;display:block;width:100%;height:100%;border:6px solid #fff;border-radius:32px;padding:0;text-align:left;color:#293546;box-shadow:0 2px 3px #1f293711,0 14px 30px -13px #27384c55;transform-style:preserve-3d;overflow:visible;-webkit-tap-highlight-color:transparent;touch-action:pan-y;cursor:inherit}
+.strength-play{background:radial-gradient(ellipse at 24% 12%,#e2f3ff 0%,transparent 67%),linear-gradient(145deg,#badcfa,#a4bef2)}
+.strength-ui{background:radial-gradient(ellipse at 15% 10%,#e9e1ff 0%,transparent 65%),linear-gradient(155deg,#c7bcf4,#a696dd)}
+.strength-story{background:radial-gradient(ellipse at 20% 15%,#ffefdc 0%,transparent 70%),linear-gradient(145deg,#f5d3b3,#e9b496)}
+.strength-brand{background:radial-gradient(ellipse at 15% 12%,#ffe8ea 0%,transparent 65%),linear-gradient(145deg,#f4bfd2,#d997bc)}
+.strength-detail{background:radial-gradient(ellipse at 20% 10%,#e4f7d9 0%,transparent 65%),linear-gradient(145deg,#c8e4c3,#9fcbbb)}
+.strength-number{position:absolute;top:17px;left:19px;font-size:9px;letter-spacing:.7px;color:#3341558c;pointer-events:none}
+.strength-object{position:absolute;top:21px;left:50%;width:144px;height:144px;display:block;margin-left:-72px;object-fit:contain;pointer-events:none;transform-origin:center}
+.strength-symbol{display:grid;place-items:center;top:29px}
+.strength-symbol svg{width:64px;height:64px;stroke-width:1.1;color:#fff;filter:drop-shadow(0 3px 2px #29354618)}
+.ball-shadow{position:absolute;top:136px;left:50%;width:86px;height:12px;margin-left:-43px;background:#344d7140;border-radius:50%;filter:blur(8px);pointer-events:none}
+.strength-copy{position:absolute;bottom:21px;left:19px;right:12px;pointer-events:none}
+.strength-copy strong{display:block;font-size:19px;line-height:1.2;letter-spacing:-.65px;font-weight:550}
+.strength-copy>span{display:block;margin-top:7px;font-size:10px;letter-spacing:-.12px;line-height:1.4;color:#334155bd}
+.strength-sheen{position:absolute;inset:0;border-radius:25px;pointer-events:none}
+.strength-controls{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:2px}
+.strength-arrow{display:grid;place-items:center;border:0;width:36px;height:36px;background:transparent;color:#94979b;border-radius:50%;transition:color .2s,background .2s;touch-action:manipulation}
+.strength-arrow:hover{background:#f4f4f5;color:#30343b}
+.strength-arrow svg{width:15px;height:15px;stroke-width:1.6}
+.strength-card:focus-visible,.strength-stage:focus-visible{outline:2px solid #087bff;outline-offset:5px}
+@keyframes strength-drift{from{transform:translateY(-3.2px) rotate(-.28deg)}to{transform:translateY(3.2px) rotate(.28deg)}}
+@media(max-width:1099px){.home-section{left:auto;width:100%;transform:none;grid-template-columns:minmax(0,1fr);grid-template-areas:"profile" "strengths" "intro"}.strengths{justify-self:center;margin-top:32px}.home-copy .expertise{margin-top:43px}.home-section .intro{margin-top:24px}}
+@media(max-width:650px){.strengths{margin-top:28px}.strength-stage{height:320px}.strength-slot{width:220px;height:220px}.strength-card{border-width:5px;border-radius:30px}.strength-copy{bottom:19px;left:17px}.strength-copy strong{font-size:18px}.strength-copy>span{font-size:9.5px}.strength-object{width:132px;height:132px;margin-left:-66px;top:18px}.strength-symbol{top:25px}.ball-shadow{top:128px}.strength-controls{gap:3px}.strengths h2{font-size:16px}.strength-note-arrow{width:60px;height:45px;margin-top:6px}}
+@media(prefers-reduced-motion:reduce){.strength-float{animation:none}.strength-arrow{transition:none}}
+
+/* Compact the whole interactive ring, including its orbit, for the first viewport. */
+@media(max-width:1099px){
+  .page{padding-top:40px}
+  .strengths{max-width:300px;margin-top:12px}
+  .strength-stage{height:210px}
+  .home-section .intro{margin-top:18px}
+}
+@media(max-width:650px){
+  .page{padding-top:28px}
+  .home-section .avatar{width:54px;height:54px;border-radius:15px}
+  .strengths{max-width:clamp(180px,32svh,270px);margin-top:8px}
+  .strength-stage{height:clamp(120px,23svh,184px)}
+  .strength-controls{margin-top:0}
+  .strength-arrow{width:32px;height:32px}
+  .strength-note{right:-12px;top:-2px;width:85px}
+  .strengths h2{font-size:14px}
+  .strength-note-arrow{width:42px;height:30px;margin-top:3px}
+  .home-section .intro{margin-top:14px}
+  .home-section h1{font-size:clamp(24px,6.8vw,28px)}
+  .home-section .description{font-size:20px;margin-top:12px}
+  .home-section .contact-button{margin-top:16px}
+}
+@media(max-width:650px) and (max-height:680px){
+  .page{padding-top:18px}
+  .home-section .avatar{width:46px;height:46px;border-radius:13px}
+  .strengths{margin-top:4px;max-width:190px}
+  .strength-stage{height:120px}
+  .home-section .intro{margin-top:8px}
+  .home-section h1{font-size:24px}
+  .home-section .description{font-size:18px;margin-top:9px}
+  .home-section .contact-button{margin-top:10px}
+}
+/* Short landscape phones keep the ring beside the text instead of stacking it. */
+@media(min-width:651px) and (max-width:1099px) and (max-height:600px){
+  .page{padding-top:20px}
+  .home-section{grid-template-columns:minmax(0,1fr) 200px;grid-template-areas:"profile strengths" "intro strengths";column-gap:20px}
+  .strengths{margin-top:20px;max-width:200px}
+  .strength-stage{height:165px}
+  .home-section .avatar{width:44px;height:44px;border-radius:12px}
+  .home-section .intro{margin-top:12px}
+  .home-section h1{font-size:26px}
+  .home-section .description{font-size:18px;margin-top:10px}
+  .home-section .contact-button{margin-top:10px}
+}
+@media(min-width:500px) and (max-width:650px) and (max-height:500px){
+  .page{padding-top:14px}
+  .home-section{grid-template-columns:minmax(0,1fr) 140px;grid-template-areas:"profile strengths" "intro strengths";column-gap:16px}
+  .strengths{max-width:140px;margin-top:24px}
+  .strength-stage{height:120px}
+  .home-section .avatar{width:36px;height:36px;border-radius:10px}
+  .home-section .name{font-size:26px}
+  .home-section h1{font-size:20px}
+  .home-section .description{font-size:16px;margin-top:8px}
+  .home-section .contact-button{font-size:18px;margin-top:8px}
+}
+
+@media(min-width:1100px){.home-section h1{font-size:clamp(29px,3vw,37px)}}
