@@ -94,4 +94,4 @@
 
 @media(min-width:1100px){.home-section h1{font-size:clamp(29px,3vw,37px)}}
 
-@media(min-width:1100px){.strengths{margin-top:60px}}
+@media(min-width:1100px){.strengths{margin-top:60px;top:40px}}
