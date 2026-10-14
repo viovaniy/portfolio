@@ -16,8 +16,10 @@
   let label = null;
   let frame = 0;
   let lastTime = 0;
+  let inside = false;
+  let knownMouse = false;
 
-  const allowed = () => finePointer.matches && !reducedMotion.matches;
+  const allowed = () => finePointer.matches;
   const clamp = (value, limit) => Math.max(-limit, Math.min(limit, value));
 
   function resetLabel() {
@@ -63,6 +65,13 @@
     } else {
       const size = pressed ? 14 : 18;
       Object.assign(destination, { x: position.x, y: position.y, width: size, height: size, radius: size / 2, opacity: 0.78 });
+    }
+    if (reducedMotion.matches && active) {
+      cancelAnimationFrame(frame); frame = 0;
+      Object.assign(state, destination);
+      for (const key of Object.keys(velocity)) velocity[key] = 0;
+      paint();
+      return;
     }
     if (!frame && active) {
       lastTime = performance.now();
@@ -115,12 +124,26 @@
     pointer.style.opacity = '0';
   }
 
+  function hitTarget() {
+    // Pointer capture retargets events to the carousel; hit-test the real location.
+    const element = document.elementFromPoint(position.x, position.y);
+    pointer.classList.toggle('on-dark', Boolean(element?.closest('.bottom-nav')));
+    changeTarget(element);
+  }
+
   function move(event) {
-    if (event.pointerType !== 'mouse' || !allowed()) { hide(); return; }
-    if (event.target instanceof Element && event.target.closest('input, textarea, select, [contenteditable="true"]')) { hide(); return; }
-    pointer.classList.toggle('on-dark', Boolean(event.target instanceof Element && event.target.closest('.bottom-nav')));
+    if (event.pointerType !== 'mouse') {
+      if (event.pointerType === 'touch' || event.pointerType === 'pen') {
+        knownMouse = inside = false; hide();
+      }
+      return;
+    }
+    if (!allowed()) { hide(); return; }
+    knownMouse = true;
     position.x = event.clientX;
     position.y = event.clientY;
+    inside = position.x >= 0 && position.y >= 0 && position.x < innerWidth && position.y < innerHeight;
+    if (!inside) { hide(); return; }
     if (!active) {
       active = true;
       Object.assign(state, { x: position.x, y: position.y, width: 18, height: 18, radius: 9, opacity: 0.78 });
@@ -128,36 +151,56 @@
       paint();
       root.classList.add('pointer-enabled');
     }
-    changeTarget(event.target);
+    hitTarget();
     setDestination();
   }
 
-  document.addEventListener('pointermove', move, { passive: true });
+  function resume() {
+    if (!knownMouse || !inside || document.hidden || !allowed()) return;
+    move({pointerType:'mouse', clientX:position.x, clientY:position.y});
+  }
+  const observe = {passive:true, capture:true};
+  document.addEventListener('pointermove', move, observe);
+  document.addEventListener('pointerover', move, observe);
   document.addEventListener('pointerdown', event => {
     move(event);
-    if (!active) return;
+    if (!active || event.pointerType !== 'mouse') return;
     pressed = true;
     setDestination();
-  }, { passive: true });
-  document.addEventListener('pointerup', event => {
+  }, observe);
+  function release(event) {
     if (event.pointerType !== 'mouse') return;
     pressed = false;
-    if (active) setDestination();
-  }, { passive: true });
-  document.addEventListener('pointerout', event => { if (!event.relatedTarget) hide(); });
-  document.addEventListener('pointercancel', hide);
-  document.addEventListener('keydown', hide);
-  document.addEventListener('visibilitychange', () => { if (document.hidden) hide(); });
+    // Cancellation/lost capture ends a gesture, not the mouse cursor itself.
+    resume();
+  }
+  document.addEventListener('pointerup', event => {
+    if (event.pointerType !== 'mouse') return;
+    pressed = false; move(event);
+  }, observe);
+  document.addEventListener('pointercancel', release, observe);
+  document.addEventListener('lostpointercapture', release, observe);
+  document.addEventListener('pointerout', event => {
+    if (event.pointerType !== 'mouse' || event.relatedTarget) return;
+    // Ignore synthetic boundary events caused by capture or a moving DOM target.
+    if (event.clientX <= 0 || event.clientY <= 0 || event.clientX >= innerWidth || event.clientY >= innerHeight) {
+      inside = false; hide();
+    }
+  }, observe);
+  document.documentElement.addEventListener('pointerleave', event => {
+    if (event.pointerType === 'mouse' && !pressed) { inside = false; hide(); }
+  });
+  document.addEventListener('dragstart', event => {
+    // Native HTML link/image dragging replaces CSS cursors with an OS drag cursor.
+    if (active && event.target instanceof Element && event.target.closest('a, img')) event.preventDefault();
+  }, true);
+  document.addEventListener('dragend', () => { pressed = false; resume(); }, observe);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) hide(); else resume(); });
   window.addEventListener('blur', hide);
-  window.addEventListener('scroll', () => {
-    if (!active) return;
-    const element = document.elementFromPoint(position.x, position.y);
-    if (element?.closest('input, textarea, select, [contenteditable="true"]')) { hide(); return; }
-    pointer.classList.toggle('on-dark', Boolean(element?.closest('.bottom-nav')));
-    changeTarget(element);
-    setDestination();
-  }, { passive: true, capture: true });
-  window.addEventListener('resize', hide);
-  finePointer.addEventListener('change', hide);
-  reducedMotion.addEventListener('change', hide);
+  window.addEventListener('focus', resume);
+  window.addEventListener('pageshow', resume);
+  window.addEventListener('scroll', () => { if (active) { hitTarget(); setDestination(); } }, observe);
+  window.addEventListener('resize', resume);
+  finePointer.addEventListener('change', () => { if (allowed()) resume(); else hide(); });
+  reducedMotion.addEventListener('change', resume);
 })();

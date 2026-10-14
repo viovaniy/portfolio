@@ -30,10 +30,10 @@ h1{font-size:clamp(29px,3.5vw,43px);line-height:1.23;letter-spacing:-1.2px;font-
   .cta-copy::after{content:attr(data-text);position:absolute;inset:0;background-image:var(--shimmer-glow,none);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:blur(.65px);opacity:.1;pointer-events:none}
 }
 .ios-pointer{position:fixed;top:0;left:0;width:18px;height:18px;border-radius:50%;background:#7c7c80;opacity:0;pointer-events:none;z-index:30;will-change:transform,width,height,border-radius;contain:layout style;visibility:hidden}
-.pointer-enabled,.pointer-enabled *{cursor:none!important}
+.pointer-enabled,.pointer-enabled *,.pointer-enabled *::before,.pointer-enabled *::after{cursor:none!important}
 .pointer-enabled .ios-pointer{visibility:visible}
 .pointer-enabled .contact-button:hover,.pointer-enabled .contact-button:active{background:transparent}
-@media(prefers-reduced-motion:reduce){.magnetic-label,.contact-button{transition:none}.ios-pointer{display:none}}
+@media(prefers-reduced-motion:reduce){.magnetic-label,.contact-button{transition:none}.ios-pointer{transition:none}}
 .expertise{margin-top:67px}
 .expertise h2{font-size:11px;color:#969696;font-weight:400;margin:0 0 14px}
 .tags{display:flex;flex-wrap:wrap;gap:10px;list-style:none;padding:0;margin:0;max-width:630px}
