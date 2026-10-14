@@ -96,7 +96,7 @@ input:focus,textarea:focus{outline:2px solid #91baff;outline-offset:2px;border-c
 .bottom-nav>a:hover,.bottom-nav>a:focus-visible{color:#fff;background:#2c2c2e}
 .bottom-nav>a[aria-current="location"]{color:#fafafa;background:#2c2c2e}
 .bottom-nav>a[aria-current="location"]:hover,.bottom-nav>a[aria-current="location"]:focus-visible{background:#454548}
-.pointer-enabled .ios-pointer.on-nav-target{visibility:hidden}
+.pointer-enabled .ios-pointer.on-nav-target{visibility:visible}
 .bottom-nav svg{width:25px;height:25px;stroke-width:1.8}
 .bottom-nav .home-icon{fill:currentColor;stroke-width:1.2}
 .bottom-nav .magnetic-label{transform:none;transition:none}
@@ -141,3 +141,13 @@ body:has(.bottom-nav:not([data-revealed])) .bottom-blur{visibility:hidden}
 /* A single masked backdrop avoids four full-width blur passes during scrolling. */
 .bottom-blur>span:not(:first-child){display:none}
 .bottom-blur>span:first-child{--edge-blur:6px;--edge-start:0%;--edge-end:100%}
+
+/* Shared dock selection moves between items instead of repainting each link. */
+.identity{transform:translateY(-3px)}
+.ios-pointer{z-index:81;transition:background-color .28s ease}
+.bottom-nav.has-liquid-selection>a{z-index:1}
+.bottom-nav.has-liquid-selection>a:is(:hover,:focus-visible,[aria-current="location"]){background:transparent}
+.bottom-nav.has-liquid-selection::after{content:"";position:absolute;left:0;top:var(--selection-y,9px);width:var(--selection-size,54px);height:var(--selection-size,54px);border-radius:50%;background:#2c2c2e;pointer-events:none;transform:translateX(var(--selection-x,13px)) scaleX(var(--selection-stretch,1));transition:background-color .25s;z-index:0}
+.bottom-nav.has-liquid-selection:has(>a[aria-current="location"]:is(:hover,:focus-visible))::after{background:#3b3b3e}
+@media(hover:hover){html:not(.pointer-enabled) .bottom-nav.has-liquid-selection>a:hover{background:#ffffff14}}
+@media(forced-colors:active){.bottom-nav.has-liquid-selection::after{background:Highlight}.bottom-nav.has-liquid-selection>a[aria-current="location"]{color:HighlightText}}

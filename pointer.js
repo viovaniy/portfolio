@@ -34,7 +34,7 @@
     resetLabel();
     target = enabled;
     label = target?.querySelector('.magnetic-label') || null;
-    // The dock draws its own single circular highlight.
+    // Keep the pointer visible as it morphs into the dock surface.
     pointer.classList.toggle('on-nav-target', Boolean(target?.closest('.bottom-nav')));
   }
 
@@ -54,7 +54,7 @@
       destination.width = (isDockTarget ? rect.width : rect.width + 8) * scale;
       destination.height = (isDockTarget ? rect.width : rect.height + 6) * scale;
       destination.radius = isDockTarget ? destination.width / 2 : Math.min(14, destination.height / 2);
-      destination.opacity = pressed ? 0.23 : 0.14;
+      destination.opacity = isDockTarget ? (pressed ? 0.18 : 0.10) : (pressed ? 0.23 : 0.14);
       if (label) {
         label.style.setProperty('--pull-x', `${clamp(dx * 0.08, 6)}px`);
         label.style.setProperty('--pull-y', `${clamp(dy * 0.13, 4)}px`);
