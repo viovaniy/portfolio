@@ -134,12 +134,16 @@
   function move(event) {
     if (event.pointerType !== 'mouse') {
       if (event.pointerType === 'touch' || event.pointerType === 'pen') {
-        knownMouse = inside = false; hide();
+        knownMouse = inside = false;
+        root.classList.remove('pointer-mouse');
+        hide();
       }
       return;
     }
-    if (!allowed()) { hide(); return; }
+    if (!allowed()) { root.classList.remove('pointer-mouse'); hide(); return; }
     knownMouse = true;
+    // Mouse mode survives transient blur/capture events; only visibility may reset.
+    root.classList.add('pointer-mouse');
     position.x = event.clientX;
     position.y = event.clientY;
     inside = position.x >= 0 && position.y >= 0 && position.x < innerWidth && position.y < innerHeight;
@@ -188,7 +192,10 @@
     }
   }, observe);
   document.documentElement.addEventListener('pointerleave', event => {
-    if (event.pointerType === 'mouse' && !pressed) { inside = false; hide(); }
+    if (event.pointerType === 'mouse' && !pressed &&
+        (event.clientX <= 0 || event.clientY <= 0 || event.clientX >= innerWidth || event.clientY >= innerHeight)) {
+      inside = false; hide();
+    }
   });
   document.addEventListener('dragstart', event => {
     // Native HTML link/image dragging replaces CSS cursors with an OS drag cursor.
@@ -201,6 +208,6 @@
   window.addEventListener('pageshow', resume);
   window.addEventListener('scroll', () => { if (active) { hitTarget(); setDestination(); } }, observe);
   window.addEventListener('resize', resume);
-  finePointer.addEventListener('change', () => { if (allowed()) resume(); else hide(); });
+  finePointer.addEventListener('change', () => { if (allowed()) resume(); else { root.classList.remove('pointer-mouse'); hide(); } });
   reducedMotion.addEventListener('change', resume);
 })();
