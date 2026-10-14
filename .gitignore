@@ -1,0 +1,41 @@
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+credentials.json
+.aws/
+.ssh/
+
+# Dependencies and tool caches
+node_modules/
+.npm/
+.pnpm-store/
+.cache/
+.vite/
+.wrangler/
+coverage/
+
+# Editor / operating-system files
+.DS_Store
+._*
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Temporary files and deployment archives
+tmp/
+temp/
+*.tmp
+*.log
+*.tar
+*.tar.gz
+*.tgz
+
+# Local hosting state
+.vercel/
+.openai/
