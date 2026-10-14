@@ -36,8 +36,9 @@
     resetLabel();
     target = enabled;
     label = target?.querySelector('.magnetic-label') || null;
-    // Keep the pointer visible as it morphs into the dock surface.
+    // The dock owns its highlight; never stack a second cursor disk over it.
     pointer.classList.toggle('on-nav-target', Boolean(target?.closest('.bottom-nav')));
+    if (pointer.classList.contains('on-nav-target')) pointer.style.opacity = '0';
   }
 
   function setDestination() {
@@ -56,7 +57,7 @@
       destination.width = (isDockTarget ? rect.width : rect.width + 8) * scale;
       destination.height = (isDockTarget ? rect.width : rect.height + 6) * scale;
       destination.radius = isDockTarget ? destination.width / 2 : Math.min(14, destination.height / 2);
-      destination.opacity = isDockTarget ? (pressed ? 0.18 : 0.10) : (pressed ? 0.23 : 0.14);
+      destination.opacity = isDockTarget ? 0 : (pressed ? 0.23 : 0.14);
       if (label) {
         label.style.setProperty('--pull-x', `${clamp(dx * 0.08, 6)}px`);
         label.style.setProperty('--pull-y', `${clamp(dy * 0.13, 4)}px`);
@@ -84,7 +85,7 @@
     pointer.style.width = `${state.width}px`;
     pointer.style.height = `${state.height}px`;
     pointer.style.borderRadius = `${state.radius}px`;
-    pointer.style.opacity = state.opacity;
+    pointer.style.opacity = pointer.classList.contains('on-nav-target') ? 0 : state.opacity;
   }
 
   function animate(time) {
