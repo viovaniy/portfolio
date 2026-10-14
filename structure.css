@@ -149,7 +149,7 @@ body:has(.bottom-nav:not([data-revealed])) .bottom-blur{visibility:hidden}
 .ios-pointer{z-index:81;transition:background-color .28s ease}
 .bottom-nav.has-liquid-selection>a{z-index:1}
 .bottom-nav.has-liquid-selection>a:is(:hover,:focus-visible,[aria-current="location"]){background:transparent}
-.bottom-nav.has-liquid-selection::after{content:"";position:absolute;left:0;top:var(--selection-y,9px);width:var(--selection-size,54px);height:var(--selection-size,54px);border-radius:50%;background:#2c2c2e;pointer-events:none;transform:translateX(var(--selection-x,13px)) scaleX(var(--selection-stretch,1));transition:background-color .25s;z-index:0}
+.bottom-nav.has-liquid-selection::after{content:"";position:absolute;left:0;top:var(--selection-y,9px);width:var(--selection-width,54px);height:var(--selection-size,54px);border-radius:999px;background:#2c2c2e;pointer-events:none;transform:translateX(var(--selection-x,13px));transition:background-color .25s;z-index:0}
 .bottom-nav.has-liquid-selection:has(>a[aria-current="location"]:is(:hover,:focus-visible))::after{background:#3b3b3e}
 @media(hover:hover){html:not(.pointer-enabled) .bottom-nav.has-liquid-selection>a:hover{background:#ffffff14}}
 @media(forced-colors:active){.bottom-nav.has-liquid-selection::after{background:Highlight}.bottom-nav.has-liquid-selection>a[aria-current="location"]{color:HighlightText}}
