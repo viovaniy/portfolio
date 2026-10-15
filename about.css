@@ -5,7 +5,7 @@
 .about-section[data-in-view] .about-color-field{animation-play-state:running}
 .about-backdrop::after{content:"";position:absolute;inset:0;opacity:.16;background:url("assets/about-grain.svg");mix-blend-mode:soft-light}
 @keyframes about-mesh{0%{transform:translate(-3%,-2%) rotate(-8deg) scale(1)}50%{transform:translate(4%,2%) rotate(3deg) scale(1.08)}100%{transform:translate(-1%,4%) rotate(12deg) scale(1.02)}}
-.about-glass{padding:clamp(24px,5vw,56px);border:1px solid #ffffffd9;border-radius:34px;background:linear-gradient(120deg,#ffffffa6,#ffffff65);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:inset 0 1px 0 #fff,0 18px 60px -40px #50467c55;color:#242832}
+.about-glass{position:relative;padding:calc(clamp(24px,5vw,56px) + 48px) clamp(24px,5vw,56px) clamp(24px,5vw,56px);border:1px solid #ffffffd9;border-radius:22px;background:linear-gradient(120deg,#ffffffa6,#ffffff65);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:inset 0 1px 0 #fff,0 0 0 1px #40375412,0 8px 20px -10px #40375422,0 32px 70px -28px #40375440;color:#242832}
 .about-heading h2{margin:0 0 32px;font-size:clamp(28px,3.4vw,40px);letter-spacing:-1.5px;font-weight:550}.about-period{color:#8a8c98}
 .about-card{padding:18px;border:1px solid #fff;border-radius:26px;background:#ffffffed;box-shadow:0 4px 20px #48425d08}
 .about-tabs{display:flex;position:relative;padding:4px;border-radius:100px;background:#f1f1f3;gap:4px}
@@ -32,7 +32,7 @@
 .about-process strong{font-weight:500}.about-process li>span{grid-column:2;color:#888}
 
 .about-section + .work-section{border-top:0}
-@media(max-width:650px){.about-section{padding:32px 0 72px}.about-glass{padding:24px 14px;border-radius:26px}.about-heading h2{font-size:27px;margin:0 8px 26px;letter-spacing:-1px}.about-card{padding:10px;border-radius:20px}.about-tabs{gap:0;padding:3px}.about-tabs button{font-size:12px;padding:10px 2px}.about-panel{padding:22px 16px}.about-panel h3{font-size:21px}.about-body p{font-size:14px}.about-tools{grid-template-columns:1fr;gap:15px;margin:18px 0}.about-tools li{font-size:13px}.about-process li{font-size:14px}}
+@media(max-width:650px){.about-section{padding:32px 0 72px}.about-glass{padding:66px 14px 24px;border-radius:20px}.about-heading h2{font-size:27px;margin:0 8px 26px;letter-spacing:-1px}.about-card{padding:10px;border-radius:20px}.about-tabs{gap:0;padding:3px}.about-tabs button{font-size:12px;padding:10px 2px}.about-panel{padding:22px 16px}.about-panel h3{font-size:21px}.about-body p{font-size:14px}.about-tools{grid-template-columns:1fr;gap:15px;margin:18px 0}.about-tools li{font-size:13px}.about-process li{font-size:14px}}
 @media(prefers-reduced-motion:reduce){.about-color-field{animation:none;will-change:auto}.about-tabs button{transition:none}}
 @media(prefers-reduced-transparency:reduce){.about-glass{background:#f5f7fc;backdrop-filter:none;-webkit-backdrop-filter:none}}
 @media(forced-colors:active){.about-backdrop{display:none}.about-glass,.about-card,.about-panels{background:Canvas;border-color:CanvasText;box-shadow:none}.about-tabs button[aria-selected="true"]{outline:2px solid Highlight}}
@@ -44,3 +44,12 @@
 @media(max-width:650px){.about-tabs::before{top:3px;bottom:3px;left:var(--tab-left,3px);width:var(--tab-width,calc((100% - 6px)/4))}}
 @media(prefers-reduced-motion:reduce){.about-tabs::before{transition:none}}
 @media(forced-colors:active){.about-tabs::before{background:Canvas}}
+
+/* Decorative macOS-style chrome; these are not window controls. */
+.about-window-chrome{position:absolute;inset:0 0 auto;height:48px;border-radius:21px 21px 0 0;border-bottom:1px solid #65597414;background:linear-gradient(#ffffff40,#ffffff10);box-shadow:inset 0 1px 0 #ffffffb3;display:flex;align-items:center;padding:0 20px;pointer-events:none}
+.about-window-lights{display:flex;gap:8px}
+.about-window-lights i{display:block;width:12px;height:12px;border-radius:50%;background:#ff6058;box-shadow:inset 0 0 0 1px #00000012,inset 0 1px 1px #ffffff35}
+.about-window-lights i:nth-child(2){background:#ffbd2e}
+.about-window-lights i:nth-child(3){background:#28c840}
+@media(max-width:650px){.about-window-chrome{height:42px;padding:0 17px;border-radius:19px 19px 0 0}.about-window-lights{gap:7px}.about-window-lights i{width:11px;height:11px}}
+@media(forced-colors:active){.about-window-chrome{border-color:CanvasText}.about-window-lights i{background:CanvasText;box-shadow:none}}
