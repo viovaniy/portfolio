@@ -151,7 +151,7 @@
     if (!allowed()) { root.classList.remove('pointer-mouse'); hide(); return; }
     knownMouse = true;
     // Mouse mode survives transient blur/capture events; only visibility may reset.
-    root.classList.add('pointer-mouse');
+    if (!root.classList.contains('pointer-mouse')) root.classList.add('pointer-mouse');
     position.x = event.clientX;
     position.y = event.clientY;
     inside = position.x >= 0 && position.y >= 0 && position.x < innerWidth && position.y < innerHeight;
@@ -176,7 +176,9 @@
   }
   const observe = {passive:true, capture:true};
   document.addEventListener('pointermove', move, observe);
-  document.addEventListener('pointerover', move, observe);
+  document.addEventListener('pointerover', event => {
+    if (!active) move(event);
+  }, observe);
   document.addEventListener('pointerdown', event => {
     move(event);
     if (!active || event.pointerType !== 'mouse') return;

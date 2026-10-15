@@ -30,9 +30,10 @@ h1{font-size:clamp(29px,3.5vw,43px);line-height:1.23;letter-spacing:-1.2px;font-
   .cta-copy::after{content:attr(data-text);position:absolute;inset:0;background-image:var(--shimmer-glow,none);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:blur(.65px);opacity:.1;pointer-events:none}
 }
 .ios-pointer{position:fixed;top:0;left:0;width:18px;height:18px;border-radius:50%;background:#7c7c80;opacity:0;pointer-events:none;z-index:30;will-change:transform,width,height,border-radius;contain:layout style;visibility:hidden}
-/* Keep the native pointer suppressed independently of overlay visibility.
-   A transparent cursor also covers native link active-state cursor updates. */
-.pointer-mouse,.pointer-mouse *,.pointer-mouse *::before,.pointer-mouse *::after{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3C/svg%3E") 0 0,none!important}
+/* A single decoded raster cursor is shared across every hit target and state.
+   Avoid empty SVG cursors: native control cursor refreshes must not re-rasterize it.
+   This stays independent of the animated overlay and its opacity. */
+.pointer-mouse,.pointer-mouse *,.pointer-mouse *::before,.pointer-mouse *::after{cursor:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGklEQVR4nO3BAQEAAACCIP+vbkhAAQAAAO8GECAAARlDNO4AAAAASUVORK5CYII=") 0 0,none!important}
 .pointer-enabled .ios-pointer{visibility:visible}
 .pointer-enabled .contact-button:hover,.pointer-enabled .contact-button:active{background:transparent}
 @media(prefers-reduced-motion:reduce){.magnetic-label,.contact-button{transition:none}.ios-pointer{transition:none}}
