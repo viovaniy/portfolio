@@ -53,14 +53,14 @@
     destination = next; size = nextSize;
     dock.style.setProperty('--selection-y', `${link.offsetTop}px`);
     dock.style.setProperty('--selection-size', `${size}px`);
-    if (!initialized || resized || reduced.matches || document.hidden) snap();
+    if (!initialized || resized || reduced.matches || document.hidden || dock.dataset.revealed !== 'true') snap();
     else if (changed && !frame) {
       last = performance.now(); frame = requestAnimationFrame(tick);
     }
     initialized = true;
     dock.classList.add('has-liquid-selection');
   }
-  new MutationObserver(update).observe(dock, {subtree:true, attributes:true, attributeFilter:['aria-current']});
+  new MutationObserver(update).observe(dock, {subtree:true, attributes:true, attributeFilter:['aria-current', 'data-revealed']});
   new ResizeObserver(update).observe(dock);
   reduced.addEventListener('change', update);
   document.addEventListener('visibilitychange', update);
