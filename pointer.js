@@ -67,6 +67,8 @@
       const size = pressed ? 14 : 18;
       Object.assign(destination, { x: position.x, y: position.y, width: size, height: size, radius: size / 2, opacity: 0.78 });
     }
+    // The entire dock surface absorbs the cursor, including gaps and padding.
+    if (pointer.classList.contains('on-dark')) destination.opacity = 0;
     if (reducedMotion.matches && active) {
       cancelAnimationFrame(frame); frame = 0;
       Object.assign(state, destination);
@@ -85,7 +87,7 @@
     pointer.style.width = `${state.width}px`;
     pointer.style.height = `${state.height}px`;
     pointer.style.borderRadius = `${state.radius}px`;
-    pointer.style.opacity = pointer.classList.contains('on-nav-target') ? 0 : state.opacity;
+    pointer.style.opacity = pointer.classList.contains('on-dark') ? 0 : state.opacity;
   }
 
   function animate(time) {
@@ -128,7 +130,9 @@
   function hitTarget() {
     // Pointer capture retargets events to the carousel; hit-test the real location.
     const element = document.elementFromPoint(position.x, position.y);
-    pointer.classList.toggle('on-dark', Boolean(element?.closest('.bottom-nav')));
+    const onDock = Boolean(element?.closest('.bottom-nav'));
+    pointer.classList.toggle('on-dark', onDock);
+    if (onDock) pointer.style.opacity = '0';
     changeTarget(element);
   }
 
