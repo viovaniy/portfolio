@@ -154,14 +154,17 @@
     position.y = event.clientY;
     inside = position.x >= 0 && position.y >= 0 && position.x < innerWidth && position.y < innerHeight;
     if (!inside) { hide(); return; }
+    // Resolve the surface before restoring the cursor after focus/visibility changes.
+    // A click that reactivates the page inside the dock must not paint an opaque dot first.
+    hitTarget();
     if (!active) {
       active = true;
-      Object.assign(state, { x: position.x, y: position.y, width: 18, height: 18, radius: 9, opacity: 0.78 });
+      const onDock = pointer.classList.contains('on-dark');
+      Object.assign(state, { x: position.x, y: position.y, width: onDock ? 6 : 18, height: onDock ? 6 : 18, radius: onDock ? 3 : 9, opacity: onDock ? 0 : 0.78 });
       for (const key of Object.keys(velocity)) velocity[key] = 0;
       paint();
       root.classList.add('pointer-enabled');
     }
-    hitTarget();
     setDestination();
   }
 
@@ -176,6 +179,12 @@
     move(event);
     if (!active || event.pointerType !== 'mouse') return;
     pressed = true;
+    // A fast click may arrive before the hover absorption finishes.
+    // Finish only its opacity now; ordinary entry/exit remains spring-driven.
+    if (pointer.classList.contains('on-dark')) {
+      state.opacity = destination.opacity = velocity.opacity = 0;
+      paint();
+    }
     setDestination();
   }, observe);
   function release(event) {

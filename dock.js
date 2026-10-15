@@ -198,8 +198,10 @@
   links.forEach((link, i) => {
     link.addEventListener('pointerdown', event => {
       if (event.button !== 0 || !event.isPrimary) return;
+      // Suppress native mouse-down link handling (focus/drag cursor refresh).
+      // The click event still performs navigation; touch and keyboard stay native.
+      if (event.pointerType === 'mouse' && document.documentElement.classList.contains('pointer-mouse')) event.preventDefault();
       press(i, event.pointerId);
-      // Keep native link activation and cancellation; window handlers catch release.
     });
     link.addEventListener('pointerleave', event => release(event.pointerId, true));
     link.addEventListener('keydown', event => {
