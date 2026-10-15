@@ -55,7 +55,8 @@
       destination.y = centerY + (isDockTarget ? 0 : clamp(dy * 0.16, 5));
       destination.width = (isDockTarget ? rect.width : rect.width + 8) * scale;
       destination.height = (isDockTarget ? rect.width : rect.height + 6) * scale;
-      destination.radius = isDockTarget ? destination.width / 2 : Math.min(14, destination.height / 2);
+      const isAboutTab = target.matches('.about-tabs [role="tab"]');
+      destination.radius = isDockTarget ? destination.width / 2 : isAboutTab ? destination.height / 2 : Math.min(14, destination.height / 2);
       destination.opacity = isDockTarget ? 0 : (pressed ? 0.23 : 0.14);
       if (label) {
         label.style.setProperty('--pull-x', `${clamp(dx * 0.08, 6)}px`);

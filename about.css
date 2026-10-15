@@ -1,6 +1,6 @@
 /* A fixed-size animated mesh, independent of the selected panel. */
 .about-section{position:relative;isolation:isolate;border-top:0;padding:64px 0 100px;scroll-margin-top:0}
-.about-backdrop{position:absolute;z-index:-1;top:0;left:50%;width:var(--about-viewport,100%);height:900px;transform:translateX(-50%);overflow:hidden;pointer-events:none;background:#e9e4ff;mask-image:linear-gradient(transparent,#000 12%,#000 65%,transparent);-webkit-mask-image:linear-gradient(transparent,#000 12%,#000 65%,transparent)}
+.about-backdrop{position:absolute;z-index:-1;top:0;left:50%;width:var(--about-viewport,100%);height:100%;transform:translateX(-50%);overflow:hidden;pointer-events:none;background:#e9e4ff}
 .about-color-field{position:absolute;inset:-20%;background:radial-gradient(ellipse at 20% 30%,#a895f9 0,transparent 48%),radial-gradient(ellipse at 78% 24%,#f8b49f 0,transparent 46%),radial-gradient(ellipse at 68% 78%,#68b7ee 0,transparent 46%),radial-gradient(ellipse at 15% 85%,#dfb5e9 0,transparent 44%),#e9e6fc;animation:about-mesh 18s ease-in-out infinite alternate;animation-play-state:paused;will-change:transform}
 .about-section[data-in-view] .about-color-field{animation-play-state:running}
 .about-backdrop::after{content:"";position:absolute;inset:0;opacity:.16;background:url("assets/about-grain.svg");mix-blend-mode:soft-light}
@@ -32,7 +32,7 @@
 .about-process strong{font-weight:500}.about-process li>span{grid-column:2;color:#888}
 
 .about-section + .work-section{border-top:0}
-@media(max-width:650px){.about-section{padding:32px 0 72px}.about-glass{padding:24px 14px;border-radius:26px}.about-heading h2{font-size:27px;margin:0 8px 26px;letter-spacing:-1px}.about-card{padding:10px;border-radius:20px}.about-tabs{gap:0;padding:3px}.about-tabs button{font-size:12px;padding:10px 2px}.about-panel{padding:22px 16px}.about-panel h3{font-size:21px}.about-body p{font-size:14px}.about-tools{grid-template-columns:1fr;gap:15px;margin:18px 0}.about-tools li{font-size:13px}.about-process li{font-size:14px}.about-backdrop{height:1050px}}
+@media(max-width:650px){.about-section{padding:32px 0 72px}.about-glass{padding:24px 14px;border-radius:26px}.about-heading h2{font-size:27px;margin:0 8px 26px;letter-spacing:-1px}.about-card{padding:10px;border-radius:20px}.about-tabs{gap:0;padding:3px}.about-tabs button{font-size:12px;padding:10px 2px}.about-panel{padding:22px 16px}.about-panel h3{font-size:21px}.about-body p{font-size:14px}.about-tools{grid-template-columns:1fr;gap:15px;margin:18px 0}.about-tools li{font-size:13px}.about-process li{font-size:14px}}
 @media(prefers-reduced-motion:reduce){.about-color-field{animation:none;will-change:auto}.about-tabs button{transition:none}}
 @media(prefers-reduced-transparency:reduce){.about-glass{background:#f5f7fc;backdrop-filter:none;-webkit-backdrop-filter:none}}
 @media(forced-colors:active){.about-backdrop{display:none}.about-glass,.about-card,.about-panels{background:Canvas;border-color:CanvasText;box-shadow:none}.about-tabs button[aria-selected="true"]{outline:2px solid Highlight}}
