@@ -5,9 +5,6 @@
     const sizeBackdrop = () => section.style.setProperty('--about-viewport', `${document.documentElement.clientWidth}px`);
     sizeBackdrop();
     window.addEventListener('resize', sizeBackdrop, { passive: true });
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(([entry]) => section.toggleAttribute('data-in-view', entry.isIntersecting)).observe(section);
-    } else section.setAttribute('data-in-view', '');
   }
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   document.querySelectorAll('.about-toggle').forEach(card => {
