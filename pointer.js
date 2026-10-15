@@ -49,13 +49,13 @@
       const centerY = rect.top + rect.height / 2;
       const dx = position.x - centerX;
       const dy = position.y - centerY;
-      const scale = pressed ? 0.95 : 1;
-      const isDockTarget = Boolean(target.closest('.bottom-nav'));
-      destination.x = centerX + (isDockTarget ? 0 : clamp(dx * 0.1, 8));
-      destination.y = centerY + (isDockTarget ? 0 : clamp(dy * 0.16, 5));
-      destination.width = (isDockTarget ? rect.width : rect.width + 8) * scale;
-      destination.height = (isDockTarget ? rect.width : rect.height + 6) * scale;
       const isAboutTab = target.matches('.about-tabs [role="tab"]');
+      const scale = pressed && !isAboutTab ? 0.95 : 1;
+      const isDockTarget = Boolean(target.closest('.bottom-nav'));
+      destination.x = centerX + (isDockTarget || isAboutTab ? 0 : clamp(dx * 0.1, 8));
+      destination.y = centerY + (isDockTarget || isAboutTab ? 0 : clamp(dy * 0.16, 5));
+      destination.width = (isDockTarget || isAboutTab ? rect.width : rect.width + 8) * scale;
+      destination.height = (isDockTarget ? rect.width : isAboutTab ? rect.height : rect.height + 6) * scale;
       destination.radius = isDockTarget ? destination.width / 2 : isAboutTab ? destination.height / 2 : Math.min(14, destination.height / 2);
       destination.opacity = isDockTarget ? 0 : (pressed ? 0.23 : 0.14);
       if (label) {
