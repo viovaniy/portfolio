@@ -12,11 +12,20 @@
   const panels = [...section.querySelectorAll('[role="tabpanel"]')];
   let active = 0;
   let animation;
+  const tablist = section.querySelector('.about-tabs');
+  function positionSelection() {
+    const tab = tabs[active];
+    tablist.style.setProperty('--tab-left', `${tab.offsetLeft}px`);
+    tablist.style.setProperty('--tab-width', `${tab.offsetWidth}px`);
+  }
+  positionSelection();
+  new ResizeObserver(positionSelection).observe(tablist);
   function select(index, focus = false) {
     if (focus) tabs[index].focus();
     if (index === active) return;
     const direction = index > active ? 1 : -1;
     active = index;
+    positionSelection();
     animation?.cancel();
     tabs.forEach((tab, i) => {
       tab.setAttribute('aria-selected', String(i === index));

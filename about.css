@@ -10,7 +10,7 @@
 .about-card{padding:18px;border:1px solid #fff;border-radius:26px;background:#ffffffed;box-shadow:0 4px 20px #48425d08}
 .about-tabs{display:flex;position:relative;padding:4px;border-radius:100px;background:#f1f1f3;gap:4px}
 .about-tabs button{flex:1;min-width:0;border:0;background:transparent;border-radius:100px;padding:11px 6px;font:inherit;font-size:14px;font-weight:500;color:#767680;transition:background .25s,color .25s,box-shadow .25s;-webkit-tap-highlight-color:transparent}
-.about-tabs button[aria-selected="true"]{background:#fff;color:#24242a;box-shadow:0 2px 6px #2424380a}
+.about-tabs button[aria-selected="true"]{color:#24242a}
 .about-tabs button:focus-visible,.about-panel:focus-visible{outline:2px solid #759ef1;outline-offset:3px}
 .about-panels{display:grid;margin-top:14px;border:1px solid #ededf0;border-radius:18px;background:linear-gradient(#fafafb,#fff);overflow:hidden}
 .about-panel{grid-area:1/1;padding:30px;min-width:0;align-self:start}
@@ -37,4 +37,10 @@
 @media(prefers-reduced-transparency:reduce){.about-glass{background:#f5f7fc;backdrop-filter:none;-webkit-backdrop-filter:none}}
 @media(forced-colors:active){.about-backdrop{display:none}.about-glass,.about-card,.about-panels{background:Canvas;border-color:CanvasText;box-shadow:none}.about-tabs button[aria-selected="true"]{outline:2px solid Highlight}}
 
-@media(hover:hover){.about-tabs button:hover{background:#fff;color:#24242a;box-shadow:0 2px 6px #2424380a}}
+/* One shared white selection moves behind the labels. */
+.about-tabs::before{content:"";position:absolute;top:4px;bottom:4px;left:var(--tab-left,4px);width:var(--tab-width,calc((100% - 20px)/4));border-radius:999px;background:#fff;box-shadow:0 2px 6px #2424380a;transition:left .48s cubic-bezier(.22,1,.36,1),width .48s cubic-bezier(.22,1,.36,1);pointer-events:none}
+.about-tabs button{position:relative;z-index:1}
+@media(hover:hover){.about-tabs button:not([aria-selected="true"]):hover{background:#dedee2;color:#24242a}}
+@media(max-width:650px){.about-tabs::before{top:3px;bottom:3px;left:var(--tab-left,3px);width:var(--tab-width,calc((100% - 6px)/4))}}
+@media(prefers-reduced-motion:reduce){.about-tabs::before{transition:none}}
+@media(forced-colors:active){.about-tabs::before{background:Canvas}}
