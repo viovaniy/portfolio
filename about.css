@@ -36,3 +36,5 @@
 @media(prefers-reduced-motion:reduce){.about-color-field{animation:none;will-change:auto}.about-tabs button{transition:none}}
 @media(prefers-reduced-transparency:reduce){.about-glass{background:#f5f7fc;backdrop-filter:none;-webkit-backdrop-filter:none}}
 @media(forced-colors:active){.about-backdrop{display:none}.about-glass,.about-card,.about-panels{background:Canvas;border-color:CanvasText;box-shadow:none}.about-tabs button[aria-selected="true"]{outline:2px solid Highlight}}
+
+@media(hover:hover){.about-tabs button:hover{background:#fff;color:#24242a;box-shadow:0 2px 6px #2424380a}}

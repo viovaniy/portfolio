@@ -57,7 +57,8 @@
       destination.width = (isDockTarget || isAboutTab ? rect.width : rect.width + 8) * scale;
       destination.height = (isDockTarget ? rect.width : isAboutTab ? rect.height : rect.height + 6) * scale;
       destination.radius = isDockTarget ? destination.width / 2 : isAboutTab ? destination.height / 2 : Math.min(14, destination.height / 2);
-      destination.opacity = isDockTarget ? 0 : (pressed ? 0.23 : 0.14);
+      // Tabs paint their own white highlight, keeping the label crisp above it.
+      destination.opacity = isDockTarget || isAboutTab ? 0 : (pressed ? 0.23 : 0.14);
       if (label) {
         label.style.setProperty('--pull-x', `${clamp(dx * 0.08, 6)}px`);
         label.style.setProperty('--pull-y', `${clamp(dy * 0.13, 4)}px`);
