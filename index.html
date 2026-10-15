@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="structure.css?v=20261015-4">
   <link rel="stylesheet" href="work.css?v=14">
   <link rel="stylesheet" href="strengths.css?v=8">
-  <link rel="stylesheet" href="about.css?v=20261015-2">
+  <link rel="stylesheet" href="about.css?v=20261015-3">
   <link rel="stylesheet" href="text-reveal.css?v=3">
 </head>
 <body>
@@ -115,25 +115,24 @@
       <header class="about-heading">
         <h2 id="about-title">Hey, I am Viovaniy<span class="about-period">.</span></h2>
       </header>
-      <div class="about-notebook">
-        <details class="about-toggle">
-          <summary><span class="toggle-chevron" aria-hidden="true">▸</span><svg aria-hidden="true"><use href="#info"/></svg><span>A little about me</span></summary>
-          <div class="about-body"><div class="about-indent">
+      <div class="about-card">
+        <div class="about-tabs" role="tablist" aria-label="About Viovaniy">
+          <button type="button" role="tab" id="about-tab-0" aria-controls="about-panel-0" aria-selected="true" tabindex="0">About</button>
+          <button type="button" role="tab" id="about-tab-1" aria-controls="about-panel-1" aria-selected="false" tabindex="-1">Projects</button>
+          <button type="button" role="tab" id="about-tab-2" aria-controls="about-panel-2" aria-selected="false" tabindex="-1">Tools</button>
+          <button type="button" role="tab" id="about-tab-3" aria-controls="about-panel-3" aria-selected="false" tabindex="-1">Process</button>
+        </div>
+        <div class="about-panels">
+          <div class="about-panel" id="about-panel-0" role="tabpanel" aria-labelledby="about-tab-0" tabindex="0"><h3>A little about me</h3><div class="about-body">
             <p>I’m Viovaniy, a motion designer working with SaaS brands and digital products.</p>
             <p class="about-secondary">I like clean interfaces, playful details, and that moment when a small animation makes everything click. That’s the feeling I try to bring to my work.</p>
           </div></div>
-        </details>
-        <details class="about-toggle">
-          <summary><span class="toggle-chevron" aria-hidden="true">▸</span><svg aria-hidden="true"><use href="#play"/></svg><span>What I make</span></summary>
-          <div class="about-body"><div class="about-indent">
+          <div class="about-panel" id="about-panel-1" role="tabpanel" aria-labelledby="about-tab-1" tabindex="0" hidden inert><h3>What I make</h3><div class="about-body">
             <p>Product films that get to the point. Interfaces that feel alive. A launch with a little more personality.</p>
             <div class="about-project-types"><span>SaaS &amp; product films</span><span>UI animation</span><span>Brand motion</span><span>Product demos</span></div>
             <p class="about-secondary">From a single interaction to a whole product story, I shape the motion around what people need to notice, understand, and remember.</p>
           </div></div>
-        </details>
-        <details class="about-toggle">
-          <summary><span class="toggle-chevron" aria-hidden="true">▸</span><svg aria-hidden="true"><use href="#ui"/></svg><span>Tools &amp; software</span></summary>
-          <div class="about-body"><div class="about-indent">
+          <div class="about-panel" id="about-panel-2" role="tabpanel" aria-labelledby="about-tab-2" tabindex="0" hidden inert><h3>Tools & software</h3><div class="about-body">
             <p>My everyday toolkit, from the first frame to the final export.</p>
             <ul class="about-tools" aria-label="Design and animation software">
               <li><span class="tool-monogram" aria-hidden="true">Ae</span><span>After Effects<small>Motion &amp; compositing</small></span></li>
@@ -143,10 +142,7 @@
             </ul>
             <p class="about-ai"><svg aria-hidden="true"><use href="#star"/></svg><span>Plus the latest generation of AI models for exploring ideas, creating visuals, and experimenting with motion.</span></p>
           </div></div>
-        </details>
-        <details class="about-toggle">
-          <summary><span class="toggle-chevron" aria-hidden="true">▸</span><svg aria-hidden="true"><use href="#layers"/></svg><span>How I work</span></summary>
-          <div class="about-body"><div class="about-indent">
+          <div class="about-panel" id="about-panel-3" role="tabpanel" aria-labelledby="about-tab-3" tabindex="0" hidden inert><h3>How I work</h3><div class="about-body">
             <p>First, the idea. Then, the keyframes.</p>
             <ol class="about-process">
               <li><strong>Find the point.</strong><span>What should someone understand or feel after watching?</span></li>
@@ -154,7 +150,7 @@
               <li><strong>Make the details count.</strong><span>Refine the timing, transitions, and those last few frames.</span></li>
             </ol>
           </div></div>
-        </details>
+        </div>
       </div>
       </div>
     </section>
@@ -277,7 +273,7 @@
   <script src="dock-selection.js?v=3" defer></script>
   <script src="shimmer.js?v=3" defer></script>
   <script src="work.js?v=8" defer></script>
-  <script src="about.js?v=20261015-2" defer></script>
+  <script src="about.js?v=20261015-3" defer></script>
   <script src="strengths.js?v=3" defer></script>
   <script src="text-reveal.js?v=2" defer></script>
   <script defer src="/_vercel/insights/script.js"></script>

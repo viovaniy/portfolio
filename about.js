@@ -1,44 +1,44 @@
 (() => {
   const section = document.querySelector('.about-section');
-  if (section) {
-    // Use the layout viewport, excluding the scrollbar, for a flush full-width backdrop.
-    const sizeBackdrop = () => section.style.setProperty('--about-viewport', `${document.documentElement.clientWidth}px`);
-    sizeBackdrop();
-    window.addEventListener('resize', sizeBackdrop, { passive: true });
-  }
+  if (!section) return;
+  const sizeBackdrop = () => section.style.setProperty('--about-viewport', `${document.documentElement.clientWidth}px`);
+  sizeBackdrop();
+  window.addEventListener('resize', sizeBackdrop, { passive: true });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => section.toggleAttribute('data-in-view', entry.isIntersecting)).observe(section);
+  } else section.setAttribute('data-in-view', '');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  document.querySelectorAll('.about-toggle').forEach(card => {
-    const summary = card.querySelector('summary');
-    const body = card.querySelector('.about-body');
-    let animation = null;
-    let expanded = card.open;
-    function settle() {
-      animation?.cancel();
-      animation = null;
-      card.open = expanded;
-      card.removeAttribute('data-closing');
-      summary.setAttribute('aria-expanded', String(expanded));
-    }
-    summary.setAttribute('aria-expanded', String(expanded));
-    summary.addEventListener('click', event => {
-      event.preventDefault();
-      const start = card.getBoundingClientRect().height;
-      animation?.cancel();
-      expanded = !expanded;
-      summary.setAttribute('aria-expanded', String(expanded));
-      card.toggleAttribute('data-closing', !expanded);
-      // Keep content in layout until the entire card has finished shrinking.
-      card.open = true;
-      const border = 2;
-      const end = summary.offsetHeight + (expanded ? body.offsetHeight : 0) + border;
-      if (reduced.matches || typeof card.animate !== 'function') { settle(); return; }
-      animation = card.animate([{height:`${start}px`},{height:`${end}px`}], {
-        duration:360, easing:'cubic-bezier(.22,1,.36,1)'
-      });
-      animation.onfinish = settle;
+  const tabs = [...section.querySelectorAll('[role="tab"]')];
+  const panels = [...section.querySelectorAll('[role="tabpanel"]')];
+  let active = 0;
+  let animation;
+  function select(index, focus = false) {
+    if (focus) tabs[index].focus();
+    if (index === active) return;
+    const direction = index > active ? 1 : -1;
+    active = index;
+    animation?.cancel();
+    tabs.forEach((tab, i) => {
+      tab.setAttribute('aria-selected', String(i === index));
+      tab.tabIndex = i === index ? 0 : -1;
+      panels[i].hidden = i !== index;
+      panels[i].inert = i !== index;
     });
-    // Let the content return to its natural height after resizing or interruption.
-    window.addEventListener('resize', settle);
-    reduced.addEventListener('change', settle);
+    if (!reduced.matches) animation = panels[index].animate([
+      { opacity: 0, transform: `translateX(${direction * 12}px)` },
+      { opacity: 1, transform: 'translateX(0)' }
+    ], { duration: 300, easing: 'cubic-bezier(.22,1,.36,1)' });
+  }
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => select(i));
+    tab.addEventListener('keydown', event => {
+      let next;
+      if (event.key === 'ArrowRight') next = (i + 1) % tabs.length;
+      if (event.key === 'ArrowLeft') next = (i - 1 + tabs.length) % tabs.length;
+      if (event.key === 'Home') next = 0;
+      if (event.key === 'End') next = tabs.length - 1;
+      if (next !== undefined) { event.preventDefault(); select(next, true); }
+    });
   });
+  reduced.addEventListener('change', () => animation?.cancel());
 })();
