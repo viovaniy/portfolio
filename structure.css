@@ -154,7 +154,6 @@ body:has(.bottom-nav:not([data-revealed])) .bottom-blur{visibility:hidden}
 @media(hover:hover){html:not(.pointer-enabled) .bottom-nav.has-liquid-selection>a:hover{background:#ffffff14}}
 @media(forced-colors:active){.bottom-nav.has-liquid-selection::after{background:Highlight}.bottom-nav.has-liquid-selection>a[aria-current="location"]{color:HighlightText}}
 
-/* Resolve dock hover in CSS before the next JS spring frame, even during its press animation. */
-.pointer-mouse:has(.bottom-nav:hover) .ios-pointer{opacity:0!important}
+/* Native dragging stays disabled while the custom cursor absorbs into the dock. */
 .bottom-nav,.bottom-nav a{-webkit-user-drag:none}
 .bottom-nav .magnetic-label,.bottom-nav svg{pointer-events:none}

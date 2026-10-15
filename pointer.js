@@ -38,7 +38,6 @@
     label = target?.querySelector('.magnetic-label') || null;
     // The dock owns its highlight; never stack a second cursor disk over it.
     pointer.classList.toggle('on-nav-target', Boolean(target?.closest('.bottom-nav')));
-    if (pointer.classList.contains('on-nav-target')) pointer.style.opacity = '0';
   }
 
   function setDestination() {
@@ -68,7 +67,10 @@
       Object.assign(destination, { x: position.x, y: position.y, width: size, height: size, radius: size / 2, opacity: 0.78 });
     }
     // The entire dock surface absorbs the cursor, including gaps and padding.
-    if (pointer.classList.contains('on-dark')) destination.opacity = 0;
+    if (pointer.classList.contains('on-dark')) {
+      // Absorb a small cursor at the entry point, never a second icon-sized disk.
+      Object.assign(destination, { x: position.x, y: position.y, width: 6, height: 6, radius: 3, opacity: 0 });
+    }
     if (reducedMotion.matches && active) {
       cancelAnimationFrame(frame); frame = 0;
       Object.assign(state, destination);
@@ -87,7 +89,7 @@
     pointer.style.width = `${state.width}px`;
     pointer.style.height = `${state.height}px`;
     pointer.style.borderRadius = `${state.radius}px`;
-    pointer.style.opacity = pointer.classList.contains('on-dark') ? 0 : state.opacity;
+    pointer.style.opacity = Math.max(0, state.opacity);
   }
 
   function animate(time) {
@@ -132,7 +134,6 @@
     const element = document.elementFromPoint(position.x, position.y);
     const onDock = Boolean(element?.closest('.bottom-nav'));
     pointer.classList.toggle('on-dark', onDock);
-    if (onDock) pointer.style.opacity = '0';
     changeTarget(element);
   }
 
