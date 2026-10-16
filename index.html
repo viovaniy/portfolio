@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="structure.css?v=20261015-5">
   <link rel="stylesheet" href="work.css?v=14">
   <link rel="stylesheet" href="strengths.css?v=8">
-  <link rel="stylesheet" href="about.css?v=20261016-9">
+  <link rel="stylesheet" href="about.css?v=20261016-10">
   <link rel="stylesheet" href="text-reveal.css?v=3">
 </head>
 <body>
@@ -112,8 +112,12 @@
     <section id="about" class="page-section content-section about-section" aria-labelledby="about-title">
       <div class="about-backdrop" aria-hidden="true"><div class="about-color-field"></div></div>
       <div class="about-glass">
-      <div class="about-window-chrome" aria-hidden="true">
-        <span class="about-window-lights"><i></i><i></i><i></i></span>
+      <div class="about-window-chrome">
+        <div class="about-window-lights" role="group" aria-label="Window controls">
+          <button type="button" data-window-action="refuse" aria-label="Keep window open" data-pointer-passive><span aria-hidden="true">×</span></button>
+          <button type="button" data-window-action="minimize" aria-label="Minimize description" aria-expanded="true" aria-controls="about-description" data-pointer-passive><span aria-hidden="true">−</span></button>
+          <button type="button" data-window-action="resize" aria-label="Enlarge window" aria-pressed="false" data-pointer-passive><span aria-hidden="true">↗</span></button>
+        </div>
       </div>
       <header class="about-heading">
         <h2 id="about-title">Hey, I am Viovaniy<span class="about-period">.</span></h2>
@@ -125,7 +129,7 @@
           <button type="button" role="tab" id="about-tab-2" aria-controls="about-panel-2" aria-selected="false" tabindex="-1">Tools</button>
           <button type="button" role="tab" id="about-tab-3" aria-controls="about-panel-3" aria-selected="false" tabindex="-1">Process</button>
         </div>
-        <div class="about-panels">
+        <div class="about-panels" id="about-description">
           <div class="about-panel" id="about-panel-0" role="tabpanel" aria-labelledby="about-tab-0" tabindex="0"><h3>A little about me</h3><div class="about-body">
             <p>I’m Viovaniy, a motion designer working with SaaS brands and digital products.</p>
             <p class="about-secondary">I like clean interfaces, playful details, and that moment when a small animation makes everything click. That’s the feeling I try to bring to my work.</p>
@@ -276,7 +280,7 @@
   <script src="dock-selection.js?v=3" defer></script>
   <script src="shimmer.js?v=3" defer></script>
   <script src="work.js?v=8" defer></script>
-  <script src="about.js?v=20261016-1" defer></script>
+  <script src="about.js?v=20261016-2" defer></script>
   <script src="strengths.js?v=3" defer></script>
   <script src="text-reveal.js?v=2" defer></script>
   <script defer src="/_vercel/insights/script.js"></script>

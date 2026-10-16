@@ -53,11 +53,11 @@
 /* Decorative macOS-style chrome; these are not window controls. */
 .about-window-chrome{position:absolute;inset:0 0 auto;height:48px;border-radius:21px 21px 0 0;border-bottom:1px solid #65597414;background:linear-gradient(#ffffff40,#ffffff10);box-shadow:inset 0 1px 0 #ffffffb3;display:flex;align-items:center;padding:0 20px;pointer-events:none}
 .about-window-lights{display:flex;gap:8px}
-.about-window-lights i{display:block;width:12px;height:12px;border-radius:50%;background:#ff6058;box-shadow:inset 0 0 0 1px #00000012,inset 0 1px 1px #ffffff35}
-.about-window-lights i:nth-child(2){background:#ffbd2e}
-.about-window-lights i:nth-child(3){background:#28c840}
-@media(max-width:650px){.about-window-chrome{height:42px;padding:0 17px;border-radius:19px 19px 0 0}.about-window-lights{gap:7px}.about-window-lights i{width:11px;height:11px}}
-@media(forced-colors:active){.about-window-chrome{border-color:CanvasText}.about-window-lights i{background:CanvasText;box-shadow:none}}
+.about-window-lights button{display:block;width:12px;height:12px;border-radius:50%;background:#ff6058;box-shadow:inset 0 0 0 1px #00000012,inset 0 1px 1px #ffffff35}
+.about-window-lights button:nth-child(2){background:#ffbd2e}
+.about-window-lights button:nth-child(3){background:#28c840}
+@media(max-width:650px){.about-window-chrome{height:42px;padding:0 17px;border-radius:19px 19px 0 0}.about-window-lights{gap:7px}.about-window-lights button{width:11px;height:11px}}
+@media(forced-colors:active){.about-window-chrome{border-color:CanvasText}.about-window-lights button{background:CanvasText;box-shadow:none}}
 
 /* Selection settles inward from outside the pill; hover shows the full rim. */
 @property --about-rim-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
@@ -72,3 +72,16 @@
 @keyframes about-tab-mesh{from{background-position:0% 20%;transform:scale(.97)}to{background-position:100% 80%;transform:scale(1.02)}}
 @media(prefers-reduced-motion:reduce){.about-tabs button::before,.about-tabs button::after{animation:none!important;transition:none}}
 @media(forced-colors:active){.about-tabs button::before,.about-tabs button::after{display:none}}
+
+/* Window controls retain their small visual size and a larger touch target. */
+.about-window-lights{pointer-events:auto}
+.about-window-lights button{position:relative;padding:0;border:0;font:10px/12px system-ui;color:#57271e;touch-action:manipulation}
+.about-window-lights button::before{content:"";position:absolute;inset:-5px}
+.about-window-lights button span{opacity:0;transition:opacity .15s}
+.about-window-lights:hover button span,.about-window-lights button:focus-visible span{opacity:1}
+.about-window-lights button:focus-visible{outline:2px solid #1677ed;outline-offset:5px}
+.about-window-lights button:active{filter:brightness(.85)}
+.about-glass{width:100%;transition:width .5s cubic-bezier(.22,1,.36,1),margin-left .5s cubic-bezier(.22,1,.36,1)}
+.about-glass.is-enlarged{width:calc(100% + min(8vw,96px));margin-left:calc(min(8vw,96px) / -2)}
+@media(prefers-reduced-motion:reduce){.about-glass,.about-window-lights button span{transition:none}}
+.about-heading[hidden],.about-panels[hidden]{display:none}
