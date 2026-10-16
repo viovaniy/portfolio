@@ -15,7 +15,7 @@
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="structure.css?v=20261015-5">
   <link rel="stylesheet" href="work.css?v=14">
-  <link rel="stylesheet" href="studio.css?v=2">
+  <link rel="stylesheet" href="studio.css?v=3">
   <link rel="stylesheet" href="about.css?v=20261016-10">
   <link rel="stylesheet" href="text-reveal.css?v=3">
 </head>
@@ -53,7 +53,7 @@
     </section>
 
     </div>
-    <div class="studio-scene" role="img" aria-label="Viovaniy's two-storey creative studio, with a pink neon sign and animated computer screens">
+    <div class="studio-scene" role="group" aria-label="Viovaniy’s studio — meet the clients">
       <svg class="studio-art" viewBox="0 0 1388 1580" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
         <defs><image id="studio-source" href="assets/studio-room-v2.jpg" width="1388" height="1792"/><clipPath id="studio-screen-0"><polygon points="231,446 269,436 275,477 236,489"/></clipPath><clipPath id="studio-screen-1"><polygon points="301,387 399,356 399,425 301,452"/></clipPath><clipPath id="studio-screen-2"><polygon points="471,350 555,329 555,380 471,402"/></clipPath><clipPath id="studio-screen-3"><polygon points="591,353 625,343 630,375 596,384"/></clipPath><clipPath id="studio-screen-4"><polygon points="641,339 677,328 684,364 647,374"/></clipPath><clipPath id="studio-screen-5"><polygon points="187,854 401,791 401,905 187,973"/></clipPath><clipPath id="studio-screen-6"><polygon points="723,926 753,939 747,963 717,950"/></clipPath><clipPath id="studio-screen-7"><polygon points="829,986 857,998 850,1020 821,1008"/></clipPath><clipPath id="studio-screen-8"><polygon points="930,563 947,554 959,578 938,586"/></clipPath><clipPath id="studio-screen-9"><polygon points="961,541 977,551 970,569 956,559"/></clipPath><clipPath id="studio-screen-10"><polygon points="848,850 892,872 892,908 849,887"/></clipPath><linearGradient id="studio-screen-light" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9edbff" stop-opacity=".1"/><stop offset=".5" stop-color="#ffe6f9" stop-opacity=".6"/><stop offset="1" stop-color="#d09bff" stop-opacity="0"/></linearGradient></defs>
         <use href="#studio-source"/>
@@ -62,6 +62,20 @@
         <path class="studio-neon-dim" d="M212 304 520 209 522 305 212 397Z" fill="#813449"/>
         <path class="studio-neon-glow" d="M212 304 520 209 522 305 212 397Z" fill="#ffc4de"/>
       </svg>
+      <button class="studio-client" type="button" data-client="tema" data-pointer-passive aria-label="Meet Tema — MuseDrop" aria-haspopup="dialog" aria-controls="client-tema-card" aria-expanded="false">
+        <span class="studio-client-shadow" aria-hidden="true"></span>
+        <span class="studio-client-portrait" aria-hidden="true">
+          <img class="client-neutral" src="assets/client-tema.png" width="875" height="1798" alt="" draggable="false">
+          <img class="client-smile" src="assets/client-tema-smile.png" width="875" height="1798" alt="" draggable="false">
+        </span>
+        <span class="studio-client-name" aria-hidden="true">Tema <span>+</span></span>
+      </button>
+      <div class="studio-client-card" id="client-tema-card" role="dialog" aria-labelledby="client-tema-title" aria-describedby="client-tema-description" tabindex="-1" hidden>
+        <button class="studio-client-close" type="button" aria-label="Close Tema’s card" data-pointer-passive><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+        <h2 id="client-tema-title">Tema</h2>
+        <p class="studio-client-project">MuseDrop</p>
+        <p id="client-tema-description">The very first mystery client behind all the fun projects in my portfolio.</p>
+      </div>
     </div>
     </section>
 
@@ -237,7 +251,7 @@
   <script src="shimmer.js?v=3" defer></script>
   <script src="work.js?v=8" defer></script>
   <script src="about.js?v=20261016-2" defer></script>
-  <script src="studio.js?v=1" defer></script>
+  <script src="studio.js?v=2" defer></script>
   <script src="text-reveal.js?v=2" defer></script>
   <script defer src="/_vercel/insights/script.js"></script>
 </body>
