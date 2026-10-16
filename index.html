@@ -15,7 +15,7 @@
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="structure.css?v=20261015-5">
   <link rel="stylesheet" href="work.css?v=14">
-  <link rel="stylesheet" href="studio.css?v=3">
+  <link rel="stylesheet" href="studio.css?v=4">
   <link rel="stylesheet" href="about.css?v=20261016-10">
   <link rel="stylesheet" href="text-reveal.css?v=3">
 </head>
@@ -70,6 +70,14 @@
         </span>
         <span class="studio-client-name" aria-hidden="true">Tema <span>+</span></span>
       </button>
+      <svg class="studio-railing" viewBox="0 0 1388 1580" aria-hidden="true" focusable="false">
+        <defs>
+          <clipPath id="studio-front-rail"><path d="M616 561 918 715 918 724 616 570Z M616 563 625 565 625 654 616 651Z"/></clipPath>
+          <linearGradient id="studio-glass-tint" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e9f7ff" stop-opacity=".2"/><stop offset=".55" stop-color="#ffffff" stop-opacity=".08"/><stop offset="1" stop-color="#d9f0ff" stop-opacity=".13"/></linearGradient>
+        </defs>
+        <path d="M623 570 914 720 914 804 623 650Z" fill="url(#studio-glass-tint)"/>
+        <use href="#studio-source" clip-path="url(#studio-front-rail)"/>
+      </svg>
       <div class="studio-client-card" id="client-tema-card" role="dialog" aria-labelledby="client-tema-title" aria-describedby="client-tema-description" tabindex="-1" hidden>
         <button class="studio-client-close" type="button" aria-label="Close Tema’s card" data-pointer-passive><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
         <h2 id="client-tema-title">Tema</h2>

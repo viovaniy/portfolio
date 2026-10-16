@@ -40,13 +40,13 @@
 /* Client sprites are separate controls, so new cases can be placed in the studio. */
 .studio-scene{position:relative;pointer-events:auto}
 .studio-art{pointer-events:none}
-.studio-client{position:absolute;left:40.5%;top:21%;width:12%;aspect-ratio:875/1798;padding:0;border:0;background:none;z-index:2;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.studio-client{position:absolute;left:41.3%;top:21%;width:10%;aspect-ratio:875/1798;padding:0;border:0;background:none;z-index:2;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .studio-client::before{content:"";position:absolute;inset:0 -8px}
 .studio-client-portrait{position:absolute;inset:0;display:block;transition:filter .2s}
 .studio-client img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;transition:opacity .2s}
 .client-smile{opacity:0}
 .studio-client-shadow{position:absolute;left:25%;bottom:1%;width:65%;height:5%;border-radius:50%;background:#40241d35;filter:blur(2px);transform:rotate(-12deg)}
-.studio-client-name{position:absolute;left:50%;bottom:-13px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;border:1px solid #fff9;border-radius:20px;padding:3px 8px;background:#fffffff0;color:#363038;box-shadow:0 2px 8px #43253015;font-size:10px;line-height:1.2;white-space:nowrap}
+.studio-client-name{position:absolute;left:50%;top:-20px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;border:1px solid #fff9;border-radius:20px;padding:3px 8px;background:#fffffff0;color:#363038;box-shadow:0 2px 8px #43253015;font-size:10px;line-height:1.2;white-space:nowrap}
 .studio-client-name span{color:#b77e9c}
 @media(hover:hover){.studio-client:hover .client-neutral{opacity:0}.studio-client:hover .client-smile{opacity:1}.studio-client:hover .studio-client-portrait{filter:drop-shadow(1px 0 0 white) drop-shadow(-1px 0 0 white) drop-shadow(0 1px 0 white) drop-shadow(0 -1px 0 white)}}
 .studio-client:is(:focus-visible,[aria-expanded="true"]) .client-neutral{opacity:0}
@@ -66,3 +66,6 @@
 
 .studio-client-card::before{content:"";position:absolute;top:-6px;left:44%;width:11px;height:11px;background:#fff;border-left:1px solid #eeeaed;border-top:1px solid #eeeaed;transform:rotate(45deg)}
 .studio-client-card:focus{outline:none}
+
+/* Restore the foreground railing above the client; the pane remains translucent. */
+.studio-railing{position:absolute;inset:0;display:block;width:100%;height:100%;z-index:3;pointer-events:none;fill:none;stroke:none}
