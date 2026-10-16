@@ -12,6 +12,7 @@
   const panels = [...section.querySelectorAll('[role="tabpanel"]')];
   let active = 0;
   let animation;
+  let selectionTimer;
   const tablist = section.querySelector('.about-tabs');
   function positionSelection() {
     const tab = tabs[active];
@@ -27,12 +28,18 @@
     active = index;
     positionSelection();
     animation?.cancel();
+    clearTimeout(selectionTimer);
     tabs.forEach((tab, i) => {
+      tab.classList.remove('is-selecting');
       tab.setAttribute('aria-selected', String(i === index));
       tab.tabIndex = i === index ? 0 : -1;
       panels[i].hidden = i !== index;
       panels[i].inert = i !== index;
     });
+    if (!reduced.matches) {
+      tabs[index].classList.add('is-selecting');
+      selectionTimer = setTimeout(() => tabs[index].classList.remove('is-selecting'), 480);
+    }
     if (!reduced.matches) animation = panels[index].animate([
       { opacity: 0, transform: `translateX(${direction * 12}px)` },
       { opacity: 1, transform: 'translateX(0)' }

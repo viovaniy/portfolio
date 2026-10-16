@@ -60,11 +60,17 @@
 @media(max-width:650px){.about-window-chrome{height:42px;padding:0 17px;border-radius:19px 19px 0 0}.about-window-lights{gap:7px}.about-window-lights i{width:11px;height:11px}}
 @media(forced-colors:active){.about-window-chrome{border-color:CanvasText}.about-window-lights i{background:CanvasText;box-shadow:none}}
 
-/* A complete spectrum rim, with a second soft band bleeding into the white pill. */
+/* Selection traces once; a later hover reveals the complete rim immediately. */
 @property --about-rim-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
-.about-tabs button::before,.about-tabs button::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;opacity:0;background:conic-gradient(from var(--about-rim-angle),#8c8bff,#72c9f4,#89ddcb,#f2d99c,#eea8cb,#b596f2,#8c8bff);padding:1.5px;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;transition:opacity .18s ease}
-.about-tabs button::after{inset:1px;padding:4px;filter:blur(3px)}
-@media(hover:hover) and (pointer:fine){.about-tabs button[aria-selected="true"]:hover::before{opacity:.85;animation:about-rim-flow 8s linear infinite}.about-tabs button[aria-selected="true"]:hover::after{opacity:.36;animation:about-rim-flow 8s linear infinite}}
+@property --about-rim-reveal{syntax:'<angle>';initial-value:360deg;inherits:false}
+.about-tabs button::before,.about-tabs button::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;opacity:0;transition:opacity .16s ease}
+.about-tabs button::before{background:conic-gradient(from var(--about-rim-angle),#8c8bff,#72c9f4,#89ddcb,#f2d99c,#eea8cb,#b596f2,#8c8bff);padding:1.5px;-webkit-mask:conic-gradient(#000 var(--about-rim-reveal),transparent 0),linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask:conic-gradient(#000 var(--about-rim-reveal),transparent 0),linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:intersect,exclude}
+.about-tabs button::after{inset:2px;background:radial-gradient(ellipse at 12% 70%,#a7a0fa 0,transparent 50%),radial-gradient(ellipse at 70% 20%,#9cddf3 0,transparent 48%),radial-gradient(ellipse at 90% 80%,#f4b7d7 0,transparent 50%),radial-gradient(ellipse at 40% 100%,#b9edd8 0,transparent 45%);background-size:150% 170%;filter:blur(4px);-webkit-mask:radial-gradient(ellipse,#0003 20%,#000 80%);mask:radial-gradient(ellipse,#0003 20%,#000 80%)}
+@media(hover:hover) and (pointer:fine){.about-tabs button[aria-selected="true"]:hover::before{opacity:.75;animation:about-rim-flow 8s linear infinite}.about-tabs button[aria-selected="true"]:hover::after{opacity:.42;animation:about-tab-mesh 3.8s ease-in-out infinite alternate}}
+.about-tabs button[aria-selected="true"].is-selecting::before{opacity:.75;animation:about-rim-trace .42s cubic-bezier(.2,.7,.3,1) both,about-rim-flow 8s linear infinite}
+.about-tabs button[aria-selected="true"].is-selecting::after{opacity:.42;animation:about-tab-mesh 3.8s ease-in-out infinite alternate}
+@keyframes about-rim-trace{from{--about-rim-reveal:0deg}to{--about-rim-reveal:360deg}}
 @keyframes about-rim-flow{to{--about-rim-angle:360deg}}
+@keyframes about-tab-mesh{from{background-position:0% 20%;transform:scale(.97)}to{background-position:100% 80%;transform:scale(1.02)}}
 @media(prefers-reduced-motion:reduce){.about-tabs button::before,.about-tabs button::after{animation:none!important;transition:none}}
 @media(forced-colors:active){.about-tabs button::before,.about-tabs button::after{display:none}}
