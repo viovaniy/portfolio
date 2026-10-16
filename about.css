@@ -59,3 +59,12 @@
 .about-window-lights i:nth-child(3){background:#28c840}
 @media(max-width:650px){.about-window-chrome{height:42px;padding:0 17px;border-radius:19px 19px 0 0}.about-window-lights{gap:7px}.about-window-lights i{width:11px;height:11px}}
 @media(forced-colors:active){.about-window-chrome{border-color:CanvasText}.about-window-lights i{background:CanvasText;box-shadow:none}}
+
+/* A complete spectrum rim, with a second soft band bleeding into the white pill. */
+@property --about-rim-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+.about-tabs button::before,.about-tabs button::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;opacity:0;background:conic-gradient(from var(--about-rim-angle),#8c8bff,#72c9f4,#89ddcb,#f2d99c,#eea8cb,#b596f2,#8c8bff);padding:1.5px;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;transition:opacity .18s ease}
+.about-tabs button::after{inset:1px;padding:4px;filter:blur(3px)}
+@media(hover:hover) and (pointer:fine){.about-tabs button[aria-selected="true"]:hover::before{opacity:.85;animation:about-rim-flow 8s linear infinite}.about-tabs button[aria-selected="true"]:hover::after{opacity:.36;animation:about-rim-flow 8s linear infinite}}
+@keyframes about-rim-flow{to{--about-rim-angle:360deg}}
+@media(prefers-reduced-motion:reduce){.about-tabs button::before,.about-tabs button::after{animation:none!important;transition:none}}
+@media(forced-colors:active){.about-tabs button::before,.about-tabs button::after{display:none}}
