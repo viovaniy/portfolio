@@ -41,7 +41,7 @@
   }
 
   function setDestination() {
-    if (target && !target.isConnected) changeTarget(null);
+    if (target && (!target.isConnected || !target.getClientRects().length)) changeTarget(null);
     if (target) {
       // Read the stable hit area, never the moving label, to avoid hover jitter.
       const rect = target.getBoundingClientRect();
@@ -50,13 +50,14 @@
       const dx = position.x - centerX;
       const dy = position.y - centerY;
       const isAboutTab = target.matches('.about-tabs [role="tab"]');
+      const isCircle = target.dataset.pointerShape === 'circle';
       const scale = pressed && !isAboutTab ? 0.95 : 1;
       const isDockTarget = Boolean(target.closest('.bottom-nav'));
-      destination.x = centerX + (isDockTarget || isAboutTab ? 0 : clamp(dx * 0.1, 8));
-      destination.y = centerY + (isDockTarget || isAboutTab ? 0 : clamp(dy * 0.16, 5));
-      destination.width = (isDockTarget || isAboutTab ? rect.width : rect.width + 8) * scale;
-      destination.height = (isDockTarget ? rect.width : isAboutTab ? rect.height : rect.height + 6) * scale;
-      destination.radius = isDockTarget ? destination.width / 2 : isAboutTab ? destination.height / 2 : Math.min(14, destination.height / 2);
+      destination.x = centerX + (isDockTarget || isAboutTab || isCircle ? 0 : clamp(dx * 0.1, 8));
+      destination.y = centerY + (isDockTarget || isAboutTab || isCircle ? 0 : clamp(dy * 0.16, 5));
+      destination.width = (isDockTarget || isAboutTab || isCircle ? rect.width : rect.width + 8) * scale;
+      destination.height = (isDockTarget ? rect.width : isAboutTab || isCircle ? rect.height : rect.height + 6) * scale;
+      destination.radius = isDockTarget || isCircle ? destination.width / 2 : isAboutTab ? destination.height / 2 : Math.min(14, destination.height / 2);
       // Tabs paint their own white highlight, keeping the label crisp above it.
       destination.opacity = isDockTarget || isAboutTab ? 0 : (pressed ? 0.23 : 0.14);
       if (label) {
