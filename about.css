@@ -1,10 +1,16 @@
 /* A fixed-size animated mesh, independent of the selected panel. */
 .about-section{position:relative;isolation:isolate;border-top:0;padding:64px 0 100px;scroll-margin-top:0}
 .about-backdrop{position:absolute;z-index:-1;top:0;left:50%;width:var(--about-viewport,100%);height:100%;transform:translateX(-50%);overflow:hidden;pointer-events:none;background:#e9e4ff}
-.about-color-field{position:absolute;inset:-20%;background:radial-gradient(ellipse at 20% 30%,#a895f9 0,transparent 48%),radial-gradient(ellipse at 78% 24%,#f8b49f 0,transparent 46%),radial-gradient(ellipse at 68% 78%,#68b7ee 0,transparent 46%),radial-gradient(ellipse at 15% 85%,#dfb5e9 0,transparent 44%),#e9e6fc;animation:about-mesh 18s ease-in-out infinite alternate;animation-play-state:paused;will-change:transform}
-.about-section[data-in-view] .about-color-field{animation-play-state:running}
-.about-backdrop::after{content:"";position:absolute;inset:0;opacity:.16;background:url("assets/about-grain.svg");mix-blend-mode:soft-light}
-@keyframes about-mesh{0%{transform:translate(-3%,-2%) rotate(-8deg) scale(1)}50%{transform:translate(4%,2%) rotate(3deg) scale(1.08)}100%{transform:translate(-1%,4%) rotate(12deg) scale(1.02)}}
+/* Three independently drifting layers keep the mesh visibly fluid. */
+.about-color-field{position:absolute;inset:-24%;background:radial-gradient(ellipse at 20% 35%,#7764ef 0,transparent 44%),radial-gradient(ellipse at 80% 70%,#629ae9 0,transparent 48%),#d8d8f6;animation:about-mesh 14s ease-in-out infinite alternate;animation-play-state:paused;will-change:transform}
+.about-color-field::before,.about-color-field::after{content:"";position:absolute;inset:-10%;animation-play-state:paused;will-change:transform;pointer-events:none}
+.about-color-field::before{background:radial-gradient(ellipse at 75% 20%,#ffbc91 0,#f7a6bc99 20%,transparent 43%),radial-gradient(ellipse at 18% 75%,#f69cd3 0,transparent 38%);animation:about-mesh-warm 11s ease-in-out infinite alternate;animation-delay:-4s;animation-play-state:paused}
+.about-color-field::after{background:radial-gradient(ellipse at 15% 25%,#b2f0e2dd 0,transparent 36%),radial-gradient(ellipse at 75% 80%,#75d6f4 0,transparent 40%);animation:about-mesh-cool 13s ease-in-out infinite alternate;animation-delay:-7s;animation-play-state:paused}
+.about-section[data-in-view] .about-color-field,.about-section[data-in-view] .about-color-field::before,.about-section[data-in-view] .about-color-field::after{animation-play-state:running}
+.about-backdrop::after{content:"";position:absolute;inset:0;opacity:.19;background:url("assets/about-grain.svg");mix-blend-mode:soft-light}
+@keyframes about-mesh{from{transform:translate(-5%,-3%) rotate(-9deg) scale(1.05)}to{transform:translate(6%,4%) rotate(10deg) scale(1.12)}}
+@keyframes about-mesh-warm{0%{transform:translate(9%,-7%) rotate(-15deg) scale(.95)}50%{transform:translate(-5%,5%) rotate(4deg) scale(1.1)}100%{transform:translate(-12%,9%) rotate(20deg) scale(1.16)}}
+@keyframes about-mesh-cool{0%{transform:translate(-8%,8%) rotate(12deg) scale(1.15)}50%{transform:translate(6%,-3%) rotate(-6deg) scale(1)}100%{transform:translate(12%,-10%) rotate(-18deg) scale(1.08)}}
 .about-glass{position:relative;padding:calc(clamp(24px,5vw,56px) + 48px) clamp(24px,5vw,56px) clamp(24px,5vw,56px);border:1px solid #ffffffd9;border-radius:22px;background:linear-gradient(120deg,#ffffffa6,#ffffff65);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:inset 0 1px 0 #fff,0 0 0 1px #40375412,0 8px 20px -10px #40375422,0 32px 70px -28px #40375440;color:#242832}
 .about-heading h2{margin:0 0 32px;font-size:clamp(28px,3.4vw,40px);letter-spacing:-1.5px;font-weight:550}.about-period{color:#8a8c98}
 .about-card{padding:18px;border:1px solid #fff;border-radius:26px;background:#ffffffed;box-shadow:0 4px 20px #48425d08}
@@ -33,7 +39,7 @@
 
 .about-section + .work-section{border-top:0}
 @media(max-width:650px){.about-section{padding:32px 0 72px}.about-glass{padding:66px 14px 24px;border-radius:20px}.about-heading h2{font-size:27px;margin:0 8px 26px;letter-spacing:-1px}.about-card{padding:10px;border-radius:20px}.about-tabs{gap:0;padding:3px}.about-tabs button{font-size:12px;padding:10px 2px}.about-panel{padding:22px 16px}.about-panel h3{font-size:21px}.about-body p{font-size:14px}.about-tools{grid-template-columns:1fr;gap:15px;margin:18px 0}.about-tools li{font-size:13px}.about-process li{font-size:14px}}
-@media(prefers-reduced-motion:reduce){.about-color-field{animation:none;will-change:auto}.about-tabs button{transition:none}}
+@media(prefers-reduced-motion:reduce){.about-color-field,.about-color-field::before,.about-color-field::after{animation:none;will-change:auto}.about-tabs button{transition:none}}
 @media(prefers-reduced-transparency:reduce){.about-glass{background:#f5f7fc;backdrop-filter:none;-webkit-backdrop-filter:none}}
 @media(forced-colors:active){.about-backdrop{display:none}.about-glass,.about-card,.about-panels{background:Canvas;border-color:CanvasText;box-shadow:none}.about-tabs button[aria-selected="true"]{outline:2px solid Highlight}}
 
