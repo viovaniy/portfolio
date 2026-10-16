@@ -2,14 +2,14 @@
 .about-section{position:relative;isolation:isolate;border-top:0;padding:64px 0 100px;scroll-margin-top:0}
 .about-backdrop{position:absolute;z-index:-1;top:0;left:50%;width:var(--about-viewport,100%);height:100%;transform:translateX(-50%);overflow:hidden;pointer-events:none;background:#169bfa}
  .about-color-field{position:absolute;inset:0;background:radial-gradient(ellipse at 78% 8%,#b7eeff88,transparent 50%),linear-gradient(165deg,#1780ee 0%,#26a7fc 45%,#93deff 100%)}
-.about-color-field::before,.about-color-field::after{content:"";position:absolute;inset:-5% -15%;background-repeat:repeat-x;background-position:center;background-size:1600px 1000px;pointer-events:none;will-change:transform;animation-play-state:paused}
-.about-color-field::before{background-image:url("assets/about-clouds-far.svg");opacity:.78;animation:about-clouds-far 32s ease-in-out infinite alternate;animation-delay:-12s;animation-play-state:paused}
-.about-color-field::after{background-image:url("assets/about-clouds-near.svg");animation:about-clouds-near 24s ease-in-out infinite alternate;animation-delay:-5s;animation-play-state:paused}
+.about-color-field::before,.about-color-field::after{content:"";position:absolute;inset:-100px -220px;background-repeat:no-repeat;background-position:center;background-size:100% 100%;pointer-events:none;will-change:transform;animation-play-state:paused}
+.about-color-field::before{background-image:url("assets/about-clouds-far.svg?v=2");opacity:.78;animation:about-clouds-far 32s ease-in-out infinite alternate;animation-delay:-12s;animation-play-state:paused}
+.about-color-field::after{background-image:url("assets/about-clouds-near.svg?v=2");animation:about-clouds-near 24s ease-in-out infinite alternate;animation-delay:-5s;animation-play-state:paused}
 .about-section[data-in-view] .about-color-field::before,.about-section[data-in-view] .about-color-field::after{animation-play-state:running}
 .about-backdrop::after{content:"";position:absolute;inset:0;opacity:.055;background:url("assets/about-grain.svg");mix-blend-mode:soft-light}
 @keyframes about-clouds-far{from{transform:translate3d(-60px,-10px,0)}to{transform:translate3d(70px,12px,0)}}
 @keyframes about-clouds-near{from{transform:translate3d(95px,8px,0) scale(1.02)}to{transform:translate3d(-100px,-14px,0) scale(1.06)}}
-@media(max-width:650px){.about-color-field::before,.about-color-field::after{background-size:1000px 1000px}}
+@media(max-width:650px){.about-color-field::before,.about-color-field::after{inset:-80px -180px;background-size:100% 100%}}
 .about-glass{position:relative;padding:calc(clamp(24px,5vw,56px) + 48px) clamp(24px,5vw,56px) clamp(24px,5vw,56px);border:1px solid #ffffffd9;border-radius:22px;background:linear-gradient(120deg,#ffffffa6,#ffffff65);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:inset 0 1px 0 #fff,0 0 0 1px #40375412,0 8px 20px -10px #40375422,0 32px 70px -28px #40375440;color:#242832}
 .about-heading h2{margin:0 0 32px;font-size:clamp(28px,3.4vw,40px);letter-spacing:-1.5px;font-weight:550}.about-period{color:#8a8c98}
 .about-card{padding:18px;border:1px solid #fff;border-radius:26px;background:#ffffffed;box-shadow:0 4px 20px #48425d08}
