@@ -42,18 +42,23 @@
 .studio-client img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
 .studio-client-shadow{position:absolute;left:25%;bottom:1%;width:65%;height:5%;border-radius:50%;background:#40241d35;filter:blur(2px);transform:rotate(-12deg)}
 .studio-client:focus-visible{outline:2px solid #087bff;outline-offset:4px;border-radius:14px}
-.studio-client-card{position:absolute;left:50%;top:46%;transform:translateX(-50%);width:min(272px,calc(100% - 24px));z-index:4;padding:23px 24px 22px;border:1px solid #eeeaed;border-radius:19px;background:#fff;box-shadow:0 5px 12px #3920340b,0 18px 45px #39203424;user-select:text}
-.studio-client-card h2{margin:0 30px 4px 0;font-size:23px;font-weight:600;letter-spacing:-.6px;line-height:1.2}
-.studio-client-card p{font-size:13px;line-height:1.55;color:#77717a;margin:14px 0 0}
-.studio-client-card .studio-client-project{display:inline-flex;align-items:center;font-size:12px;line-height:1.3;color:#a54409;background:#fff0dd;border:1px solid #ffd7aa;border-radius:7px;padding:4px 9px;margin:5px 0 0;font-weight:550}
-.studio-client-close{position:absolute;right:8px;top:8px;width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:#97929b;display:grid;place-items:center;touch-action:manipulation}
-.studio-client-close:hover{background:#f4f2f4;color:#333}
-.studio-client-close svg{width:15px;height:15px}
-.studio-client-close:focus-visible{outline:2px solid #087bff}
-@media(prefers-reduced-motion:reduce){.studio-client img,.studio-client-portrait{transition:none}.studio-client-card{animation:none}}
-
-.studio-client-card::before{content:"";position:absolute;top:-6px;left:44%;width:11px;height:11px;background:#fff;border-left:1px solid #eeeaed;border-top:1px solid #eeeaed;transform:rotate(45deg)}
+/* Floating info popup: reference dimensions, typography and motion tokens. */
+.studio-client-card{--stage-fg:var(--ink,#242424);--stage-muted:#77717a;--stage-surface:#fff;--stage-accent:#087bff;--press-dur:150ms;--ease-smooth-out:cubic-bezier(.22,1,.36,1);position:absolute;left:50%;top:46%;transform:translateX(-50%);transform-origin:center;width:min(280px,calc(100% - 24px));z-index:4;padding:20px;border:0;border-radius:24px;background:var(--stage-surface);color:var(--stage-fg);box-shadow:0 4px 42px rgba(0,0,0,.06),0 2px 6px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:16px;user-select:text}
+.studio-client-card[hidden]{display:none}
 .studio-client-card:focus{outline:none}
+.studio-client-head{display:flex;align-items:center;gap:12px}
+.studio-client-head>div{flex:1;min-width:0}
+.studio-client-head h2{margin:0;font-size:16px;line-height:22px;font-weight:500;letter-spacing:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.studio-client-close{margin-left:auto;align-self:flex-start;margin-top:-4px;margin-right:-8px;width:32px;height:32px;border:0;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;background:none;color:var(--stage-muted);transition:transform var(--press-dur) var(--ease-smooth-out),background-color var(--press-dur) var(--ease-smooth-out)}
+.studio-client-close svg{width:16px;height:16px;stroke-width:2.25}
+.studio-client-close:is(:active,.is-pressed){transform:scale(.95)}
+.studio-client-details{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.studio-client-project{--fill:#FDEFE2;--ink:#C56511;height:28px;padding:0 12px;border:0;border-radius:50px;font-size:13px;line-height:20px;font-weight:500;background:var(--fill);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.04),inset 0 0 0 1px color-mix(in srgb,var(--ink) 14%,transparent),inset 0 -1px 0 0 color-mix(in srgb,var(--ink) 10%,transparent);transition:transform var(--press-dur) var(--ease-smooth-out),background-color var(--press-dur) var(--ease-smooth-out),color var(--press-dur) var(--ease-smooth-out)}
+.studio-client-project:is(:active,.is-pressed){transform:scale(.95);--fill:#FF7A00;--ink:#fff}
+.studio-client-details p{margin:0;font-size:13px;line-height:20px;color:var(--stage-muted)}
+.studio-client-card button:focus-visible{outline:none;box-shadow:0 0 0 2px var(--stage-surface),0 0 0 4px var(--stage-accent)}
+@media(hover:hover){.studio-client-project:hover{--fill:#FF7A00;--ink:#fff}.studio-client-close:hover{background:rgba(0,0,0,.04)}}
+@media(prefers-reduced-motion:reduce){.studio-client-card button{transition:none!important}.studio-client-card button:is(:active,.is-pressed){transform:none}}
 
 /* Restore the foreground railing above the client; the pane remains translucent. */
 .studio-railing{position:absolute;inset:0;display:block;width:100%;height:100%;z-index:3;pointer-events:none;fill:none;stroke:none}
@@ -65,10 +70,3 @@
 
 /* Static scene layers share the same geometry; only the neon sign animates. */
 .studio-art,.studio-railing,.studio-client,.studio-client-portrait{transform:none;animation:none;transition:none}
-.studio-client-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
-.studio-client-head h2{margin:0;font-size:23px;line-height:1.2}
-.studio-client-head .studio-client-role{margin:4px 0 0;font-size:12px;color:#959198}
-.studio-client-head .studio-client-close{position:relative;top:auto;right:auto;flex-shrink:0;margin:-5px -8px 0 0}
-.studio-client-details{margin-top:20px}
-.studio-client-details .studio-client-project{margin:0;border-radius:8px;padding:5px 10px}
-.studio-client-details p{margin:11px 0 0;font-size:13px;line-height:1.6;color:#77717a}

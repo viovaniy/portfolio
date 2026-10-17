@@ -22,14 +22,8 @@
     card.hidden = false;
     card.inert = !opening;
     card.setAttribute('aria-hidden', String(!opening));
-    // Anchor the scale to the character, outside the card's own rectangle.
-    const person = trigger.getBoundingClientRect();
-    const stage = scene.getBoundingClientRect();
-    const x = person.left + person.width / 2 - stage.left - card.offsetLeft + card.offsetWidth / 2;
-    const y = person.top + person.height * .6 - stage.top - card.offsetTop;
-    card.style.transformOrigin = `${x}px ${y}px`;
-    const expanded = { transform: 'translateX(-50%) scale(1)', opacity: 1, filter: 'blur(0px)' };
-    const folded = { transform: 'translateX(-50%) scale(.12)', opacity: 0, filter: 'blur(3px)' };
+    const expanded = { transform: 'translateX(-50%) translateY(0) scale(1)', opacity: 1 };
+    const folded = { transform: 'translateX(-50%) translateY(48px) scale(.96)', opacity: 0 };
     const complete = () => {
       card.hidden = !opening;
       transitions.delete(card);
@@ -38,19 +32,19 @@
     const animation = card.animate([
       current || (opening ? folded : expanded), opening ? expanded : folded
     ], {
-      duration: 280,
-      easing: opening ? 'cubic-bezier(.16,1,.3,1)' : 'cubic-bezier(.55,0,.8,.45)'
+      duration: opening ? 250 : 150,
+      easing: 'cubic-bezier(.22,1,.36,1)'
     });
     transitions.set(card, animation);
     animation.onfinish = complete;
-    const elements = [...card.querySelectorAll('.studio-client-head, .studio-client-project, [id$="-description"]')];
+    const elements = [...card.querySelectorAll('.studio-client-head, .studio-client-tag-reveal, [id$="-description"]')];
     contentMotion.set(card, elements.map((element, index) => element.animate(
       opening ? [
-        { opacity: 0, transform: 'translateY(7px)', filter: 'blur(5px)' },
+        { opacity: 0, transform: 'translateY(12px)', filter: 'blur(3px)' },
         { opacity: 1, transform: 'translateY(0)', filter: 'blur(0px)' }
       ] : [{ opacity: 1 }, { opacity: 0 }],
-      opening ? { duration: 220, delay: 30 + index * 25, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' }
-        : { duration: 150, fill: 'forwards' }
+      opening ? { duration: 500, delay: 80 + index * 40, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' }
+        : { duration: 200, easing: 'ease', fill: 'forwards' }
     )));
   }
   const closeCard = (restoreFocus = false) => {
@@ -78,6 +72,23 @@
     if (!reduced.matches) return;
     transitions.forEach(animation => animation.finish());
     contentMotion.forEach(animations => animations.forEach(animation => animation.finish()));
+  });
+  // Match the reference's minimum 150ms press feedback on touch controls.
+  scene.querySelectorAll('.studio-client-card button').forEach(button => {
+    let releaseTimer;
+    button.addEventListener('pointerdown', event => {
+      if (event.pointerType === 'mouse') return;
+      const started = performance.now();
+      clearTimeout(releaseTimer);
+      button.classList.add('is-pressed');
+      const release = () => {
+        document.removeEventListener('pointerup', release, true);
+        document.removeEventListener('pointercancel', release, true);
+        releaseTimer = setTimeout(() => button.classList.remove('is-pressed'), Math.max(0, 150 - (performance.now() - started)));
+      };
+      document.addEventListener('pointerup', release, true);
+      document.addEventListener('pointercancel', release, true);
+    }, { passive: true });
   });
   scene.querySelectorAll('.studio-client-close').forEach(button => {
     button.addEventListener('click', () => closeCard(true));
