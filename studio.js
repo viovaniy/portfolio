@@ -43,7 +43,7 @@
     });
     transitions.set(card, animation);
     animation.onfinish = complete;
-    const elements = [...card.querySelectorAll('h2, .studio-client-project, [id$="-description"], .studio-client-close')];
+    const elements = [...card.querySelectorAll('.studio-client-head, .studio-client-project, [id$="-description"]')];
     contentMotion.set(card, elements.map((element, index) => element.animate(
       opening ? [
         { opacity: 0, transform: 'translateY(7px)', filter: 'blur(5px)' },
