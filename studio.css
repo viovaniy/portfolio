@@ -80,16 +80,21 @@
 @keyframes studio-enter{from{opacity:0;transform:translateY(24px) scale(.98);filter:blur(5px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
 @media(prefers-reduced-motion:reduce){.studio-scene{animation:none}}
 
-/* Clouds stay inside the illustration column; the soft mask protects the copy. */
-.studio-clouds{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 18%,#000 82%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0%,#000 18%,#000 82%,transparent 100%)}
+/* Two cloud planes, clipped to the illustration column, never over the copy. */
+.studio-clouds{position:absolute;inset:0;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 88%,transparent),linear-gradient(0deg,transparent,#000 10%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 88%,transparent),linear-gradient(0deg,transparent,#000 10%,#000 95%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}
+.studio-clouds--back{z-index:0}
+.studio-clouds--front{z-index:2}
+/* Remove the white area outside the roof silhouette so rear clouds pass behind it. */
+.studio-art{position:relative;z-index:1;clip-path:polygon(1.4% 17.6%,57.5% 2%,98.4% 21.2%,100% 100%,0 100%)}
 .studio-cloud{position:absolute;left:0;width:100%;top:var(--cloud-top);animation:studio-cloud-drift var(--cloud-duration) linear infinite;animation-delay:var(--cloud-delay);will-change:transform;pointer-events:none}
-.studio-cloud img{display:block;width:var(--cloud-width);height:auto;opacity:var(--cloud-opacity);filter:blur(var(--cloud-blur)) drop-shadow(0 0 10px #dceaff99) drop-shadow(0 0 18px #ffe5f566);pointer-events:none}
-.studio-cloud--1{--cloud-top:3%;--cloud-width:35%;--cloud-blur:1px;--cloud-opacity:.7;--cloud-duration:58s;--cloud-delay:-22s}
-.studio-cloud--2{--cloud-top:26%;--cloud-width:22%;--cloud-blur:4px;--cloud-opacity:.42;--cloud-duration:72s;--cloud-delay:-8s}
-.studio-cloud--3{--cloud-top:57%;--cloud-width:29%;--cloud-blur:2px;--cloud-opacity:.55;--cloud-duration:64s;--cloud-delay:-43s}
-.studio-cloud--4{--cloud-top:79%;--cloud-width:49%;--cloud-blur:10px;--cloud-opacity:.65;--cloud-duration:86s;--cloud-delay:-40s}
-.studio-cloud--5{--cloud-top:82%;--cloud-width:34%;--cloud-blur:6px;--cloud-opacity:.48;--cloud-duration:76s;--cloud-delay:-18s}
+.studio-cloud img{display:block;width:var(--cloud-width);height:auto;opacity:1;filter:blur(var(--cloud-blur)) drop-shadow(0 0 7px #ffffff) drop-shadow(0 0 16px #abcaff) drop-shadow(0 0 26px #ffd1f1);pointer-events:none}
+.studio-cloud--1{--cloud-top:0%;--cloud-width:38%;--cloud-blur:1px;--cloud-duration:70s;--cloud-delay:-42s}
+.studio-cloud--2{--cloud-top:8%;--cloud-width:31%;--cloud-blur:4px;--cloud-duration:85s;--cloud-delay:-15s}
+.studio-cloud--3{--cloud-top:17%;--cloud-width:26%;--cloud-blur:7px;--cloud-duration:78s;--cloud-delay:-57s}
+.studio-cloud--4{--cloud-top:34%;--cloud-width:25%;--cloud-blur:2px;--cloud-duration:74s;--cloud-delay:-44s}
+.studio-cloud--5{--cloud-top:53%;--cloud-width:28%;--cloud-blur:3px;--cloud-duration:82s;--cloud-delay:-21s}
+.studio-cloud--6{--cloud-top:69%;--cloud-width:40%;--cloud-blur:10px;--cloud-duration:92s;--cloud-delay:-52s}
+.studio-cloud--7{--cloud-top:81%;--cloud-width:34%;--cloud-blur:6px;--cloud-duration:88s;--cloud-delay:-31s}
+.studio-cloud--8{--cloud-top:42%;--cloud-width:19%;--cloud-blur:1px;--cloud-duration:68s;--cloud-delay:-31s}
 @keyframes studio-cloud-drift{from{transform:translateX(105%)}to{transform:translateX(-55%)}}
-@media(prefers-reduced-motion:reduce){.studio-cloud{animation:none;will-change:auto;transform:translateX(12%)}.studio-cloud--2,.studio-cloud--5{transform:translateX(65%)}.studio-cloud--3{transform:translateX(48%)}}
-
-.studio-clouds{-webkit-mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent),linear-gradient(0deg,transparent,#000 12%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent),linear-gradient(0deg,transparent,#000 12%,#000 90%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}
+@media(prefers-reduced-motion:reduce){.studio-cloud{animation:none;will-change:auto;transform:translateX(12%)}.studio-cloud--2,.studio-cloud--5,.studio-cloud--7{transform:translateX(65%)}.studio-cloud--3,.studio-cloud--6,.studio-cloud--8{transform:translateX(38%)}}
