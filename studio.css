@@ -79,3 +79,17 @@
 .studio-scene{animation:studio-enter .7s cubic-bezier(.16,1,.3,1) .12s backwards}
 @keyframes studio-enter{from{opacity:0;transform:translateY(24px) scale(.98);filter:blur(5px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
 @media(prefers-reduced-motion:reduce){.studio-scene{animation:none}}
+
+/* Clouds stay inside the illustration column; the soft mask protects the copy. */
+.studio-clouds{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 18%,#000 82%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0%,#000 18%,#000 82%,transparent 100%)}
+.studio-cloud{position:absolute;left:0;width:100%;top:var(--cloud-top);animation:studio-cloud-drift var(--cloud-duration) linear infinite;animation-delay:var(--cloud-delay);will-change:transform;pointer-events:none}
+.studio-cloud img{display:block;width:var(--cloud-width);height:auto;opacity:var(--cloud-opacity);filter:blur(var(--cloud-blur)) drop-shadow(0 0 10px #dceaff99) drop-shadow(0 0 18px #ffe5f566);pointer-events:none}
+.studio-cloud--1{--cloud-top:3%;--cloud-width:35%;--cloud-blur:1px;--cloud-opacity:.7;--cloud-duration:58s;--cloud-delay:-22s}
+.studio-cloud--2{--cloud-top:26%;--cloud-width:22%;--cloud-blur:4px;--cloud-opacity:.42;--cloud-duration:72s;--cloud-delay:-8s}
+.studio-cloud--3{--cloud-top:57%;--cloud-width:29%;--cloud-blur:2px;--cloud-opacity:.55;--cloud-duration:64s;--cloud-delay:-43s}
+.studio-cloud--4{--cloud-top:79%;--cloud-width:49%;--cloud-blur:10px;--cloud-opacity:.65;--cloud-duration:86s;--cloud-delay:-40s}
+.studio-cloud--5{--cloud-top:82%;--cloud-width:34%;--cloud-blur:6px;--cloud-opacity:.48;--cloud-duration:76s;--cloud-delay:-18s}
+@keyframes studio-cloud-drift{from{transform:translateX(105%)}to{transform:translateX(-55%)}}
+@media(prefers-reduced-motion:reduce){.studio-cloud{animation:none;will-change:auto;transform:translateX(12%)}.studio-cloud--2,.studio-cloud--5{transform:translateX(65%)}.studio-cloud--3{transform:translateX(48%)}}
+
+.studio-clouds{-webkit-mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent),linear-gradient(0deg,transparent,#000 12%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent),linear-gradient(0deg,transparent,#000 12%,#000 90%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}
