@@ -6,6 +6,8 @@
 .about-color-field::before{background-image:url("assets/about-clouds-far.svg?v=3");opacity:.78;animation:about-clouds-far 32s ease-in-out infinite alternate;animation-delay:-12s;animation-play-state:paused}
 .about-color-field::after{background-image:url("assets/about-clouds-near.svg?v=3");animation:about-clouds-near 24s ease-in-out infinite alternate;animation-delay:-5s;animation-play-state:paused}
 .about-section[data-in-view] .about-color-field::before,.about-section[data-in-view] .about-color-field::after{animation-play-state:running}
+/* Ease the white hero into the sky without changing section height or scrolling. */
+.about-backdrop::before{content:"";position:absolute;inset:0 0 auto;height:clamp(120px,18vw,240px);z-index:1;pointer-events:none;background:linear-gradient(to bottom,#fefffe 0%,rgba(254,255,254,.97) 12%,rgba(254,255,254,.82) 32%,rgba(254,255,254,.46) 58%,rgba(254,255,254,.13) 82%,rgba(254,255,254,0) 100%)}
 .about-backdrop::after{content:"";position:absolute;inset:0;opacity:.055;background:url("assets/about-grain.svg");mix-blend-mode:soft-light}
 @keyframes about-clouds-far{from{transform:translate3d(-60px,-10px,0)}to{transform:translate3d(70px,12px,0)}}
 @keyframes about-clouds-near{from{transform:translate3d(95px,8px,0) scale(1.02)}to{transform:translate3d(-100px,-14px,0) scale(1.06)}}
