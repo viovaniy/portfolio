@@ -70,3 +70,7 @@
 
 /* Static scene layers share the same geometry; only the neon sign animates. */
 .studio-art,.studio-railing,.studio-client,.studio-client-portrait{transform:none;animation:none;transition:none}
+
+/* Highlight the original portrait without swapping images or shifting its position. */
+@media(hover:hover){.studio-client:hover .studio-client-portrait{filter:drop-shadow(1px 0 0 #fff) drop-shadow(-1px 0 0 #fff) drop-shadow(0 1px 0 #fff) drop-shadow(0 -1px 0 #fff)}}
+.studio-client:focus-visible .studio-client-portrait{filter:drop-shadow(1px 0 0 #fff) drop-shadow(-1px 0 0 #fff) drop-shadow(0 1px 0 #fff) drop-shadow(0 -1px 0 #fff)}

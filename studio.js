@@ -22,8 +22,14 @@
     card.hidden = false;
     card.inert = !opening;
     card.setAttribute('aria-hidden', String(!opening));
-    const expanded = { transform: 'translateX(-50%) translateY(0) scale(1)', opacity: 1 };
-    const folded = { transform: 'translateX(-50%) translateY(48px) scale(.96)', opacity: 0 };
+    // Scale around the character using layout coordinates, independent of an in-flight transform.
+    const person = trigger.getBoundingClientRect();
+    const stage = scene.getBoundingClientRect();
+    const originX = person.left + person.width / 2 - stage.left - card.offsetLeft + card.offsetWidth / 2;
+    const originY = person.top + person.height * .6 - stage.top - card.offsetTop;
+    card.style.transformOrigin = `${originX}px ${originY}px`;
+    const expanded = { transform: 'translateX(-50%) scale(1)', opacity: 1 };
+    const folded = { transform: 'translateX(-50%) scale(.12)', opacity: 0 };
     const complete = () => {
       card.hidden = !opening;
       transitions.delete(card);
