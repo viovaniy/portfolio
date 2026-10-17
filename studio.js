@@ -22,14 +22,17 @@
     card.hidden = false;
     card.inert = !opening;
     card.setAttribute('aria-hidden', String(!opening));
-    // Scale around the character using layout coordinates, independent of an in-flight transform.
+    // A short popup travel toward the character, without a large scale jump.
+    // Use layout coordinates so interrupted transitions keep a stable destination.
     const person = trigger.getBoundingClientRect();
     const stage = scene.getBoundingClientRect();
-    const originX = person.left + person.width / 2 - stage.left - card.offsetLeft + card.offsetWidth / 2;
-    const originY = person.top + person.height * .6 - stage.top - card.offsetTop;
-    card.style.transformOrigin = `${originX}px ${originY}px`;
-    const expanded = { transform: 'translateX(-50%) scale(1)', opacity: 1 };
-    const folded = { transform: 'translateX(-50%) scale(.12)', opacity: 0 };
+    const dx = person.left + person.width / 2 - stage.left - card.offsetLeft;
+    const dy = person.top + person.height * .6 - stage.top - card.offsetTop - card.offsetHeight / 2;
+    const distance = Math.hypot(dx, dy) || 1;
+    const travel = Math.min(24, distance);
+    card.style.transformOrigin = 'center';
+    const expanded = { transform: 'translateX(-50%) translate(0px, 0px) scale(1)', opacity: 1 };
+    const folded = { transform: `translateX(-50%) translate(${dx / distance * travel}px, ${dy / distance * travel}px) scale(.96)`, opacity: 0 };
     const complete = () => {
       card.hidden = !opening;
       transitions.delete(card);
@@ -38,7 +41,7 @@
     const animation = card.animate([
       current || (opening ? folded : expanded), opening ? expanded : folded
     ], {
-      duration: opening ? 250 : 150,
+      duration: opening ? 280 : 180,
       easing: 'cubic-bezier(.22,1,.36,1)'
     });
     transitions.set(card, animation);
