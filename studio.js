@@ -38,7 +38,7 @@
     const animation = card.animate([
       current || (opening ? folded : expanded), opening ? expanded : folded
     ], {
-      duration: opening ? 430 : 280,
+      duration: 280,
       easing: opening ? 'cubic-bezier(.16,1,.3,1)' : 'cubic-bezier(.55,0,.8,.45)'
     });
     transitions.set(card, animation);
@@ -49,7 +49,7 @@
         { opacity: 0, transform: 'translateY(7px)', filter: 'blur(5px)' },
         { opacity: 1, transform: 'translateY(0)', filter: 'blur(0px)' }
       ] : [{ opacity: 1 }, { opacity: 0 }],
-      opening ? { duration: 340, delay: 70 + index * 45, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' }
+      opening ? { duration: 220, delay: 30 + index * 25, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' }
         : { duration: 150, fill: 'forwards' }
     )));
   }
