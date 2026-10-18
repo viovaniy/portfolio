@@ -190,9 +190,8 @@
   }
 
   // ---------- Sending to email ----------
-  // Web3Forms access key: briefs are emailed to the inbox it was created with.
-  // If delivery fails, the visitor sees the "try again" state instead of success.
-  const WEB3FORMS_KEY = '67da3d24-6525-403d-b5e4-1d00aeaef89f';
+  // Briefs go to /api/brief (a Vercel function), which forwards them to Telegram.
+  // The bot token and chat id are set in Vercel's environment variables, not here.
 
   const done = root.querySelector('.brief-done');
   const sentText = done.querySelector('[data-sent-text]');
@@ -235,23 +234,15 @@
   });
 
   async function deliver() {
-    // No key yet: confirm to the visitor anyway (delivery starts once the key is added).
-    if (!WEB3FORMS_KEY) { console.info('Brief not delivered: add WEB3FORMS_KEY in contact.js'); return; }
-    const contact = value('contact');
-    const response = await fetch('https://api.web3forms.com/submit', {
+    const response = await fetch('/api/brief', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
-        access_key: WEB3FORMS_KEY,
-        subject: `New project brief from ${value('name')}`,
-        from_name: 'viovaniy portfolio',
-        ...(contact.includes('@') && !contact.startsWith('@') ? { replyto: contact } : {}),
         name: value('name'),
-        contact,
+        contact: value('contact'),
         project: value('project'),
         budget: value('budget') || 'To be discussed',
         timeline: value('timeline') || 'Flexible',
-        message: message(),
         botcheck: form.elements.namedItem('botcheck').checked
       })
     });
