@@ -65,7 +65,7 @@
       if (text) field?.classList.remove('is-invalid');
     }
     progress.style.setProperty('--p', (filled / keys.length).toFixed(3));
-    progress.querySelector('b').textContent = `${filled}/${keys.length}`;
+    progress.querySelector('b').textContent = `${filled} of ${keys.length} filled`;
     root.classList.toggle('is-complete', required.every(key => value(key)));
     if (changedKey && !reduced.matches) {
       bubble.classList.add('is-bump');
@@ -135,6 +135,10 @@
       status.textContent = 'Couldn’t copy automatically — use Continue in Telegram instead.';
     }
   });
+
+  // iMessage-style timestamp: "Today 20:30".
+  const stamp = root.querySelector('[data-im-time]');
+  if (stamp) stamp.textContent = `Today ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 
   const fitAll = () => { form.querySelectorAll('.brief-field input').forEach(fit); grow(); };
   new ResizeObserver(fitAll).observe(form);
