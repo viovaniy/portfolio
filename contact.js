@@ -121,6 +121,36 @@
     setTimeout(() => layer.remove(), longest + 50);
   }
 
+  // When a field is finished (the visitor moves on), a sunset shimmer sweeps
+  // across its text once: a copy of the text with a moving gradient sits
+  // exactly over the field while the field's own text is hidden.
+  function shimmer(field) {
+    const control = field.querySelector('input, textarea');
+    if (!control || !control.value.trim() || reduced.matches) return;
+    field.querySelector('.brief-shimmer')?.remove();
+    const overlay = document.createElement('span');
+    overlay.className = 'brief-shimmer';
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.textContent = control.value;
+    if (control.tagName === 'TEXTAREA') overlay.scrollTop = control.scrollTop;
+    field.append(overlay);
+    field.classList.add('is-shimmering');
+    overlay.addEventListener('animationend', () => {
+      field.classList.remove('is-shimmering');
+      overlay.remove();
+    }, { once: true });
+  }
+  form.addEventListener('change', event => {
+    const field = event.target.closest('.brief-field');
+    if (field) shimmer(field);
+  });
+  form.addEventListener('focusin', event => {
+    const field = event.target.closest('.brief-field');
+    if (!field) return;
+    field.querySelector('.brief-shimmer')?.remove();
+    field.classList.remove('is-shimmering');
+  });
+
   // The part of the message you're editing lights up in the preview.
   const highlight = key => keys.forEach(k => parts[k].classList.toggle('is-active', k === key));
   form.addEventListener('focusin', event => highlight(event.target.closest('[data-key]')?.dataset.key));

@@ -286,3 +286,35 @@
 /* Entrance (driven by about.js): hidden until the tab is first shown. */
 .pj-folder:not([data-entered]) .pj-tilt{opacity:0}
 .pj-folder:not([data-entered]) .pj-sheet{opacity:0}
+
+/* ---------- About cards v2: Apple-style bento ---------- */
+/* No extra outlined box behind the photo and cards on the About tab. */
+.about-panels{transition:border-color .3s ease,background-color .3s ease}
+.about-panels:has(#about-panel-0:not([hidden])){border-color:transparent;background:transparent}
+.about-panel.about-panel-me{padding:0}
+.me-layout{gap:12px}
+.me-photo{border-radius:20px}
+.me-stack{grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr;gap:12px}
+.me-card-who{grid-column:1/-1}
+.me-card{display:flex;flex-direction:column;padding:16px 18px 18px;border-radius:20px;background:#fff;box-shadow:0 0 0 1px rgba(28,25,40,.06),0 1px 2px rgba(28,25,40,.03),0 10px 24px -18px rgba(28,25,40,.22)}
+@media(hover:hover){.me-card:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(28,25,40,.07),0 1px 2px rgba(28,25,40,.03),0 18px 32px -20px rgba(28,25,40,.32)}}
+.me-label{display:flex;align-items:center;gap:6px;margin:0 0 12px;font-size:12px;font-weight:500;letter-spacing:0;color:#9b9ba1}
+.me-label svg{width:14px;height:14px;stroke-width:1.8}
+.me-statement{margin:0;font-size:22px;line-height:1.25;font-weight:560;letter-spacing:-.03em;color:#9b9ba1}
+.me-statement .me-ink{color:#1f1f22}
+.me-statement-sm{font-size:18px;line-height:1.3;color:#1f1f22}
+.me-sub{margin:auto 0 0;padding-top:10px;font-size:12.5px;line-height:1.45;color:#9b9ba1}
+.me-likes{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin:0;padding:0;list-style:none}
+.me-likes li{display:inline-flex;align-items:center;gap:7px;padding:6px 11px 6px 9px;border-radius:10px;background:#fff;color:#2a2a30;font-size:13px;font-weight:500;letter-spacing:-.01em;line-height:1.2;box-shadow:0 0 0 1px rgba(28,25,40,.09),0 1px 2px rgba(28,25,40,.04);transition:transform .45s var(--me-ease),box-shadow .3s}
+.me-likes li svg{width:15px;height:15px;stroke-width:1.7;color:#8e8e93}
+@media(hover:hover){.me-likes li:hover{transform:translateX(3px);box-shadow:0 0 0 1px rgba(28,25,40,.12),0 6px 14px -8px rgba(28,25,40,.25)}.me-likes li:nth-child(2):hover{transform:translateX(3px)}}
+.me-card-bring .me-click{font-weight:600}
+@media(max-width:650px){
+ .me-statement{font-size:20px}
+ .me-statement-sm{font-size:17px}
+}
+@media(max-width:650px){
+ .me-stack{grid-template-columns:1fr}
+ .me-likes{flex-direction:row;flex-wrap:wrap}
+ .me-card .me-sub{margin-top:12px}
+}

@@ -16,12 +16,12 @@
   <link rel="stylesheet" href="structure.css?v=20261017-1">
   <link rel="stylesheet" href="work.css?v=14">
   <link rel="stylesheet" href="studio.css?v=24">
-  <link rel="stylesheet" href="about.css?v=20261018-11">
+  <link rel="stylesheet" href="about.css?v=20261018-14">
   <link rel="stylesheet" href="text-reveal.css?v=3">
   <link rel="stylesheet" href="island.css?v=2">
   <link rel="stylesheet" href="scroll-reveal.css?v=2">
-  <link rel="stylesheet" href="contact.css?v=21">
-  <link rel="stylesheet" href="footer.css?v=4">
+  <link rel="stylesheet" href="contact.css?v=22">
+  <link rel="stylesheet" href="footer.css?v=5">
 </head>
 <body>
   <svg class="icon-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -127,21 +127,23 @@
               </figcaption>
             </figure>
             <div class="me-stack">
-              <section class="me-card me-in" style="--d:1" aria-labelledby="me-who">
-                <h4 class="me-card-head" id="me-who"><span class="me-icon" style="--tint:#eef5ff;--tone:#2a6fd6" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5.5 19.5c1.2-3.3 3.6-5 6.5-5s5.3 1.7 6.5 5"/></svg></span>Who I am</h4>
-                <p class="me-lead"><span class="me-ink">A motion designer</span> working with SaaS brands and digital products.</p>
+              <section class="me-card me-card-who me-in" style="--d:1" aria-labelledby="me-who">
+                <h4 class="me-label" id="me-who"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5.5 19.5c1.2-3.3 3.6-5 6.5-5s5.3 1.7 6.5 5"/></svg>Who I am</h4>
+                <p class="me-statement"><span class="me-ink">Motion designer</span> for SaaS brands &amp; digital products.</p>
               </section>
               <section class="me-card me-in" style="--d:2" aria-labelledby="me-love">
-                <h4 class="me-card-head" id="me-love"><span class="me-icon" style="--tint:#f6edff;--tone:#9a4fd0" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19.5s-7-4.3-7-9.4A3.9 3.9 0 0 1 12 7.8a3.9 3.9 0 0 1 7 2.3c0 5.1-7 9.4-7 9.4Z"/></svg></span>What I love</h4>
+                <h4 class="me-label" id="me-love"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19.5s-7-4.3-7-9.4A3.9 3.9 0 0 1 12 7.8a3.9 3.9 0 0 1 7 2.3c0 5.1-7 9.4-7 9.4Z"/></svg>What I love</h4>
                 <ul class="me-likes">
-                  <li style="--tint:#eef5ff;--tone:#2a6fd6">Clean interfaces</li>
-                  <li style="--tint:#f6edff;--tone:#9a4fd0">Playful details</li>
-                  <li style="--tint:#fff0f4;--tone:#d8467a">Small animations</li>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3.5"/><path d="M3.5 9h17"/></svg>Clean interfaces</li>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 4 1.9 5.1L19 11l-5.1 1.9L12 18l-1.9-5.1L5 11l5.1-1.9Z"/></svg>Playful details</li>
+                  <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="m10 9 5 3-5 3Z"/></svg>Small animations</li>
                 </ul>
+                <p class="me-sub">Details that make products feel alive.</p>
               </section>
-              <section class="me-card me-in" style="--d:3" aria-labelledby="me-bring">
-                <h4 class="me-card-head" id="me-bring"><span class="me-icon" style="--tint:#fff0f4;--tone:#d8467a" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 4 1.9 5.1L19 11l-5.1 1.9L12 18l-1.9-5.1L5 11l5.1-1.9Z"/></svg></span>What I bring</h4>
-                <p class="me-text">That moment when a small animation makes everything <button type="button" class="me-click" aria-label="click — tap to play the moment" data-pointer-shape="circle">click<span class="me-burst" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span></button>. That’s the feeling I try to bring to my work.</p>
+              <section class="me-card me-card-bring me-in" style="--d:3" aria-labelledby="me-bring">
+                <h4 class="me-label" id="me-bring"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3 5 13.5h6L10 21l8-10.5h-6Z"/></svg>What I bring</h4>
+                <p class="me-statement me-statement-sm">That moment when everything <button type="button" class="me-click" aria-label="click — tap to play the moment" data-pointer-shape="circle">clicks<span class="me-burst" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span></button>.</p>
+                <p class="me-sub">The feeling I bring to every project.</p>
               </section>
             </div>
           </div></div>
@@ -265,7 +267,6 @@
     </section>
 
     <section id="contact" class="page-section content-section contact-section" aria-labelledby="contact-title">
-      <p class="section-label">Let’s make it move</p>
       <h2 id="contact-title">Tell me about your project.</h2>
       <p class="form-intro">Complete the brief below. A summary is prepared alongside and sent directly to my inbox.</p>
       <noscript><p>Please <a href="https://t.me/designmevova">contact me on Telegram</a> to discuss your project.</p></noscript>
@@ -343,8 +344,7 @@
         </div>
       </div>
       <div class="footer-meta">
-        <p>© <span data-year>2026</span> viovaniy · Motion design for SaaS &amp; digital products</p>
-        <p class="footer-status"><span class="footer-dot" aria-hidden="true"></span>Available for new projects</p>
+        <p>© <span data-year>2026</span> viovaniy</p>
       </div>
     </div>
   </footer>
@@ -362,7 +362,7 @@
   <script src="navigation.js?v=20261018-1" defer></script>
   <script src="dock.js?v=20261018-1" defer></script>
   <script src="island.js?v=2" defer></script>
-  <script src="contact.js?v=11" defer></script>
+  <script src="contact.js?v=12" defer></script>
   <script src="footer.js?v=4" defer></script>
   <script src="scroll-reveal.js?v=5" defer></script>
   <script src="shimmer.js?v=3" defer></script>
