@@ -190,10 +190,9 @@
   }
 
   // ---------- Sending to email ----------
-  // Paste the Web3Forms access key here (get one free at web3forms.com with
-  // the inbox the briefs should go to). Until it is set the visitor still
-  // sees the success screen, but briefs are NOT delivered anywhere.
-  const WEB3FORMS_KEY = '';
+  // Web3Forms access key: briefs are emailed to the inbox it was created with.
+  // If delivery fails, the visitor sees the "try again" state instead of success.
+  const WEB3FORMS_KEY = '67da3d24-6525-403d-b5e4-1d00aeaef89f';
 
   const done = root.querySelector('.brief-done');
   const sentText = done.querySelector('[data-sent-text]');
