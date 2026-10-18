@@ -5,7 +5,7 @@
   const finePointer = matchMedia('(any-hover: hover) and (any-pointer: fine)');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const root = document.documentElement;
-  const targetSelector = 'a[href], button:not(:disabled), [role="button"], [data-magnetic]';
+  const targetSelector = 'a[href], button:not(:disabled), [role="button"], [data-magnetic], [data-pointer-fill]';
   const state = { x: 0, y: 0, width: 18, height: 18, radius: 9, opacity: 0.78 };
   const destination = { ...state };
   const velocity = Object.fromEntries(Object.keys(state).map(key => [key, 0]));
@@ -13,6 +13,7 @@
   let active = false;
   let pressed = false;
   let target = null;
+  let targetInfo = null;
   let label = null;
   let frame = 0;
   let lastTime = 0;
@@ -36,6 +37,21 @@
     resetLabel();
     target = enabled;
     label = target?.querySelector('.magnetic-label') || null;
+    // Read the target's own shape once: its corner radius, and whether it is a
+    // filled button (the cursor then flows into it and dissolves, iPad-style).
+    targetInfo = null;
+    if (target) {
+      const visual = target.matches('[data-pointer-fill]') ? (target.firstElementChild?.matches('input') ? target.querySelector(':scope > :not(input)') : target) || target : target;
+      const style = getComputedStyle(visual);
+      const raw = style.borderTopLeftRadius;
+      const color = style.backgroundColor.match(/[\d.]+/g) || [];
+      const alpha = color.length === 4 ? +color[3] : color.length === 3 ? 1 : 0;
+      targetInfo = {
+        visual,
+        radius: raw.includes('%') ? Infinity : parseFloat(raw) || 0,
+        fill: target.hasAttribute('data-pointer-fill') || style.backgroundImage !== 'none' || alpha > .35
+      };
+    }
     // The dock owns its highlight; never stack a second cursor disk over it.
     pointer.classList.toggle('on-nav-target', Boolean(target?.closest('.bottom-nav')));
   }
@@ -44,7 +60,8 @@
     if (target && (!target.isConnected || !target.getClientRects().length)) changeTarget(null);
     if (target) {
       // Read the stable hit area, never the moving label, to avoid hover jitter.
-      const rect = target.getBoundingClientRect();
+      const fill = targetInfo?.fill && !target.closest('.bottom-nav');
+      const rect = (fill ? targetInfo.visual : target).getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
       const dx = position.x - centerX;
@@ -57,9 +74,21 @@
       destination.y = centerY + (isDockTarget || isAboutTab || isCircle ? 0 : clamp(dy * 0.16, 5));
       destination.width = (isDockTarget || isAboutTab || isCircle ? rect.width : rect.width + 8) * scale;
       destination.height = (isDockTarget ? rect.width : isAboutTab || isCircle ? rect.height : rect.height + 6) * scale;
-      destination.radius = isDockTarget || isCircle ? destination.width / 2 : isAboutTab ? destination.height / 2 : Math.min(14, destination.height / 2);
+      // Match the element's own corners (+ the small outset), capped to a pill.
+      const ownRadius = targetInfo ? targetInfo.radius : 14;
+      destination.radius = isDockTarget || isCircle ? destination.width / 2 : isAboutTab ? destination.height / 2 : Math.min(destination.height / 2, ownRadius + 3);
       // Tabs paint their own white highlight, keeping the label crisp above it.
       destination.opacity = isDockTarget || isAboutTab ? 0 : (pressed ? 0.23 : 0.14);
+      // Round targets stay perfectly round: grow them evenly.
+      if (!isDockTarget && !isAboutTab && !fill && targetInfo && targetInfo.radius >= Math.min(rect.width, rect.height) / 2 && Math.abs(rect.width - rect.height) < 2) {
+        const d = (isCircle ? rect.width : rect.width + 8) * scale;
+        Object.assign(destination, { x: centerX, y: centerY, width: d, height: d, radius: d / 2 });
+      }
+      if (fill) {
+        // Flow exactly into the filled button and dissolve into it.
+        Object.assign(destination, { x: centerX, y: centerY, width: rect.width * scale, height: rect.height * scale, opacity: 0 });
+        destination.radius = Math.min(destination.height / 2, targetInfo.radius);
+      }
       if (label) {
         label.style.setProperty('--pull-x', `${clamp(dx * 0.08, 6)}px`);
         label.style.setProperty('--pull-y', `${clamp(dy * 0.13, 4)}px`);
