@@ -315,3 +315,90 @@
   new MutationObserver(sync).observe(panel, { attributes: true, attributeFilter: ['hidden'] });
   sync();
 })();
+
+// Tools tab: a macOS-style Dock. Icons magnify toward the cursor, bounce when
+// chosen, and the card below describes how each tool is used.
+(() => {
+  const panel = document.getElementById('about-panel-2');
+  const dock = panel?.querySelector('.dock');
+  if (!dock) return;
+  const apps = [...dock.querySelectorAll('.dock-app')];
+  const tools = JSON.parse(document.getElementById('tools-data').textContent);
+  const detail = panel.querySelector('.tl-detail');
+  const icon = detail.querySelector('.tl-detail-icon');
+  const nameEl = detail.querySelector('.tl-detail-name');
+  const catEl = detail.querySelector('.tl-detail-cat');
+  const descEl = detail.querySelector('.tl-detail-desc');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const fine = matchMedia('(hover: hover) and (pointer: fine)');
+  let current = -1;
+  let swap;
+
+  function select(index, bounce) {
+    const app = apps[index];
+    apps.forEach(a => a.setAttribute('aria-pressed', String(a === app)));
+    if (bounce && !reduced.matches) {
+      app.classList.remove('is-bouncing'); void app.offsetWidth; app.classList.add('is-bouncing');
+    }
+    if (index === current) return;
+    current = index;
+    const tool = tools[index];
+    const fill = () => {
+      icon.style.setProperty('--c1', app.style.getPropertyValue('--c1'));
+      icon.style.setProperty('--c2', app.style.getPropertyValue('--c2'));
+      icon.classList.toggle('is-light', app.dataset.tone === 'light');
+      icon.innerHTML = app.querySelector('svg').outerHTML;
+      nameEl.textContent = tool.name;
+      catEl.textContent = tool.cat;
+      descEl.textContent = tool.desc;
+    };
+    swap?.cancel();
+    if (reduced.matches || !detail.dataset.ready) { fill(); detail.dataset.ready = '1'; return; }
+    const out = detail.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(4px)' }], { duration: 120, easing: 'ease-in', fill: 'forwards' });
+    swap = out;
+    out.onfinish = () => {
+      fill();
+      out.cancel();
+      swap = detail.animate([{ opacity: 0, transform: 'translateY(-6px)' }, { opacity: 1, transform: 'none' }], { duration: 360, easing: 'cubic-bezier(.22,1,.36,1)' });
+    };
+  }
+  apps.forEach((app, i) => {
+    app.addEventListener('click', () => select(i, true));
+    app.addEventListener('animationend', () => app.classList.remove('is-bouncing'));
+    app.addEventListener('keydown', event => {
+      const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
+      if (step) { event.preventDefault(); apps[(i + step + apps.length) % apps.length].focus(); }
+      if (event.key === 'Home') { event.preventDefault(); apps[0].focus(); }
+      if (event.key === 'End') { event.preventDefault(); apps[apps.length - 1].focus(); }
+    });
+    app.tabIndex = i === 1 ? 0 : -1;
+    app.addEventListener('focus', () => apps.forEach(a => { a.tabIndex = a === app ? 0 : -1; }));
+  });
+  select(1, false); // After Effects first: the heart of the work.
+
+  // Magnification: icons grow with a smooth falloff around the cursor.
+  const BASE = () => parseFloat(getComputedStyle(apps[0]).getPropertyValue('--size')) || 52;
+  let frame = 0, x = 0, base = 52;
+  function magnify() {
+    frame = 0;
+    // Read every position first, then write, so layout is computed once.
+    const centers = apps.map(app => { const r = app.getBoundingClientRect(); return r.left + r.width / 2; });
+    apps.forEach((app, i) => {
+      const d = Math.abs(x - centers[i]);
+      const m = 1 + .48 * Math.cos(Math.min(1, d / 150) * Math.PI / 2) ** 2;
+      app.style.width = app.style.height = `${(base * m).toFixed(1)}px`;
+    });
+  }
+  dock.addEventListener('pointerenter', () => { base = BASE(); });
+  dock.addEventListener('pointermove', event => {
+    if (event.pointerType !== 'mouse' || !fine.matches || reduced.matches) return;
+    x = event.clientX;
+    dock.classList.add('is-tracking');
+    if (!frame) frame = requestAnimationFrame(magnify);
+  });
+  dock.addEventListener('pointerleave', () => {
+    cancelAnimationFrame(frame); frame = 0;
+    dock.classList.remove('is-tracking');
+    apps.forEach(app => { app.style.width = app.style.height = ''; });
+  });
+})();
