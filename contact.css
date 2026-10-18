@@ -173,3 +173,10 @@
 @keyframes im-ripple{from{opacity:.35;transform:scale(1)}to{opacity:0;transform:scale(1.9)}}
 @keyframes im-arrow-pop{0%{transform:scale(1)}55%{transform:scale(1.48)}100%{transform:scale(1.31)}}
 @keyframes im-nudge{0%{transform:none}40%{transform:translateY(-5px);opacity:0}41%{transform:translateY(6px);opacity:0}100%{transform:none;opacity:1}}
+
+/* Confetti burst from the send button. */
+.im-confetti{position:fixed;width:0;height:0;z-index:90;pointer-events:none}
+.im-confetti i{position:absolute;left:0;top:0;display:block;background:var(--c);will-change:transform,opacity}
+.im-confetti .is-dot{width:8px;height:8px;border-radius:50%}
+.im-confetti .is-strip{width:12px;height:4.5px;border-radius:2px}
+.im-confetti .is-star{width:12px;height:12px;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}

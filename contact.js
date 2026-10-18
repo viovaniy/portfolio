@@ -73,6 +73,7 @@
       void send.offsetWidth;
       send.classList.add('is-celebrate');
       setTimeout(() => send.classList.remove('is-celebrate'), 800);
+      confetti(send);
     }
     root.classList.toggle('is-complete', complete);
     if (changedKey && !reduced.matches) {
@@ -80,6 +81,45 @@
       clearTimeout(bumpTimer);
       bumpTimer = setTimeout(() => bubble.classList.remove('is-bump'), 140);
     }
+  }
+
+  // A small confetti burst from the send button when the brief completes.
+  // Particles live in a fixed layer so the preview's rounded clip never cuts
+  // them; transforms and opacity only, then the layer is removed.
+  const COLORS = ['#0b84fe', '#ff7eaa', '#ffb48f', '#b596f2', '#34c759', '#ffd36e'];
+  function confetti(origin) {
+    const r = origin.getBoundingClientRect();
+    const layer = document.createElement('div');
+    layer.className = 'im-confetti';
+    layer.setAttribute('aria-hidden', 'true');
+    layer.style.left = `${r.left + r.width / 2}px`;
+    layer.style.top = `${r.top + r.height / 2}px`;
+    document.body.append(layer);
+    const count = 24;
+    let longest = 0;
+    for (let i = 0; i < count; i++) {
+      const piece = document.createElement('i');
+      const kind = i % 3;
+      piece.className = kind === 0 ? 'is-dot' : kind === 1 ? 'is-strip' : 'is-star';
+      piece.style.setProperty('--c', COLORS[i % COLORS.length]);
+      layer.append(piece);
+      // Mostly upward and outward, a few sideways.
+      const angle = (-90 + (Math.random() * 2 - 1) * 80) * Math.PI / 180;
+      const distance = 46 + Math.random() * 54;
+      const dx = Math.cos(angle) * distance;
+      const dy = Math.sin(angle) * distance;
+      const spin = (Math.random() < .5 ? -1 : 1) * (180 + Math.random() * 360);
+      const duration = 1000 + Math.random() * 450;
+      const delay = Math.random() * 60;
+      longest = Math.max(longest, duration + delay);
+      piece.animate([
+        { transform: 'translate(-50%, -50%) scale(.3) rotate(0deg)', opacity: 1 },
+        { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(1) rotate(${spin * .55}deg)`, opacity: 1, offset: .42, easing: 'cubic-bezier(.3,0,.7,.6)' },
+        { opacity: 1, offset: .72 },
+        { transform: `translate(calc(-50% + ${dx * 1.18}px), calc(-50% + ${dy + 46}px)) scale(.85) rotate(${spin}deg)`, opacity: 0 }
+      ], { duration, delay, easing: 'cubic-bezier(.12,.75,.3,1)', fill: 'both' });
+    }
+    setTimeout(() => layer.remove(), longest + 50);
   }
 
   // The part of the message you're editing lights up in the preview.
