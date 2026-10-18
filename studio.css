@@ -87,14 +87,14 @@
 .studio-clouds--back{z-index:0}
 .studio-clouds--front{z-index:2}
 .studio-art{position:relative;z-index:1;clip-path:polygon(1.4% 17.6%,57.5% 2%,98.2% 21.2%,98.2% 100%,1.4% 100%)}
-.studio-cloud{position:absolute;left:var(--cloud-left);width:var(--cloud-width);top:var(--cloud-top);animation:studio-cloud-drift 28s linear infinite;animation-delay:var(--cloud-delay);will-change:transform;pointer-events:none}
+.studio-cloud{position:absolute;left:var(--cloud-left);width:var(--cloud-width);top:var(--cloud-top);opacity:1;animation:studio-cloud-drift 28s ease-in-out infinite alternate;animation-delay:var(--cloud-delay);will-change:transform;pointer-events:none}
 .studio-cloud img{display:block;width:100%;height:auto;opacity:1;filter:blur(var(--cloud-blur)) drop-shadow(0 0 7px #fff) drop-shadow(0 0 16px #abcaff) drop-shadow(0 0 26px #ffd1f1);pointer-events:none}
 .studio-cloud--1{--cloud-left:0%;--cloud-top:12%;--cloud-width:25%;--cloud-blur:1px;--cloud-delay:-12s}
 .studio-cloud--2{--cloud-left:74%;--cloud-top:28%;--cloud-width:23%;--cloud-blur:2px;--cloud-delay:-26s}
-.studio-cloud--4{--cloud-left:85%;--cloud-top:52%;--cloud-width:13%;--cloud-blur:1px;--cloud-delay:-33s}
+.studio-cloud--4{--cloud-left:7%;--cloud-top:52%;--cloud-width:13%;--cloud-blur:1px;--cloud-delay:-33s}
 .studio-cloud--5{--cloud-left:0%;--cloud-top:72%;--cloud-width:32%;--cloud-blur:2px;--cloud-delay:-18s}
 .studio-cloud--6{--cloud-left:65%;--cloud-top:84%;--cloud-width:25%;--cloud-blur:4px;--cloud-delay:-39s}
 .studio-cloud--7{--cloud-left:48%;--cloud-top:1%;--cloud-width:18%;--cloud-blur:10px;--cloud-delay:-21s}
-@keyframes studio-cloud-drift{0%{transform:translateX(40px);opacity:0}8%,92%{opacity:1}100%{transform:translateX(-40px);opacity:0}}
-@media(max-width:800px){.studio-clouds{right:-18px}.studio-cloud--4{--cloud-left:80%}}
+@keyframes studio-cloud-drift{from{transform:translateX(40px)}to{transform:translateX(-40px)}}
+@media(max-width:800px){.studio-clouds{right:-18px}.studio-cloud--4{--cloud-left:9%}}
 @media(prefers-reduced-motion:reduce){.studio-cloud{animation:none;will-change:auto;transform:none;opacity:1}}
