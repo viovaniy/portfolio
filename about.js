@@ -427,69 +427,18 @@
   });
 })();
 
-// Process tab: a graph-editor curve. A ball eases along the real path between
-// keyframes while a frame counter ticks; steps auto-advance until touched.
-(() => {
-  const panel = document.getElementById('about-panel-3');
-  const ball = panel?.querySelector('.ge-ball');
-  if (!ball) return;
-  const path = panel.querySelector('.ge-curve');
-  const plot = panel.querySelector('.ge-plot');
-  const frameEl = panel.querySelector('[data-ge-frame]');
-  const steps = [...panel.querySelectorAll('.ps-step')];
-  const keys = [...panel.querySelectorAll('.ge-key')];
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const total = path.getTotalLength();
-  // Path length at each keyframe (start, the joint, the end).
-  const at = [0, (() => { let best = 0, d = Infinity; for (let l = 0; l <= total; l += 1) { const p = path.getPointAtLength(l); const e = Math.hypot(p.x - 300, p.y - 84); if (e < d) { d = e; best = l; } } return best; })(), total];
-  const FRAMES = [0, 48, 96];
-  let pos = 0, current = 0, raf = 0, auto = true, timer = 0, visible = false;
-  const DWELL = 3600;
-
-  function place(length) {
-    const p = path.getPointAtLength(length);
-    ball.style.transform = `translate3d(${p.x / 600 * plot.clientWidth}px, ${p.y / 160 * plot.clientHeight}px, 0)`;
-    // Frame counter follows the curve's time (x axis).
-    frameEl.textContent = Math.round(Math.max(0, Math.min(96, (p.x - 60) / 480 * 96)));
+/* Process: redraw the sketch each time the tab opens; loop the final frame only while visible. */
+(function(){
+  var panel=document.getElementById('about-panel-3'); if(!panel) return;
+  var onScreen=true;
+  function sync(){
+    var open=!panel.hasAttribute('hidden');
+    if(open && !panel.classList.contains('sb-on')){ void panel.offsetWidth; panel.classList.add('sb-on'); }
+    else if(!open) panel.classList.remove('sb-on');
+    panel.classList.toggle('sb-paused', !onScreen || document.hidden);
   }
-  function go(index, user) {
-    if (user) { auto = false; panel.classList.remove('is-playing'); clearTimeout(timer); }
-    current = index;
-    steps.forEach((s, i) => s.setAttribute('aria-pressed', String(i === index)));
-    keys.forEach((k, i) => k.classList.toggle('is-on', i === index));
-    cancelAnimationFrame(raf);
-    const from = pos, to = at[index];
-    if (reduced.matches || from === to) { pos = to; place(pos); schedule(); return; }
-    const t0 = performance.now(), dur = 900 + Math.abs(to - from) * .9;
-    const ease = t => t < .5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
-    const tick = now => {
-      const t = Math.min(1, (now - t0) / dur);
-      pos = from + (to - from) * ease(t);
-      place(pos);
-      if (t < 1) raf = requestAnimationFrame(tick); else schedule();
-    };
-    raf = requestAnimationFrame(tick);
-  }
-  function schedule() {
-    clearTimeout(timer);
-    if (!auto || !visible || reduced.matches) return;
-    panel.style.setProperty('--ps-dwell', `${DWELL}ms`);
-    panel.classList.remove('is-playing'); void panel.offsetWidth; panel.classList.add('is-playing');
-    timer = setTimeout(() => go((current + 1) % steps.length, false), DWELL);
-  }
-  steps.forEach((s, i) => s.addEventListener('click', () => go(i, true)));
-  keys.forEach((k, i) => k.addEventListener('click', () => go(i, true)));
-  // Play only while the Process tab is open and on screen.
-  const update = () => {
-    const was = visible;
-    visible = !panel.hidden && panel.getBoundingClientRect().height > 0 && document.visibilityState === 'visible' && inView;
-    if (visible && !was) schedule();
-    if (!visible) { clearTimeout(timer); panel.classList.remove('is-playing'); }
-  };
-  let inView = false;
-  new IntersectionObserver(([e]) => { inView = e.isIntersecting; update(); }).observe(panel.closest('.about-section'));
-  new MutationObserver(update).observe(panel, { attributes: true, attributeFilter: ['hidden'] });
-  document.addEventListener('visibilitychange', update);
-  new ResizeObserver(() => place(pos)).observe(plot);
-  go(0, false);
+  new MutationObserver(sync).observe(panel,{attributes:true,attributeFilter:['hidden']});
+  if('IntersectionObserver' in window) new IntersectionObserver(function(e){ onScreen=e[0].isIntersecting; sync(); }).observe(panel);
+  document.addEventListener('visibilitychange',sync);
+  sync();
 })();
