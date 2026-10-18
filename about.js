@@ -347,7 +347,8 @@
       icon.style.setProperty('--c1', app.style.getPropertyValue('--c1'));
       icon.style.setProperty('--c2', app.style.getPropertyValue('--c2'));
       icon.classList.toggle('is-light', app.dataset.tone === 'light');
-      icon.innerHTML = app.querySelector('svg').outerHTML;
+      icon.innerHTML = app.querySelector('.dock-icon').innerHTML;
+      icon.classList.toggle('has-logo', app.classList.contains('has-logo'));
       nameEl.textContent = tool.name;
       catEl.textContent = tool.cat;
       descEl.textContent = tool.desc;
@@ -373,6 +374,29 @@
     });
     app.tabIndex = i === 1 ? 0 : -1;
     app.addEventListener('focus', () => apps.forEach(a => { a.tabIndex = a === app ? 0 : -1; }));
+  });
+  // Official app icons: drop assets/tools/<key>.svg or .png into the project
+  // (e.g. assets/tools/figma.svg) and it replaces the drawn glyph inside the
+  // glass tile automatically. Missing files simply keep the glyph.
+  apps.forEach(app => {
+    const key = app.dataset.key;
+    const tryLoad = exts => {
+      if (!exts.length) return;
+      const img = new Image();
+      img.alt = '';
+      img.decoding = 'async';
+      img.draggable = false;
+      img.onload = () => {
+        const tile = app.querySelector('.dock-icon');
+        tile.querySelector('svg')?.remove();
+        tile.prepend(img);
+        app.classList.add('has-logo');
+        if (app.getAttribute('aria-pressed') === 'true') { icon.innerHTML = tile.innerHTML; icon.classList.add('has-logo'); }
+      };
+      img.onerror = () => tryLoad(exts.slice(1));
+      img.src = `assets/tools/${key}.${exts[0]}`;
+    };
+    tryLoad(['svg', 'png']);
   });
   select(1, false); // After Effects first: the heart of the work.
 

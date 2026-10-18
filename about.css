@@ -409,3 +409,6 @@
  .dock-app{--size:23px}
  .dock-sep{height:20px;margin:0 2px 2px}
 }
+
+/* Official icon files (assets/tools/<key>.svg|png) sit inside the glass tile. */
+.dock-icon img,.tl-detail-icon img{position:relative;z-index:1;display:block;width:64%;height:64%;object-fit:contain;filter:drop-shadow(0 1px 0 rgba(255,255,255,.8)) drop-shadow(0 2px 4px rgba(28,25,40,.18))}
