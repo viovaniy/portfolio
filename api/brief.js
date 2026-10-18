@@ -79,7 +79,7 @@ module.exports = async (req, res) => {
 
   const f = {};
   for (const key of Object.keys(LIMITS)) f[key] = clip(body[key], LIMITS[key]);
-  if (!f.name || !f.contact || !f.project) return res.status(400).json({ success: false, message: 'Missing fields' });
+  if (Object.keys(LIMITS).some(key => !f[key])) return res.status(400).json({ success: false, message: 'Please fill in every field' });
 
   // Where it came from (Vercel adds these headers on every request).
   const ip = (header(req, 'x-forwarded-for').split(',')[0] || header(req, 'x-real-ip') || '').trim() || 'unknown';

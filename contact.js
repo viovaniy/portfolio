@@ -11,8 +11,8 @@
   const bubble = root.querySelector('.brief-bubble');
   const progress = root.querySelector('.brief-progress');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const required = ['name', 'contact', 'project'];
   const keys = ['name', 'contact', 'project', 'budget', 'timeline'];
+  const required = keys; // every field must be filled before the brief can be sent
   form.hidden = false;
   root.classList.add('is-live');
 
@@ -318,9 +318,11 @@
         void field.offsetWidth; // replay the shake
         field.classList.add('is-invalid');
       });
-      const names = { name: 'your name', contact: 'your contact details', project: 'a short project description' };
-      error.textContent = `Please add ${missing.map(key => names[key]).join(', ').replace(/, ([^,]*)$/, ' and $1')} to continue.`;
-      form.elements.namedItem(missing[0]).focus();
+      const names = { name: 'your name', contact: 'your contact details', project: 'a short project description', budget: 'a budget', timeline: 'a timeline' };
+      error.textContent = `Please add ${missing.map(key => names[key]).join(', ').replace(/, ([^,]*)$/, ' and $1')} to send the brief.`;
+      const first = form.querySelector(`[name="${missing[0]}"]`);
+      first?.focus({ preventScroll: true });
+      fieldOf(missing[0])?.scrollIntoView({ behavior: reduced.matches ? 'instant' : 'smooth', block: 'center' });
       return;
     }
     if (form.elements.namedItem('botcheck').checked) return; // spam bot
