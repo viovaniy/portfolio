@@ -413,70 +413,80 @@
 /* Official icon files (assets/tools/<key>.svg|png) sit inside the glass tile. */
 .dock-icon img,.tl-detail-icon img{position:relative;z-index:1;display:block;width:64%;height:64%;object-fit:contain;filter:drop-shadow(0 1px 0 rgba(255,255,255,.8)) drop-shadow(0 2px 4px rgba(28,25,40,.18))}
 
-/* ---------- Process: three taped storyboard prints of one shot ---------- */
-@font-face{font-family:Caveat;font-style:normal;font-weight:600;font-display:swap;src:url(assets/fonts/caveat-latin-600-normal.woff2) format('woff2')}
-.about-panel-process{--sb-ink:#1f1f22;--sb-grey:#9b9ba1;--sb-soft:#74747e;--sb-ease:cubic-bezier(.22,1,.36,1);--sb-spring:cubic-bezier(.34,1.5,.5,1);padding:30px 30px 26px}
-.ps-statement{margin:0 0 30px;font-size:27px;font-weight:500;line-height:1.2;letter-spacing:-.03em;color:var(--sb-grey)}
-.ps-ink{color:var(--sb-ink)}
-.sb{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;padding:0 6px;list-style:none}
-.sb-item{min-width:0;margin:0 12px}
-.sb-print{position:relative;margin:0;padding:8px;border-radius:7px;background:#fff;box-shadow:0 0 0 1px rgba(28,25,40,.06),0 1px 2px rgba(28,25,40,.05),0 10px 22px -12px rgba(28,25,40,.22);transform:rotate(var(--tilt));transition:transform .5s var(--sb-ease),box-shadow .5s var(--sb-ease)}
-.sb-art{stroke:none;display:block;width:100%;height:auto;aspect-ratio:240/170;border-radius:3px;background:#faf9f6}
-.sb-print.is-style .sb-art{background:#fbfaf8}
-.sb-print.is-final .sb-art{background:linear-gradient(160deg,#fff7fa,#fff4ec)}
-.sb-tape{position:absolute;z-index:2;top:-9px;left:50%;width:58px;height:18px;margin-left:-29px;background:rgba(255,173,205,.62);clip-path:polygon(3% 0,97% 6%,100% 30%,96% 52%,100% 78%,95% 100%,4% 94%,0 70%,4% 48%,0 22%);transform:rotate(calc(var(--tilt) * -2));transform-origin:50% 50%}
-.sb-item:nth-child(2) .sb-tape{background:rgba(255,190,150,.62);left:62%}
-.sb-item:nth-child(3) .sb-tape{background:rgba(196,178,255,.5);left:40%}
-.sb-item:hover .sb-print{transform:translateY(-4px) rotate(0deg);box-shadow:0 0 0 1px rgba(28,25,40,.06),0 2px 4px rgba(28,25,40,.05),0 18px 30px -14px rgba(28,25,40,.26)}
-.sb-item:hover .sb-tape{animation:sb-tape .6s var(--sb-ease)}
-@keyframes sb-tape{30%{transform:rotate(calc(var(--tilt) * -2 + 4deg))}65%{transform:rotate(calc(var(--tilt) * -2 - 2deg))}}
+/* ---------- Process: four quiet step widgets, same cards as the About tab ---------- */
+.about-panel-process{--ps-ink:#1f1f22;--ps-grey:#9b9ba1;--ps-soft:#74747e;--ps-hair:rgba(28,25,40,.07);--ps-ease:cubic-bezier(.22,1,.36,1);--ps-enter:cubic-bezier(.16,1,.3,1);--ps-spring:cubic-bezier(.34,1.5,.5,1);padding:30px 24px 26px;text-align:center}
+.ps-kicker{margin:0 0 12px;font-size:12px;font-weight:500;letter-spacing:.01em;color:var(--ps-grey)}
+.ps-statement{margin:0 auto;max-width:620px;font-size:24px;line-height:1.3;font-weight:560;letter-spacing:-.03em;color:var(--ps-grey);text-wrap:balance}
+.ps-ink{color:var(--ps-ink)}
+.ps-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:30px 0 0;padding:0;list-style:none;text-align:left}
+.ps-card{position:relative;min-width:0;margin:0 5px;padding:16px 16px 18px;border-radius:18px;background:#fff;box-shadow:inset 0 1px 0 #fff,0 0 0 1px var(--ps-hair),0 1px 2px rgba(28,25,40,.03);transition:transform .45s var(--ps-ease),box-shadow .45s var(--ps-ease)}
+@media(hover:hover){.ps-card:hover{transform:translateY(-2px);box-shadow:inset 0 1px 0 #fff,0 0 0 1px var(--ps-hair),0 12px 24px -16px rgba(28,25,40,.28)}}
+.ps-card-head{display:flex;align-items:center;margin:0 0 14px;font-size:13px;color:var(--ps-grey)}
+.ps-icon{display:grid;place-items:center;flex:none;width:26px;height:26px;margin-right:9px;border-radius:8px;background:var(--tint);color:var(--tone);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tone) 12%,transparent)}
+.ps-icon svg{width:15px;height:15px;stroke-width:1.8}
+.ps-label{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps-num{margin-left:8px;font-size:12px;font-variant-numeric:tabular-nums;color:#c2c2c8}
+.ps-title{margin:14px 0 0;font-size:14.5px;line-height:1.45;font-weight:500;letter-spacing:-.015em;color:var(--ps-grey)}
 
-/* pencil sketch draws itself each time the tab opens */
-.sb-pencil path{fill:none;stroke:#77747d;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.sb-on .sb-pencil path{stroke-dasharray:1;animation:sb-draw 1.1s cubic-bezier(.6,.1,.3,1) both}
-.sb-on .sb-pencil path:nth-child(2){animation-delay:.45s}
-.sb-on .sb-pencil path:nth-child(3){animation-delay:.8s}
-.sb-on .sb-pencil path:nth-child(4){animation-delay:1.05s;animation-duration:.6s}
-.sb-on .sb-pencil path:nth-child(5){animation-delay:1.35s;animation-duration:.35s}
-.sb-on .sb-pencil path:nth-child(6){animation-delay:1.5s;animation-duration:.5s}
-@keyframes sb-draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
-.sb-swatches circle{stroke:#fff;stroke-width:2}
+/* small live visuals */
+.ps-vis{position:relative;height:64px;border-radius:12px;background:#f7f7f8;box-shadow:inset 0 0 0 1px rgba(28,25,40,.035);overflow:hidden}
+.ps-vis-brief{display:flex;flex-direction:column;justify-content:center;padding:0 10px}
+.ps-bubble{max-width:100%;padding:5px 9px;border-radius:12px;font-size:11px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps-bubble.is-in{align-self:flex-start;background:#e9e9eb;color:#1f1f22;border-bottom-left-radius:4px}
+.ps-bubble.is-out{align-self:flex-end;margin-top:4px;background:#0a84ff;color:#fff;border-bottom-right-radius:4px}
+.ps-vis-style{display:flex;align-items:center;justify-content:center}
+.ps-aa{display:grid;place-items:center;width:34px;height:34px;margin-right:10px;border-radius:10px;background:#fff;box-shadow:0 0 0 1px var(--ps-hair),0 2px 6px -2px rgba(28,25,40,.12);font-size:14px;font-weight:600;letter-spacing:-.02em;color:var(--ps-ink)}
+.ps-vis-style i{width:20px;height:20px;margin:0 -3px;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px #fff,0 2px 5px -1px rgba(28,25,40,.2)}
+.ps-track{position:absolute;inset:12px 16px}
+.ps-track svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;fill:none;stroke-linecap:round}
+.ps-grid,.ps-curve{vector-effect:non-scaling-stroke}
+.ps-grid{stroke:rgba(28,25,40,.08);stroke-width:1;stroke-dasharray:2 4}
+.ps-curve{stroke:#ff8db8;stroke-width:2}
+.ps-mx,.ps-my{position:absolute;inset:0}
+.ps-dot{position:absolute;left:-5px;bottom:-5px;width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2.5px #ff8db8,0 2px 6px rgba(214,69,122,.3)}
+.ps-vis-deliver{display:flex;align-items:center;padding:0 10px}
+.ps-file{flex:1;min-width:0;padding:8px 9px;border-radius:10px;background:#fff;box-shadow:0 0 0 1px var(--ps-hair)}
+.ps-file b{display:block;font-size:11px;font-weight:550;color:var(--ps-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps-bar{display:block;height:4px;margin-top:6px;border-radius:2px;background:#ececef;overflow:hidden}
+.ps-bar i{display:block;height:100%;border-radius:inherit;background:#34c759;transform-origin:0 50%}
+.ps-check{display:grid;place-items:center;flex:none;width:22px;height:22px;margin-left:8px;border-radius:50%;background:#34c759;color:#fff}
+.ps-check svg{width:14px;height:14px;stroke-width:2.4}
 
-/* final frame: cursor taps, button squishes, ripple — looped while visible */
-.sb-final .sb-btn,.sb-final .sb-cursor,.sb-final .sb-ripple,.sb-final .sb-lines{transform-box:fill-box;transform-origin:50% 50%}
-.sb-final .sb-ripple{opacity:0}
-.sb-final .sb-lines{opacity:0}
-.sb-on .sb-final .sb-cursor{animation:sb-cursor 3.4s var(--sb-ease) infinite}
-.sb-on .sb-final .sb-btn{animation:sb-btn 3.4s infinite}
-.sb-on .sb-final .sb-ripple{animation:sb-ripple 3.4s ease-out infinite}
-.sb-on .sb-final .sb-lines{animation:sb-lines 3.4s ease-out infinite}
-.sb-paused .sb-final *{animation-play-state:paused!important}
-@keyframes sb-cursor{0%,8%{transform:translate(38px,26px);opacity:0}20%{opacity:1}38%{transform:translate(0,0)}42%{transform:translate(0,0) scale(.86)}48%{transform:translate(0,0) scale(1)}78%{transform:translate(0,0);opacity:1}92%,100%{transform:translate(18px,14px);opacity:0}}
-@keyframes sb-btn{0%,39%{transform:scale(1)}43%{transform:scale(.9,.84);animation-timing-function:cubic-bezier(.34,1.5,.5,1)}58%,100%{transform:scale(1)}}
-@keyframes sb-ripple{0%,41%{opacity:0;transform:scale(.6)}44%{opacity:.8}70%,100%{opacity:0;transform:scale(3.2)}}
-@keyframes sb-lines{0%,43%{opacity:0;transform:translateX(-4px)}50%{opacity:1;transform:none}72%,100%{opacity:0;transform:translateX(3px)}}
-
-/* handwritten note under each print */
-.sb-note{position:relative;margin:16px 0 0;padding-left:30px}
-.sb-arrow{position:absolute;left:2px;top:-4px;width:24px;height:18px;fill:none;stroke:#b3b0b8;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.sb-hand{margin:0;font-family:Caveat,"Bradley Hand","Segoe Print","Comic Sans MS",cursive;font-size:22px;font-weight:600;line-height:1;color:#5d5a63;transform:rotate(-1.5deg);transform-origin:0 50%}
-.sb-text{margin:7px 0 0 -30px;font-size:13px;line-height:1.45;color:var(--sb-soft);text-wrap:pretty}
+/* entrance each time the tab opens */
+.ps-on .ps-card{animation:ps-rise .75s var(--ps-enter) both;animation-delay:calc(var(--d) * 70ms + 60ms)}
+@keyframes ps-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.ps-on .ps-bubble{animation:ps-pop .5s var(--ps-spring) both;animation-delay:.45s}
+.ps-on .ps-bubble.is-out{animation-delay:.8s}
+.ps-on .ps-vis-style>*{animation:ps-pop .5s var(--ps-spring) both;animation-delay:calc(.5s + var(--i,0) * 70ms)}
+.ps-vis-style i:nth-of-type(1){--i:1}.ps-vis-style i:nth-of-type(2){--i:2}.ps-vis-style i:nth-of-type(3){--i:3}.ps-vis-style i:nth-of-type(4){--i:4}
+@keyframes ps-pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+/* looping: the easing dot and the export bar */
+.ps-on .ps-mx{animation:ps-x 2.4s linear infinite alternate .6s}
+.ps-on .ps-my{animation:ps-y 2.4s cubic-bezier(.45,0,.55,1) infinite alternate .6s}
+@keyframes ps-x{from{transform:translateX(0)}to{transform:translateX(100%)}}
+@keyframes ps-y{from{transform:translateY(0)}to{transform:translateY(-100%)}}
+.ps-on .ps-bar i{animation:ps-bar 3.2s var(--ps-ease) infinite .7s}
+.ps-on .ps-check{animation:ps-check 3.2s var(--ps-spring) infinite .7s}
+@keyframes ps-bar{0%{transform:scaleX(0)}55%,100%{transform:scaleX(1)}}
+@keyframes ps-check{0%,50%{transform:scale(0)}62%,92%{transform:scale(1)}100%{transform:scale(0)}}
+.ps-check{transform:scale(0)}
+.ps-paused .ps-mx,.ps-paused .ps-my,.ps-paused .ps-bar i,.ps-paused .ps-check{animation-play-state:paused!important}
 
 @media(max-width:650px){
- .about-panel-process{padding:22px 16px}
- .ps-statement{font-size:22px;margin-bottom:24px}
- .sb{grid-template-columns:1fr;padding:0}
- .sb-item{display:grid;grid-template-columns:118px minmax(0,1fr);align-items:center;margin:0 0 20px 4px}
- .sb-item:last-child{margin-bottom:0}
- .sb-print{padding:5px;border-radius:6px}
- .sb-tape{width:40px;height:13px;margin-left:-20px;top:-7px}
- .sb-note{margin:0 0 0 18px;padding-left:0}
- .sb-arrow{display:none}
- .sb-hand{font-size:20px}
- .sb-text{margin:5px 0 0;font-size:12.5px}
+ .about-panel-process{padding:22px 12px}
+ .ps-statement{font-size:20px}
+ .ps-steps{grid-template-columns:1fr;margin-top:22px}
+ .ps-card{display:grid;grid-template-columns:104px minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:14px;margin:0 0 8px;padding:12px;border-radius:15px}
+ .ps-card:last-child{margin-bottom:0}
+ .ps-card .ps-vis{grid-column:1;grid-row:1/3;align-self:center;height:68px}
+ .ps-card-head{grid-column:2;margin:2px 0 4px}
+ .ps-icon{display:none}
+ .ps-title{grid-column:2;margin:0;font-size:14px}
+ .ps-vis-brief{padding:0 7px}.ps-bubble{font-size:10px;padding:4px 7px}
+ .ps-vis-style i{width:16px;height:16px}.ps-aa{width:28px;height:28px;margin-right:7px;font-size:12px}
+ .ps-vis-deliver{padding:0 7px}.ps-check{width:18px;height:18px;margin-left:5px}
 }
 @media(prefers-reduced-motion:reduce){
  .about-panel-process *{animation:none!important;transition:none!important}
- .sb-pencil path{stroke-dasharray:none}
- .sb-final .sb-ripple,.sb-final .sb-lines{opacity:0}
+ .ps-check{transform:none}.ps-bar i{transform:none}
 }

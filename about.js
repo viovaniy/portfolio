@@ -427,15 +427,15 @@
   });
 })();
 
-/* Process: redraw the sketch each time the tab opens; loop the final frame only while visible. */
+/* Process: replay the step cards each time the tab opens; loop the small animations only while visible. */
 (function(){
   var panel=document.getElementById('about-panel-3'); if(!panel) return;
   var onScreen=true;
   function sync(){
     var open=!panel.hasAttribute('hidden');
-    if(open && !panel.classList.contains('sb-on')){ void panel.offsetWidth; panel.classList.add('sb-on'); }
-    else if(!open) panel.classList.remove('sb-on');
-    panel.classList.toggle('sb-paused', !onScreen || document.hidden);
+    if(open && !panel.classList.contains('ps-on')){ void panel.offsetWidth; panel.classList.add('ps-on'); }
+    else if(!open) panel.classList.remove('ps-on');
+    panel.classList.toggle('ps-paused', !onScreen || document.hidden);
   }
   new MutationObserver(sync).observe(panel,{attributes:true,attributeFilter:['hidden']});
   if('IntersectionObserver' in window) new IntersectionObserver(function(e){ onScreen=e[0].isIntersecting; sync(); }).observe(panel);
