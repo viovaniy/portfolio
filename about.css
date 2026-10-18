@@ -87,3 +87,75 @@
 .about-glass.is-enlarged{width:calc(100% + min(8vw,96px));margin-left:calc(min(8vw,96px) / -2)}
 @media(prefers-reduced-motion:reduce){.about-glass,.about-window-lights button span{transition:none}}
 .about-heading[hidden],.about-panels[hidden]{display:none}
+
+/* ---------- About tab content: profile + two-tone note with a "click" moment ---------- */
+.about-panel-me{--me-ink:#24242a;--me-grey:#9b9ba1;--me-soft:#777985;--me-ease:cubic-bezier(.22,1,.36,1);--me-enter:cubic-bezier(.16,1,.3,1)}
+.me-layout{display:grid;grid-template-columns:172px minmax(0,1fr);gap:40px;align-items:start}
+.me-profile{display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding-top:4px}
+.me-avatar{position:relative;display:block;width:88px;height:88px;border-radius:24px;border:3px solid #fff;background:linear-gradient(160deg,#ffe3ec,#f6bfcf);transform:rotate(-5deg);box-shadow:0 0 0 1px #00000006,0 3px 4px #0000000a,0 16px 24px -10px #e0567f55;transition:transform .5s var(--me-ease)}
+.me-avatar img{display:block;width:100%;height:100%;border-radius:21px;object-fit:cover;transform:scale(1.16);transform-origin:50% 55%}
+.me-avatar::after{content:"";position:absolute;inset:0;border-radius:21px;overflow:hidden;pointer-events:none}
+.me-status{position:absolute;right:-5px;bottom:-5px;width:16px;height:16px;border-radius:50%;background:#34c759;border:3px solid #fff;box-shadow:0 1px 3px #0000001f}
+.me-status::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:2px solid #34c759;opacity:0;animation:me-ping 2.6s var(--me-ease) infinite}
+@keyframes me-ping{0%{transform:scale(.7);opacity:.6}80%,100%{transform:scale(1.7);opacity:0}}
+@media(hover:hover){.me-avatar:hover{transform:rotate(4deg) scale(1.05)}}
+.me-name{margin:0;font-size:17px;font-weight:560;letter-spacing:-.02em;color:var(--me-ink);line-height:1.25}
+.me-name span{display:block;font-size:13px;font-weight:400;letter-spacing:0;color:var(--me-grey);margin-top:2px}
+
+.me-kicker{display:flex;align-items:center;gap:8px;margin:0 0 14px;font-size:13px;color:var(--me-grey)}
+.me-kicker::before{content:"";width:6px;height:6px;border-radius:1.5px;background:linear-gradient(135deg,#ff9fc0,#ffbb96);transform:rotate(45deg)}
+.about-body .me-lead,.me-lead{margin:0;font-size:22px;line-height:1.4;font-weight:500;letter-spacing:-.025em;color:var(--me-grey);max-width:560px}
+.me-ink{color:var(--me-ink)}
+.me-text{position:relative;margin:18px 0 0;font-size:16px;line-height:1.65;color:var(--me-soft);max-width:540px}
+
+/* The word "click": highlighter sweep, press, and a small sunset burst. */
+.me-click-wrap{position:relative;display:inline-block;white-space:nowrap}
+.me-click{position:relative;display:inline-block;margin:0;padding:0 .1em;border:0;background:none;font:inherit;line-height:inherit;color:var(--me-ink);font-weight:500;cursor:pointer;isolation:isolate;transition:transform .15s var(--me-ease)}
+.me-click::before{content:"";position:absolute;left:0;right:0;bottom:.12em;height:.5em;border-radius:4px;background:linear-gradient(90deg,#ffd3e3,#ffdcc8);z-index:-1;transform:scaleX(0);transform-origin:0 50%;transition:transform .7s var(--me-ease)}
+.me-click:active{transform:scale(.94)}
+.me-click:focus-visible{outline:2px solid #759ef1;outline-offset:3px;border-radius:6px}
+.me-burst{position:absolute;left:50%;top:45%;width:0;height:0;pointer-events:none}
+.me-burst i{position:absolute;left:-3px;top:-3px;width:6px;height:6px;border-radius:50%;background:#ff8db8;opacity:0}
+.me-burst i:nth-child(2n){background:#ffb48f;width:5px;height:5px}
+.me-burst i:nth-child(1){--a:-90deg}.me-burst i:nth-child(2){--a:-30deg}.me-burst i:nth-child(3){--a:30deg}.me-burst i:nth-child(4){--a:90deg}.me-burst i:nth-child(5){--a:150deg}.me-burst i:nth-child(6){--a:210deg}
+.me-click.is-burst .me-burst i{animation:me-burst .62s var(--me-enter) both}
+@keyframes me-burst{0%{opacity:1;transform:rotate(var(--a)) translateY(-6px) scale(1)}100%{opacity:0;transform:rotate(var(--a)) translateY(-26px) scale(.3)}}
+
+/* Hand-drawn note pointing up at the word. */
+.me-note{position:absolute;right:-4px;top:calc(100% - 2px);display:block;width:150px;height:40px;pointer-events:none;color:#087bff}
+.me-note svg{position:absolute;right:0;top:0;width:28px;height:28px;overflow:visible}
+.me-note path{stroke-width:1.7;stroke-dasharray:1;stroke-dashoffset:1}
+.me-note span{position:absolute;right:30px;top:20px;font-size:12px;line-height:1;white-space:nowrap;transform:rotate(-3deg);opacity:0}
+.me-sign{margin:46px 0 0;font-size:16px;line-height:1.6;color:var(--me-soft)}
+.me-likes{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0;padding:0;list-style:none}
+.me-likes li{padding:7px 12px;border-radius:999px;background:var(--tint);color:var(--tone);font-size:13px;line-height:1.2;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tone) 14%,transparent);transition:transform .45s var(--me-ease)}
+@media(hover:hover){.me-likes li:hover{transform:translateY(-2px) rotate(-2deg)}.me-likes li:nth-child(2):hover{transform:translateY(-2px) rotate(2deg)}}
+
+/* Played when the section is on screen and this tab is open. */
+.about-section[data-in-view] .about-panel-me:not([hidden]) .me-in{animation:me-rise .75s var(--me-enter) both;animation-delay:calc(var(--d) * 60ms + 60ms)}
+@keyframes me-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.about-section[data-in-view] .about-panel-me:not([hidden]) .me-click::before{transform:scaleX(1);transition-delay:.55s}
+.about-section[data-in-view] .about-panel-me:not([hidden]) .me-note path{stroke-dashoffset:0;transition:stroke-dashoffset .6s cubic-bezier(.65,0,.35,1) .8s}
+.about-section[data-in-view] .about-panel-me:not([hidden]) .me-note path+path{transition-delay:1.3s;transition-duration:.25s}
+.about-section[data-in-view] .about-panel-me:not([hidden]) .me-note span{opacity:1;transition:opacity .4s ease 1.4s}
+
+@media(max-width:650px){
+ .me-layout{grid-template-columns:1fr;gap:22px}
+ .me-profile{flex-direction:row;align-items:center;gap:16px}
+ .me-avatar{width:64px;height:64px;border-radius:18px}
+ .me-avatar img{border-radius:15px}
+ .me-status{width:14px;height:14px}
+ .me-name{font-size:16px}
+ .about-body .me-lead,.me-lead{font-size:19px}
+ .me-text,.me-sign{font-size:14px}
+ .me-sign{margin-top:42px}
+}
+@media(prefers-reduced-motion:reduce){
+ .me-status::after{animation:none}
+ .about-section .about-panel-me .me-in{animation:none!important}
+ .me-click::before{transform:scaleX(1);transition:none!important}
+ .me-note path{stroke-dashoffset:0;transition:none!important}
+ .me-note span{opacity:1;transition:none!important}
+ .me-click.is-burst .me-burst i{animation:none}
+ .me-avatar,.me-likes li{transition:none}
+}

@@ -114,3 +114,17 @@
     if (reduced.matches) folds.forEach(motion => motion.finish());
   });
 })();
+
+// About tab: the word "click" plays a small burst on hover (mouse) or tap.
+(() => {
+  const word = document.querySelector('.me-click');
+  if (!word) return;
+  const play = () => {
+    word.classList.remove('is-burst');
+    void word.offsetWidth; // restart the animation
+    word.classList.add('is-burst');
+  };
+  word.addEventListener('click', play);
+  word.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') play(); });
+  word.addEventListener('animationend', event => { if (event.target === word.querySelector('.me-burst i:last-child')) word.classList.remove('is-burst'); });
+})();

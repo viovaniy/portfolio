@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="structure.css?v=20261017-1">
   <link rel="stylesheet" href="work.css?v=14">
   <link rel="stylesheet" href="studio.css?v=23">
-  <link rel="stylesheet" href="about.css?v=20261017-2">
+  <link rel="stylesheet" href="about.css?v=20261018-2">
   <link rel="stylesheet" href="text-reveal.css?v=3">
 </head>
 <body>
@@ -113,9 +113,22 @@
           <button type="button" role="tab" id="about-tab-3" aria-controls="about-panel-3" aria-selected="false" tabindex="-1">Process</button>
         </div>
         <div class="about-panels" id="about-description">
-          <div class="about-panel" id="about-panel-0" role="tabpanel" aria-labelledby="about-tab-0" tabindex="0"><h3>A little about me</h3><div class="about-body">
-            <p>I’m Viovaniy, a motion designer working with SaaS brands and digital products.</p>
-            <p class="about-secondary">I like clean interfaces, playful details, and that moment when a small animation makes everything click. That’s the feeling I try to bring to my work.</p>
+          <div class="about-panel about-panel-me" id="about-panel-0" role="tabpanel" aria-labelledby="about-tab-0" tabindex="0"><h3 class="sr-only">A little about me</h3><div class="me-layout">
+            <div class="me-profile me-in" style="--d:0">
+              <span class="me-avatar"><img src="assets/avatar.png" width="88" height="88" alt="" draggable="false"><span class="me-status" aria-hidden="true"></span></span>
+              <p class="me-name">Viovaniy<span>Motion designer</span></p>
+            </div>
+            <div class="me-copy">
+              <p class="me-kicker me-in" style="--d:1">A little about me</p>
+              <p class="me-lead me-in" style="--d:2"><span class="me-ink">I’m Viovaniy, a motion designer</span> working with SaaS brands and digital products.</p>
+              <p class="me-text me-in" style="--d:3">I like clean interfaces, playful details, and that moment when a small animation makes everything <span class="me-click-wrap"><button type="button" class="me-click" aria-label="click — tap to play the moment" data-pointer-shape="circle">click<span class="me-burst" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span></button><span class="me-note" aria-hidden="true"><svg viewBox="0 0 40 40"><path pathLength="1" d="M5 34C16 35 27 30 31 21 33 16 33 11 31 5"/><path pathLength="1" d="m25 10 6-6 5 7"/></svg><span>that exact moment</span></span></span>.</p>
+              <p class="me-sign me-in" style="--d:4">That’s the feeling I try to bring to my work.</p>
+              <ul class="me-likes me-in" style="--d:5" aria-label="Things I like">
+                <li style="--tint:#eef5ff;--tone:#2a6fd6">Clean interfaces</li>
+                <li style="--tint:#f6edff;--tone:#9a4fd0">Playful details</li>
+                <li style="--tint:#fff0f4;--tone:#d8467a">Small animations</li>
+              </ul>
+            </div>
           </div></div>
           <div class="about-panel" id="about-panel-1" role="tabpanel" aria-labelledby="about-tab-1" tabindex="0" hidden inert><h3>What I make</h3><div class="about-body">
             <p>Product films that get to the point. Interfaces that feel alive. A launch with a little more personality.</p>
@@ -263,7 +276,7 @@
   <script src="dock-selection.js?v=3" defer></script>
   <script src="shimmer.js?v=3" defer></script>
   <script src="work.js?v=8" defer></script>
-  <script src="about.js?v=20261016-2" defer></script>
+  <script src="about.js?v=20261018-2" defer></script>
   <script src="studio.js?v=8" defer></script>
   <script src="text-reveal.js?v=2" defer></script>
   <script defer src="/_vercel/insights/script.js"></script>
