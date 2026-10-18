@@ -5,8 +5,15 @@
   sizeBackdrop();
   window.addEventListener('resize', sizeBackdrop, { passive: true });
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(([entry]) => section.toggleAttribute('data-in-view', entry.isIntersecting)).observe(section);
-  } else section.setAttribute('data-in-view', '');
+    new IntersectionObserver(([entry]) => {
+      section.toggleAttribute('data-in-view', entry.isIntersecting);
+      // Content entrance plays once, the first time the window is seen.
+      if (entry.isIntersecting && !section.classList.contains('is-revealed')) {
+        section.classList.add('is-revealed', 'is-first-reveal');
+        setTimeout(() => section.classList.remove('is-first-reveal'), 1600);
+      }
+    }).observe(section);
+  } else { section.setAttribute('data-in-view', ''); section.classList.add('is-revealed'); }
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const tabs = [...section.querySelectorAll('[role="tab"]')];
   const panels = [...section.querySelectorAll('[role="tabpanel"]')];
@@ -70,36 +77,42 @@
     minimized = value;
     minimize.setAttribute('aria-expanded', String(!value));
     minimize.setAttribute('aria-label', value ? 'Restore description' : 'Minimize description');
+    const card = section.querySelector('.about-card');
+    card.style.willChange = 'transform';
     fold(heading, value);
     fold(description, value);
+    Promise.all([...folds.values()].map(m => m.finished.catch(() => {}))).then(() => {
+      if (!folds.size) card.style.willChange = '';
+    });
   }
   minimize.addEventListener('click', () => setMinimized(!minimized));
-  // Zoom (green light): FLIP the window so the size change runs on the GPU.
-  // The new layout is applied once; a transform then eases from the old
-  // frame to the new one, so nothing is re-laid-out or repainted per frame.
-  let zoom;
+  // Zoom (green light): the content keeps its width; only the frosted frame,
+  // the title bar and the lights move, as GPU transforms (FLIP).
+  const surface = section.querySelector('.about-glass-surface');
+  const chrome = section.querySelector('.about-window-chrome');
+  const lights = section.querySelector('.about-window-lights');
+  const ZOOM = { duration: 460, easing: 'cubic-bezier(.32,.72,0,1)' };
+  let zooms = [];
   resize.addEventListener('click', () => {
     lockSection();
-    const first = glass.getBoundingClientRect(); // includes any running zoom
-    zoom?.cancel();
-    shake?.cancel();
+    const first = surface.getBoundingClientRect(); // includes a running zoom
+    zooms.forEach(z => z.cancel());
     section.classList.add('is-zooming');
     const enlarged = glass.classList.toggle('is-enlarged');
     resize.setAttribute('aria-pressed', String(enlarged));
     resize.setAttribute('aria-label', enlarged ? 'Restore window size' : 'Enlarge window');
-    const last = glass.getBoundingClientRect();
+    const last = surface.getBoundingClientRect();
     requestAnimationFrame(() => requestAnimationFrame(() => section.classList.remove('is-zooming')));
-    if (reduced.matches || !last.width || !last.height) return;
-    const dx = first.left - last.left;
-    const dy = first.top - last.top;
+    if (reduced.matches || !last.width) return;
     const sx = first.width / last.width;
-    const sy = first.height / last.height;
-    glass.style.willChange = 'transform';
-    zoom = glass.animate([
-      { transformOrigin: '0 0', transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` },
-      { transformOrigin: '0 0', transform: 'none' }
-    ], { duration: 460, easing: 'cubic-bezier(.32,.72,0,1)' });
-    zoom.onfinish = zoom.oncancel = () => { glass.style.willChange = ''; };
+    const dx = (first.left + first.width / 2) - (last.left + last.width / 2);
+    const frame = [{ transform: `translateX(${dx}px) scaleX(${sx})` }, { transform: 'none' }];
+    zooms = [
+      surface.animate(frame, ZOOM),
+      chrome.animate(frame, ZOOM),
+      // Undo the frame's horizontal scale so the round lights never stretch.
+      lights.animate([{ transform: `scaleX(${1 / sx})` }, { transform: 'none' }], ZOOM)
+    ];
   });
   section.querySelector('[data-window-action="refuse"]').addEventListener('click', () => {
     shake?.cancel();
@@ -118,30 +131,44 @@
   }
   positionSelection();
   new ResizeObserver(positionSelection).observe(tablist);
+  // Tab change: the outgoing panel fades and drifts away while the incoming one
+  // fades and drifts in, overlapping in the same grid cell (opacity/transform only).
+  const leaving = new Map();
+  const SWAP = 'cubic-bezier(.22,1,.36,1)';
   function select(index, focus = false) {
     setMinimized(false);
     if (focus) tabs[index].focus();
     if (index === active) return;
     const direction = index > active ? 1 : -1;
+    const previous = active;
     active = index;
     positionSelection();
     animation?.cancel();
     clearTimeout(selectionTimer);
+    leaving.forEach((motion, panel) => { motion.cancel(); panel.hidden = true; });
+    leaving.clear();
     tabs.forEach((tab, i) => {
       tab.classList.remove('is-selecting');
       tab.setAttribute('aria-selected', String(i === index));
       tab.tabIndex = i === index ? 0 : -1;
-      panels[i].hidden = i !== index;
       panels[i].inert = i !== index;
+      if (i !== index && i !== previous) panels[i].hidden = true;
     });
-    if (!reduced.matches) {
-      tabs[index].classList.add('is-selecting');
-      selectionTimer = setTimeout(() => tabs[index].classList.remove('is-selecting'), 480);
-    }
-    if (!reduced.matches) animation = panels[index].animate([
-      { opacity: 0, transform: `translateX(${direction * 12}px)` },
+    panels[index].hidden = false;
+    if (reduced.matches) { panels[previous].hidden = true; return; }
+    tabs[index].classList.add('is-selecting');
+    selectionTimer = setTimeout(() => tabs[index].classList.remove('is-selecting'), 480);
+    const out = panels[previous];
+    const exit = out.animate([
+      { opacity: 1, transform: 'translateX(0)' },
+      { opacity: 0, transform: `translateX(${direction * -10}px)` }
+    ], { duration: 200, easing: 'cubic-bezier(.4,0,1,1)', fill: 'forwards' });
+    leaving.set(out, exit);
+    exit.onfinish = () => { out.hidden = true; exit.cancel(); leaving.delete(out); };
+    animation = panels[index].animate([
+      { opacity: 0, transform: `translateX(${direction * 14}px)` },
       { opacity: 1, transform: 'translateX(0)' }
-    ], { duration: 300, easing: 'cubic-bezier(.22,1,.36,1)' });
+    ], { duration: 420, delay: 70, easing: SWAP, fill: 'backwards' });
   }
   tabs.forEach((tab, i) => {
     tab.addEventListener('click', () => select(i));

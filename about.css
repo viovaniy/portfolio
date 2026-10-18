@@ -139,9 +139,9 @@
 @keyframes me-burst{0%{opacity:1;transform:rotate(var(--a)) translateY(-6px) scale(1)}100%{opacity:0;transform:rotate(var(--a)) translateY(-26px) scale(.3)}}
 
 /* Played when the section is on screen and this tab is open. */
-.about-section[data-in-view] .about-panel-me:not([hidden]) .me-in{animation:me-rise .75s var(--me-enter) both;animation-delay:calc(var(--d) * 70ms + 60ms)}
+.about-section.is-first-reveal .about-panel-me:not([hidden]) .me-in{animation:me-rise .75s var(--me-enter) both;animation-delay:calc(var(--d) * 70ms + 60ms)}
 @keyframes me-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.about-section[data-in-view] .about-panel-me:not([hidden]) .me-click::before{transform:scaleX(1);transition-delay:.6s}
+.about-section.is-revealed .me-click::before{transform:scaleX(1);transition-delay:.6s}
 
 @media(max-width:760px){
  .me-layout{grid-template-columns:1fr}
@@ -174,3 +174,16 @@
 .about-window-lights .lights-in,.about-window-lights [aria-pressed="true"] .lights-out{display:none}
 .about-window-lights [aria-pressed="true"] .lights-in{display:block}
 @media(max-width:650px){.about-window-lights button svg{width:11px;height:11px}}
+
+/* ---------- Window motion ---------- */
+/* The frosted frame is its own layer, so zoom can scale the frame on the GPU
+   while the content stays put (no re-wrap, no stretch). Looks identical. */
+.about-glass{background:none;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;border-color:transparent}
+.about-glass-surface{position:absolute;inset:-1px;z-index:-1;border:1px solid #ffffffd9;border-radius:inherit;background:linear-gradient(120deg,#ffffffa6,#ffffff65);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);box-shadow:inset 0 1px 0 #fff,0 0 0 1px #40375412,0 8px 20px -10px #40375422,0 32px 70px -28px #40375440;pointer-events:none}
+@media(prefers-reduced-transparency:reduce){.about-glass-surface{background:#f5f7fc;-webkit-backdrop-filter:none;backdrop-filter:none}}
+@media(forced-colors:active){.about-glass-surface{background:Canvas;border-color:CanvasText;box-shadow:none}}
+/* Enlarged: the frame grows, the content keeps its width so text never re-wraps. */
+.about-glass.is-enlarged{padding-left:calc(clamp(24px,5vw,56px) + min(8vw,96px) / 2);padding-right:calc(clamp(24px,5vw,56px) + min(8vw,96px) / 2)}
+@media(max-width:650px){.about-glass.is-enlarged{padding-left:calc(14px + min(8vw,96px) / 2);padding-right:calc(14px + min(8vw,96px) / 2)}}
+.about-window-chrome{transform-origin:50% 0}
+.about-window-lights{transform-origin:0 50%}
