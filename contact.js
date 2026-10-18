@@ -80,6 +80,7 @@
   form.addEventListener('focusout', () => setTimeout(() => { if (!form.contains(document.activeElement)) highlight(null); }, 0));
 
   form.addEventListener('input', event => {
+    resetConversation();
     const key = event.target.closest('[data-key]')?.dataset.key;
     if (event.target.matches('.brief-field input')) fit(event.target);
     if (event.target === textarea) grow();
@@ -87,6 +88,20 @@
     setReady(false);
     render(key);
   });
+
+  const typing = root.querySelector('.im-typing');
+  const reply = root.querySelector('.im-reply');
+  const sentBubble = bubble;
+  let timers = [];
+  const later = (ms, fn) => timers.push(setTimeout(fn, ms));
+  function resetConversation() {
+    timers.forEach(clearTimeout);
+    timers = [];
+    typing.hidden = true;
+    reply.hidden = true;
+    sentBubble.classList.remove('is-sending');
+  }
+  const pop = el => { el.hidden = false; if (!reduced.matches) { el.classList.remove('im-pop'); void el.offsetWidth; el.classList.add('im-pop'); } };
 
   function setReady(ready) {
     root.classList.toggle('is-ready', ready);
@@ -119,8 +134,22 @@
     url.searchParams.set('text', text);
     document.getElementById('telegram-brief').href = url.href;
     status.textContent = '';
-    setReady(true);
-    document.getElementById('review-title').focus({ preventScroll: true });
+    // Send sequence: whoosh, viovaniy types for ~2s, replies, then the actions.
+    resetConversation();
+    setReady(false);
+    root.classList.add('is-ready');
+    const finish = () => {
+      setReady(true);
+      document.getElementById('review-title').focus({ preventScroll: true });
+    };
+    if (reduced.matches) { reply.hidden = false; finish(); }
+    else {
+      sentBubble.classList.add('is-sending');
+      later(550, () => sentBubble.classList.remove('is-sending'));
+      later(500, () => pop(typing));
+      later(2500, () => { typing.hidden = true; pop(reply); });
+      later(3000, finish);
+    }
     // On narrow screens the preview sits below; bring it into view.
     if (matchMedia('(max-width: 900px)').matches) {
       root.querySelector('.brief-preview').scrollIntoView({ behavior: reduced.matches ? 'instant' : 'smooth', block: 'center' });

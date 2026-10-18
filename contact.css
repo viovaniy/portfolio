@@ -142,3 +142,20 @@
 #project-brief label.brief-field{display:inline-block;font-size:inherit;line-height:inherit;color:var(--b-ink)}
 #project-brief label.brief-field-area{display:block}
 #project-brief label.brief-chip{display:inline-block;font-size:inherit;line-height:inherit;color:inherit}
+
+/* Send sequence: whoosh, typing dots, then a reply from viovaniy. */
+.brief-bubble.is-sending{animation:im-send .55s cubic-bezier(.22,1,.36,1)}
+@keyframes im-send{0%{transform:none}30%{transform:translateY(6px) scale(.97)}65%{transform:translateY(-4px) scale(1.01)}100%{transform:none}}
+.im-typing,.im-reply{align-self:flex-start;position:relative;margin:10px 0 0 4px;background:#e9e9eb;border-radius:19px}
+.im-typing::before,.im-typing::after,.im-reply::before,.im-reply::after{content:"";position:absolute;bottom:0;height:20px}
+.im-typing::before,.im-reply::before{left:-7px;width:20px;background:#e9e9eb;border-bottom-right-radius:16px 14px}
+.im-typing::after,.im-reply::after{left:-26px;width:26px;background:#fff;border-bottom-right-radius:10px}
+.im-typing{display:flex;align-items:center;gap:4px;height:36px;padding:0 13px}
+.im-typing[hidden],.im-reply[hidden]{display:none}
+.im-typing i{width:8px;height:8px;border-radius:50%;background:#9a9aa0;animation:im-dot 1.2s ease-in-out infinite}
+.im-typing i:nth-child(2){animation-delay:.15s}.im-typing i:nth-child(3){animation-delay:.3s}
+@keyframes im-dot{0%,60%,100%{opacity:.4;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+.im-reply{max-width:86%;padding:8px 13px 9px;color:#111;font-size:15px;line-height:1.36;letter-spacing:-.01em}
+.im-reply p{margin:0}
+.im-pop{animation:im-pop .5s cubic-bezier(.34,1.4,.5,1) both;transform-origin:0 100%}
+@keyframes im-pop{from{opacity:0;transform:scale(.6) translateY(8px)}to{opacity:1;transform:none}}
