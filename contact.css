@@ -1,0 +1,117 @@
+/* Contact: a fill-in-the-blanks letter with a live Telegram-style preview. */
+.contact-section{--b-ink:#1f1f22;--b-grey:#9b9ba1;--b-soft:#74747e;--b-hair:rgba(28,25,40,.08);--b-ease:cubic-bezier(.22,1,.36,1);--b-spring:cubic-bezier(.34,1.4,.5,1);--b-sun:linear-gradient(90deg,#ff8db8,#ffb48f)}
+.contact-section .form-intro{margin-bottom:40px}
+.brief{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);gap:clamp(28px,4vw,56px);align-items:start}
+.brief:not(.is-live) .brief-preview{display:none}
+
+/* ---------- the letter ---------- */
+.brief-letter{display:block;max-width:none;margin:0}
+.brief-line{margin:0 0 22px;padding:0;border:0;min-width:0;font-size:clamp(22px,2.3vw,28px);line-height:1.6;font-weight:500;letter-spacing:-.025em;color:var(--b-grey)}
+.brief-line legend{float:left;padding:0;margin:0 .35em 0 0;line-height:1.6}
+
+.brief-field{position:relative;display:inline-block;vertical-align:baseline;max-width:100%;color:var(--b-ink)}
+.brief-field::after{content:"";position:absolute;left:0;right:0;bottom:.08em;height:2px;border-radius:2px;background:var(--b-sun);transform:scaleX(0);transform-origin:0 50%;transition:transform .55s var(--b-ease)}
+.brief-field::before{content:"";position:absolute;left:0;right:0;bottom:.08em;height:2px;border-radius:2px;background:#e3e3e8;transition:background-color .3s}
+.brief-field:focus-within::after,.brief-field.is-filled::after{transform:scaleX(1)}
+.brief-field.is-filled:not(:focus-within)::after{opacity:.55;transition:transform .55s var(--b-ease),opacity .3s}
+.contact-section .brief-field input,.contact-section .brief-field textarea{display:inline-block;width:auto;min-width:4ch;max-width:100%;margin:0;padding:0 .08em;min-height:0;border:0;border-radius:0;background:transparent;font:inherit;line-height:1.5;letter-spacing:inherit;color:var(--b-ink);outline:none;caret-color:#ff7eaa;vertical-align:baseline}
+.contact-section .brief-field input{width:calc(var(--w,10ch) + .2em);transition:width .25s var(--b-ease)}
+.contact-section .brief-field :is(input,textarea)::placeholder{color:#c4c4ca;opacity:1}
+.contact-section .brief-field :is(input,textarea):focus{outline:none;background:transparent}
+.brief-field:has(:focus-visible){outline:none}
+
+.brief-line-area{display:block}
+.brief-field-area{display:block;margin-top:2px}
+.contact-section .brief-field-area textarea{display:block;width:100%;resize:none;overflow:hidden;min-height:1.5em;padding-bottom:.12em}
+
+/* Invalid: underline turns pink and the field gives a small shake. */
+.brief-field.is-invalid::before{background:#ff8db8}
+.brief-field.is-invalid{animation:brief-shake .42s var(--b-ease)}
+@keyframes brief-shake{0%,100%{translate:0}20%{translate:-6px}45%{translate:5px}70%{translate:-3px}}
+
+/* Chips */
+.brief-choice{display:block}
+.brief-chips{display:inline-flex;flex-wrap:wrap;gap:8px;vertical-align:middle;padding-top:2px}
+.brief-chip{position:relative;display:inline-block;cursor:pointer}
+.brief-chip input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;min-height:0}
+.brief-chip span{display:inline-block;padding:7px 14px;border-radius:999px;background:#fff;color:#55555e;font-size:15px;font-weight:500;letter-spacing:-.01em;line-height:1.3;box-shadow:0 0 0 1px var(--b-hair),0 1px 2px rgba(28,25,40,.04);transition:transform .45s var(--b-spring),background-color .25s,color .25s,box-shadow .25s}
+@media(hover:hover){.brief-chip:hover span{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(28,25,40,.12),0 6px 14px -8px rgba(28,25,40,.3)}}
+.brief-chip:active span{transform:scale(.95);transition-duration:.12s}
+.brief-chip input:checked+span{background:linear-gradient(#3a3a3e,#1c1c1e);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 8px 18px -10px rgba(28,25,40,.6);animation:brief-pop .45s var(--b-spring)}
+.brief-chip input:focus-visible+span{outline:2px solid #759ef1;outline-offset:2px}
+@keyframes brief-pop{0%{scale:.9}60%{scale:1.06}100%{scale:1}}
+
+/* Send */
+.brief-actions{display:flex;align-items:center;flex-wrap:wrap;gap:16px;margin-top:26px}
+.brief-send{display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 22px 0 24px;border:0;border-radius:999px;background:linear-gradient(#3a3a3e,#1c1c1e);color:#fff;font:inherit;font-size:16px;font-weight:550;letter-spacing:-.01em;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 2px 4px rgba(28,25,40,.12),0 16px 30px -14px rgba(28,25,40,.55);cursor:pointer;position:relative;overflow:hidden;isolation:isolate;transition:transform .45s var(--b-spring),box-shadow .35s var(--b-ease)}
+.brief-send svg{width:18px;height:18px;stroke-width:2;transition:transform .45s var(--b-spring)}
+.brief-send::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(100deg,#ff7eaa,#ff9f86 55%,#ffbf8a);opacity:0;transition:opacity .5s var(--b-ease)}
+.brief.is-complete .brief-send::before{opacity:1}
+.brief.is-complete .brief-send{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 2px 4px rgba(224,86,127,.15),0 18px 34px -14px rgba(255,110,150,.7)}
+@media(hover:hover){.brief-send:hover{transform:translateY(-2px)}.brief-send:hover svg{transform:translate(2px,-2px)}}
+.brief-send:active{transform:scale(.96);transition-duration:.12s}
+.brief-send:focus-visible{outline:3px solid #91baff;outline-offset:4px}
+.brief-error{margin:0;font-size:14px;color:#d8467a;min-height:1.4em}
+
+/* ---------- the preview ---------- */
+.brief-preview{position:sticky;top:96px;border-radius:28px;background:#fff;box-shadow:inset 0 1px 0 #fff,0 0 0 1px var(--b-hair),0 10px 24px -12px rgba(28,25,40,.12),0 40px 80px -40px rgba(28,25,40,.28);overflow:hidden}
+.brief-chat-head{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(28,25,40,.06)}
+.brief-chat-avatar{position:relative;flex:none;width:40px;height:40px;border-radius:12px;background:linear-gradient(160deg,#ffe3ec,#f6bfcf);box-shadow:0 0 0 2px #fff,0 2px 6px rgba(28,25,40,.12)}
+.brief-chat-avatar img{width:100%;height:100%;border-radius:12px;object-fit:cover;transform:scale(1.16);transform-origin:50% 55%;clip-path:inset(0 round 12px)}
+.brief-chat-avatar i{position:absolute;right:-3px;bottom:-3px;width:11px;height:11px;border-radius:50%;background:#34c759;border:2px solid #fff}
+.brief-chat-who{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.brief-chat-who strong{font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--b-ink)}
+.brief-chat-who small{font-size:12px;color:var(--b-grey);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brief-progress{position:relative;flex:none;width:38px;height:38px;display:grid;place-items:center}
+.brief-progress svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.brief-progress circle{fill:none;stroke:#efeff3;stroke-width:3}
+.brief-progress .brief-progress-bar{stroke:#ff8db8;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--p,0));transition:stroke-dashoffset .6s var(--b-ease)}
+.brief-progress b{font-size:10px;font-weight:600;color:var(--b-soft);font-variant-numeric:tabular-nums}
+
+.brief-chat{padding:22px 16px 20px;min-height:260px;display:flex;flex-direction:column;justify-content:flex-end;background:radial-gradient(120% 70% at 100% 100%,#fff1f6,transparent 60%),#fafafb}
+.brief-bubble{position:relative;align-self:flex-end;max-width:100%;padding:12px 14px 22px;border-radius:20px 20px 6px 20px;background:linear-gradient(160deg,#4aa6ff,#1f7fef);color:#fff;font-size:14px;line-height:1.45;box-shadow:0 10px 24px -14px rgba(31,127,239,.7);transform-origin:100% 100%;transition:transform .45s var(--b-spring)}
+.brief-bubble.is-bump{transform:scale(1.012)}
+.brief-bubble p{margin:0 0 4px;overflow-wrap:anywhere}
+.brief-bubble p:first-child{margin-bottom:10px}
+.brief-bubble [data-part="project"]{margin:10px 0;white-space:pre-wrap}
+.brief-k{color:rgba(255,255,255,.66)}
+.brief-bubble [data-part]{border-radius:4px;transition:background-color .3s,box-shadow .3s}
+.brief-bubble [data-part]:empty::before{content:attr(data-empty);color:rgba(255,255,255,.5);font-style:italic}
+.brief-bubble [data-part].is-active{background:rgba(255,255,255,.18);box-shadow:0 0 0 3px rgba(255,255,255,.18)}
+.brief-ticks{position:absolute;right:12px;bottom:6px;width:18px;height:12px;color:rgba(255,255,255,.55);transition:color .3s}
+.brief-ticks svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.brief-ticks path+path{opacity:0;transition:opacity .3s}
+.brief.is-ready .brief-ticks{color:#fff}
+.brief.is-ready .brief-ticks path+path{opacity:1}
+
+/* Ready state */
+.brief-ready{padding:16px 18px 18px;border-top:1px solid rgba(28,25,40,.06)}
+.brief-ready h3{margin:0 0 12px;font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--b-ink);outline:none}
+.brief-ready-actions{display:flex;flex-wrap:wrap;gap:8px}
+.brief-tg{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:999px;background:linear-gradient(160deg,#4aa6ff,#1f7fef);color:#fff;font-size:15px;font-weight:550;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 10px 22px -12px rgba(31,127,239,.8);transition:transform .45s var(--b-spring)}
+.brief-tg svg{width:17px;height:17px;stroke-width:1.8;stroke-linejoin:round}
+@media(hover:hover){.brief-tg:hover{transform:translateY(-2px)}}
+.brief-tg:active{transform:scale(.96)}
+.brief-copy{height:44px;padding:0 16px;border:0;border-radius:999px;background:#f2f2f5;color:#3a3a40;font:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:background-color .2s,transform .3s var(--b-spring)}
+@media(hover:hover){.brief-copy:hover{background:#e9e9ee}}
+.brief-copy:active{transform:scale(.96)}
+.brief-ready .copy-status{margin:10px 0 0;font-size:12px;color:var(--b-soft);min-height:0}
+.brief-ready .copy-status:empty{display:none}
+
+@media(max-width:900px){
+ .brief{grid-template-columns:1fr}
+ .brief-preview{position:relative;top:auto}
+}
+@media(max-width:650px){
+ .brief-line{font-size:21px;margin-bottom:18px}
+ .brief-chip span{font-size:14px;padding:7px 12px}
+ .brief-preview{border-radius:24px}
+}
+@media(prefers-reduced-motion:reduce){
+ .brief *,.brief *::before,.brief *::after{transition:none!important;animation:none!important}
+}
+
+/* Neutralise the previous form's #project-brief label rule. */
+#project-brief label.brief-field{display:inline-block;font-size:inherit;line-height:inherit;color:var(--b-ink)}
+#project-brief label.brief-field-area{display:block}
+#project-brief label.brief-chip{display:inline-block;font-size:inherit;line-height:inherit;color:inherit}

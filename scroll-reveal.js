@@ -12,7 +12,8 @@
     ['.work-item', 'pop'],
     ['.gallery-footer', 'rise'],
     ['.products-section .contact-button', 'rise'],
-    ['#project-brief .form-row > label, #project-brief > label, #project-brief .brief-submit', 'rise'],
+    ['#project-brief .brief-line, #project-brief .brief-actions', 'rise'],
+    ['.brief-preview', 'pop'],
     // The macOS window rises as one piece (its parts move together, so the
     // live glass blur keeps working); the sky behind it stays still.
     ['.about-glass', 'group']
