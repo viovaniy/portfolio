@@ -87,7 +87,7 @@
   // Particles live in a fixed layer so the preview's rounded clip never cuts
   // them; transforms and opacity only, then the layer is removed.
   const COLORS = ['#0b84fe', '#ff7eaa', '#ffb48f', '#b596f2', '#34c759', '#ffd36e'];
-  function confetti(origin) {
+  function confetti(origin, count = 24, reach = 1) {
     const r = origin.getBoundingClientRect();
     const layer = document.createElement('div');
     layer.className = 'im-confetti';
@@ -95,7 +95,6 @@
     layer.style.left = `${r.left + r.width / 2}px`;
     layer.style.top = `${r.top + r.height / 2}px`;
     document.body.append(layer);
-    const count = 24;
     let longest = 0;
     for (let i = 0; i < count; i++) {
       const piece = document.createElement('i');
@@ -105,7 +104,7 @@
       layer.append(piece);
       // Mostly upward and outward, a few sideways.
       const angle = (-90 + (Math.random() * 2 - 1) * 80) * Math.PI / 180;
-      const distance = 46 + Math.random() * 54;
+      const distance = (46 + Math.random() * 54) * reach;
       const dx = Math.cos(angle) * distance;
       const dy = Math.sin(angle) * distance;
       const spin = (Math.random() < .5 ? -1 : 1) * (180 + Math.random() * 360);
@@ -161,6 +160,47 @@
     }
   }
 
+  const done = root.querySelector('.brief-done');
+  const doneTg = done.querySelector('.brief-done-tg');
+  function showDone() {
+    root.classList.remove('is-opened');
+    if (reduced.matches) {
+      root.classList.add('is-done');
+      done.hidden = false;
+      done.querySelector('.brief-done-title').focus({ preventScroll: true });
+      return;
+    }
+    root.classList.add('is-folding');
+    later(420, () => {
+      root.classList.remove('is-folding');
+      root.classList.add('is-done');
+      done.hidden = false;
+      done.classList.remove('is-in'); void done.offsetWidth; done.classList.add('is-in');
+      done.querySelector('.brief-done-title').focus({ preventScroll: true });
+      if (matchMedia('(max-width: 900px)').matches) done.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
+  function hideDone() {
+    root.classList.remove('is-done', 'is-folding', 'is-opened');
+    done.hidden = true;
+  }
+  done.querySelector('.brief-edit').addEventListener('click', () => {
+    hideDone();
+    resetConversation();
+    setReady(false);
+    if (!reduced.matches) form.animate([{ opacity: 0, transform: 'translateY(12px)', filter: 'blur(5px)' }, { opacity: 1, transform: 'none', filter: 'blur(0)' }],
+      { duration: 520, easing: 'cubic-bezier(.16,1,.3,1)' });
+    form.elements.namedItem('project').focus({ preventScroll: true });
+  });
+  // Opening Telegram is the moment the brief actually leaves the site.
+  function opened(origin) {
+    const first = !root.classList.contains('is-opened');
+    root.classList.add('is-opened');
+    if (first && !reduced.matches) confetti(origin, 40, 1.6);
+  }
+  doneTg.addEventListener('click', () => opened(doneTg));
+  document.getElementById('telegram-brief').addEventListener('click', event => opened(event.currentTarget));
+
   form.addEventListener('submit', event => {
     event.preventDefault();
     const missing = required.filter(key => !value(key));
@@ -181,15 +221,13 @@
     const url = new URL('https://t.me/designmevova');
     url.searchParams.set('text', text);
     document.getElementById('telegram-brief').href = url.href;
+    doneTg.href = url.href;
     status.textContent = '';
     // Send sequence: whoosh, viovaniy types for ~2s, replies, then the actions.
     resetConversation();
     setReady(false);
     root.classList.add('is-ready');
-    const finish = () => {
-      setReady(true);
-      document.getElementById('review-title').focus({ preventScroll: true });
-    };
+    const finish = () => setReady(true);
     if (reduced.matches) { reply.hidden = false; finish(); }
     else {
       sentBubble.classList.add('is-sending');
@@ -198,12 +236,14 @@
       later(2500, () => { typing.hidden = true; pop(reply); });
       later(3000, finish);
     }
-    // On narrow screens the preview sits below; bring it into view.
-    if (matchMedia('(max-width: 900px)').matches) {
-      root.querySelector('.brief-preview').scrollIntoView({ behavior: reduced.matches ? 'instant' : 'smooth', block: 'center' });
-    }
+    showDone();
   });
 
+  root.querySelector('.brief-copy-link').addEventListener('click', async () => {
+    const note = root.querySelector('.brief-copy-status');
+    try { await navigator.clipboard.writeText(briefText.value); note.textContent = 'Copied ✓'; }
+    catch { note.textContent = 'Couldn’t copy — use Continue in Telegram.'; }
+  });
   document.getElementById('copy-brief').addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(briefText.value);

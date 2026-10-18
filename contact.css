@@ -180,3 +180,45 @@
 .im-confetti .is-dot{width:8px;height:8px;border-radius:50%}
 .im-confetti .is-strip{width:12px;height:4.5px;border-radius:2px}
 .im-confetti .is-star{width:12px;height:12px;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+
+/* ---------- After sending: the letter folds into a confirmation card ---------- */
+.brief-done{grid-column:1;grid-row:1;align-self:start;padding:34px 34px 30px;border-radius:28px;background:#fff;box-shadow:inset 0 1px 0 #fff,0 0 0 1px var(--b-hair),0 10px 24px -12px rgba(28,25,40,.12),0 40px 80px -40px rgba(28,25,40,.25);text-align:left}
+.brief-done[hidden]{display:none}
+.brief.is-done #project-brief{display:none}
+.brief.is-folding #project-brief{animation:brief-fold .45s cubic-bezier(.4,0,.2,1) forwards;transform-origin:30% 0}
+@keyframes brief-fold{to{opacity:0;transform:translateY(-14px) scale(.96);filter:blur(6px)}}
+.brief-done.is-in{animation:brief-done-in .7s cubic-bezier(.16,1,.3,1) both}
+@keyframes brief-done-in{from{opacity:0;transform:translateY(18px) scale(.97);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+.brief-done-mark{display:block;width:56px;height:56px;margin-bottom:20px}
+.brief-done-mark svg{width:100%;height:100%;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.brief-done-mark circle{fill:#0b84fe;stroke:none;transform-origin:50% 50%;transition:fill .5s ease}
+.brief-done-mark path{stroke:#fff;stroke-width:4;stroke-dasharray:32;stroke-dashoffset:32}
+.brief-done.is-in .brief-done-mark circle{animation:brief-mark-pop .6s cubic-bezier(.34,1.5,.5,1) .15s both}
+.brief-done.is-in .brief-done-mark path{animation:brief-mark-draw .45s cubic-bezier(.65,0,.35,1) .45s forwards}
+.brief-done:not(.is-in) .brief-done-mark path{stroke-dashoffset:0}
+@keyframes brief-mark-pop{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
+@keyframes brief-mark-draw{to{stroke-dashoffset:0}}
+.brief-done-title{margin:0;font-size:clamp(24px,2.6vw,32px);line-height:1.2;font-weight:560;letter-spacing:-.03em;color:var(--b-ink);outline:none}
+.brief-done-text{margin:12px 0 0;max-width:440px;font-size:16px;line-height:1.55;color:var(--b-soft)}
+.brief-done .is-opened-text,.brief.is-opened .brief-done .is-ready-text{display:none}
+.brief.is-opened .brief-done .is-opened-text{display:inline}
+.brief.is-opened .brief-done-mark circle{fill:#34c759}
+.brief.is-opened .brief-done-title,.brief.is-opened .brief-done-text{animation:brief-swap .5s cubic-bezier(.22,1,.36,1)}
+@keyframes brief-swap{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.brief-done-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.brief-done-tg{display:inline-flex;align-items:center;gap:9px;height:52px;padding:0 24px;border-radius:999px;background:#0b84fe;color:#fff;font-size:16px;font-weight:550;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 14px 28px -14px rgba(11,132,254,.85);transition:transform .45s var(--b-spring)}
+.brief-done-tg svg{width:18px;height:18px;stroke-width:1.8;stroke-linejoin:round}
+@media(hover:hover){.brief-done-tg:hover{transform:translateY(-2px)}}
+.brief-done-tg:active{transform:scale(.96)}
+.brief-edit{height:52px;padding:0 20px;border:0;border-radius:999px;background:#f2f2f5;color:#3a3a40;font:inherit;font-size:15px;font-weight:500;cursor:pointer;transition:background-color .2s,transform .3s var(--b-spring)}
+@media(hover:hover){.brief-edit:hover{background:#e9e9ee}}
+.brief-edit:active{transform:scale(.96)}
+.brief-done-tg:focus-visible,.brief-edit:focus-visible{outline:3px solid #91baff;outline-offset:3px}
+#project-brief{grid-column:1;grid-row:1}
+@media(max-width:900px){.brief-done,#project-brief{grid-row:auto}.brief-preview{grid-row:auto}}
+@media(max-width:650px){.brief-done{padding:26px 22px 24px;border-radius:24px}.brief-done-tg,.brief-edit{height:48px}}
+.brief.is-done .brief-ready{display:none}
+.brief-done-copy{margin:16px 0 0;font-size:14px;color:var(--b-soft)}
+.brief-copy-link{padding:0;border:0;background:none;font:inherit;color:#0b84fe;cursor:pointer}
+@media(hover:hover){.brief-copy-link:hover{text-decoration:underline;text-underline-offset:3px}}
+.brief-copy-status:not(:empty){margin-left:8px}
