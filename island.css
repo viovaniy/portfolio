@@ -1,11 +1,10 @@
 /* Dock "island": spring-driven pill, hover ghost and one morphing label.
    Positions/sizes are written by island.js; colours keep the black dock. */
-.bottom-nav.has-island>a{z-index:1}
+.bottom-nav.has-island>a{z-index:1;transition:none}
 .bottom-nav.has-island>a,.bottom-nav.has-island>a:is(:hover,:focus-visible,[aria-current="location"]){background:transparent}
 .bottom-nav.has-island .nav-tooltip{display:none}
 .island-pill,.island-ghost{position:absolute;left:0;top:0;width:54px;height:54px;border-radius:999px;pointer-events:none;z-index:0;will-change:transform}
-.island-ghost{background:#ffffff14;opacity:0;transition:opacity .22s ease}
-.island-ghost.is-on{opacity:1}
+.island-ghost{background:#ffffff14;opacity:0}
 .island-pill{background:#2c2c2e;opacity:0;transition:opacity .3s ease,background-color .25s ease;box-shadow:inset 0 1px 0 #ffffff0d}
 .bottom-nav[data-revealed="true"] .island-pill{opacity:1}
 .island-pill.is-hot{background:#3b3b3e}

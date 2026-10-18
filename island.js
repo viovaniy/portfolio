@@ -26,11 +26,11 @@
   const spring = (value = 0, stiffness = 420, damping = 34) => ({ value, velocity: 0, target: value, stiffness, damping });
   const settled = s => Math.abs(s.target - s.value) < .01 && Math.abs(s.velocity) < .01;
   const sel = { left: spring(0, 520, 40), right: spring(0, 520, 40) };
-  const ghost = { left: spring(0, 600, 44), right: spring(0, 600, 44) };
+  const ghost = { left: spring(0, 600, 44), right: spring(0, 600, 44), alpha: spring(0, 520, 46) };
   const tip = { x: spring(0, 520, 42), w: spring(0, 520, 42), open: spring(0, 380, 30) };
   const bar = { press: spring(0, 600, 36), stretch: spring(0, 300, 30) };
   const icons = links.map(() => spring(0, 700, 30));
-  const all = [sel.left, sel.right, ghost.left, ghost.right, tip.x, tip.w, tip.open, bar.press, bar.stretch, ...icons];
+  const all = [sel.left, sel.right, ghost.left, ghost.right, ghost.alpha, tip.x, tip.w, tip.open, bar.press, bar.stretch, ...icons];
 
   let size = 54, top = 9;
   let active = -1;
@@ -43,6 +43,10 @@
   let tipLabel = '';
   let frame = 0, last = 0;
   let pressed = null;
+  let focused = null;
+  const litCache = [];
+  let boxes = [];
+  const measureBoxes = () => { boxes = links.map(link => ({ left: link.offsetLeft, width: link.offsetWidth })); };
 
   const geometry = i => ({ left: links[i].offsetLeft, width: links[i].offsetWidth, top: links[i].offsetTop });
   const label = i => links[i].querySelector('.nav-tooltip')?.textContent.trim() || links[i].getAttribute('aria-label') || '';
@@ -61,6 +65,27 @@
     ghostEl.style.width = `${gw}px`;
     ghostEl.style.height = `${gh}px`;
     ghostEl.style.transform = `translate3d(${ghost.left.value}px, ${top + (size - gh) / 2}px, 0)`;
+    const alpha = Math.max(0, Math.min(1, ghost.alpha.value));
+    ghostEl.style.opacity = alpha.toFixed(3);
+
+    // Icon colour follows the circles: how much of each icon the pill or the
+    // ghost actually covers this frame decides how white it is.
+    const pillL = sel.left.value, pillR = sel.left.value + w;
+    const ghostL = ghost.left.value, ghostR = ghost.left.value + gw;
+    links.forEach((link, i) => {
+      const box = boxes[i];
+      if (!box) return;
+      const L = box.left, R = box.left + box.width, W = box.width;
+      const cover = (a, b) => Math.max(0, Math.min(R, b) - Math.max(L, a)) / W;
+      let lit = Math.max(cover(pillL, pillR), cover(ghostL, ghostR) * alpha, link === focused ? 1 : 0);
+      lit = Math.min(1, Math.max(0, (lit - .2) / .55));
+      lit = lit * lit * (3 - 2 * lit);
+      if (Math.abs(lit - (litCache[i] ?? -1)) > .004) {
+        litCache[i] = lit;
+        const c = Math.round(169 + (255 - 169) * lit);
+        link.style.color = `rgb(${c}, ${c}, ${Math.min(255, c + 1)})`;
+      }
+    });
 
     // The bar breathes with the travelling pill and gives under a press.
     bar.stretch.target = Math.min(1, stretch / 1.4);
@@ -120,6 +145,7 @@
 
   // ---------- selection ----------
   function syncSelection(animate) {
+    measureBoxes();
     const i = links.findIndex(link => link.getAttribute('aria-current') === 'location');
     if (i < 0) return;
     const g = geometry(i);
@@ -149,8 +175,9 @@
     hovered = i;
     if (i < 0 || !finePointer.matches) {
       ghostVisible = false;
-      ghostEl.classList.remove('is-on');
+      ghost.alpha.target = 0;
       pillEl.classList.remove('is-hot');
+      wake();
       return;
     }
     const g = geometry(i);
@@ -162,7 +189,7 @@
       ghost.left.velocity = ghost.right.velocity = 0;
     }
     ghostVisible = true;
-    ghostEl.classList.add('is-on');
+    ghost.alpha.target = 1;
     pillEl.classList.toggle('is-hot', i === active);
     wake();
   }
@@ -247,9 +274,10 @@
       showTip(i);
     });
     link.addEventListener('focus', () => {
-      if (link.matches(':focus-visible')) { clearTimeout(hideTimer); showTip(i); }
+      if (link.matches(':focus-visible')) { focused = link; clearTimeout(hideTimer); showTip(i); wake(); }
     });
-    link.addEventListener('blur', () => { if (tipIndex === i) hideTip(60); if (pressed?.i === i) release(null, true); });
+    link.addEventListener('blur', () => {
+      if (focused === link) { focused = null; wake(); } if (tipIndex === i) hideTip(60); if (pressed?.i === i) release(null, true); });
     link.addEventListener('pointerdown', event => {
       if (event.button !== 0 || !event.isPrimary) return;
       // Suppress native mouse-down link handling (focus/drag cursor refresh);
