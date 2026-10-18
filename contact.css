@@ -284,3 +284,9 @@
 .brief-field-area .brief-shimmer{white-space:pre-wrap;overflow-wrap:break-word;padding:0 .08em .12em}
 .brief-field.is-shimmering :is(input,textarea){color:transparent!important;-webkit-text-fill-color:transparent}
 @keyframes brief-shimmer{from{background-position:100% 0}to{background-position:0 0}}
+
+/* Both windows (sent card and iMessage) share one outline and corner radius.
+   The outline is drawn on top, so the Messages header can't cover it. */
+.brief-done,.brief-preview{position:relative;border-radius:28px;box-shadow:0 10px 24px -12px rgba(28,25,40,.13),0 40px 80px -40px rgba(28,25,40,.28)}
+.brief-done::after,.brief-preview::after{content:"";position:absolute;inset:0;z-index:5;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(28,25,40,.09);pointer-events:none}
+@media(max-width:650px){.brief-done,.brief-preview{border-radius:24px}}

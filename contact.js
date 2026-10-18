@@ -275,8 +275,8 @@
       root.classList.remove('is-sending-chat');
       if (ok) {
         setState('is-sent');
-        const name = value('name'), contact = value('contact');
-        sentText.textContent = `Thank you, ${name}. I’ll review your brief and reply to ${contact} within one business day.`;
+        const name = value('name');
+        sentText.textContent = `Thank you, ${name}. I’ll review the details and get back to you as soon as possible.`;
         root.classList.add('is-ready');
         // iMessage: Sent → Read → a heart tapback on the message.
         readTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
