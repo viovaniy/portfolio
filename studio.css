@@ -91,15 +91,19 @@
 .studio-sunset::before{
  background:
   radial-gradient(closest-side at 52% 30%,#f1c8ff80,#f6d4fb40 55%,#fff0 100%),
-  radial-gradient(closest-side at 50% 47%,#ffb3d1d9,#ffc3dc9e 34%,#ffd7e652 64%,#fff0 100%),
+  radial-gradient(closest-side at 50% 47%,#ffadcdf2,#ffb8d5d9 40%,#ffc9dfa6 62%,#ffdbe952 82%,#fff0 100%),
   radial-gradient(closest-side at 54% 68%,#ffc9bc8c,#ffd9cc40 58%,#fff0 100%)}
 .studio-sunset::after{opacity:0;
  background:
   radial-gradient(closest-side at 52% 30%,#ffd9c280,#ffe6d640 55%,#fff0 100%),
-  radial-gradient(closest-side at 50% 47%,#ffbf9cd9,#ffcfada3 34%,#ffe0c656 64%,#fff0 100%),
+  radial-gradient(closest-side at 50% 47%,#ffbb96f2,#ffc4a2d9 40%,#ffd2b6a6 62%,#ffe2cf52 82%,#fff0 100%),
   radial-gradient(closest-side at 54% 68%,#ffb59a8c,#ffcdb740 58%,#fff0 100%)}
 @media(hover:hover){.studio-scene:hover .studio-sunset::after{opacity:1}}
 @media(max-width:800px){.studio-sunset{inset:-6% -14% -4% -14%}}
+/* A white silhouette of the building sits between the glow and the art, so the
+   multiply blend tints only the background; the building keeps its own colors. */
+.studio-cover{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;user-select:none}
+.studio-art{z-index:1}
 @media(prefers-reduced-motion:reduce){.studio-sunset::before,.studio-sunset::after{transition:none}}
 
 /* A quiet wiggle above the studio, independent of the scene's entrance. */
