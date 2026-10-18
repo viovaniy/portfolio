@@ -245,3 +245,18 @@
 .brief.is-ready .im-ready{display:inline-block;animation:im-status-in .4s cubic-bezier(.22,1,.36,1) both}
 .brief.is-failed .im-failed{display:inline-block;color:#ff3b30;animation:im-status-in .4s cubic-bezier(.22,1,.36,1) both}
 .brief-done-actions>*{align-items:center;justify-content:center}
+
+/* Equal-height columns: letter and iMessage card share top and bottom edges. */
+@media(min-width:901px){
+ .brief{align-items:stretch}
+ .brief-preview{position:relative;top:auto;display:flex;flex-direction:column}
+ .brief-chat{flex:1}
+ #project-brief{display:flex;flex-direction:column}
+ #project-brief .brief-line:first-of-type{margin-top:-.18em}
+ .brief-actions{position:relative;margin-top:auto;padding-top:26px}
+ .brief-done{align-self:stretch;display:flex;flex-direction:column;justify-content:center}
+}
+/* The error note sits under the button without adding height. */
+.brief-actions{position:relative}
+.brief-error{position:absolute;left:0;top:calc(100% + 10px);white-space:nowrap}
+@media(max-width:650px){.brief-error{white-space:normal;position:static}}

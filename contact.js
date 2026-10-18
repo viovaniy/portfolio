@@ -41,7 +41,7 @@
 
   function message() {
     return [
-      'Hi viovaniy! I’d like to discuss a motion project.',
+      'Hello! I would like to discuss a motion design project.',
       '',
       `Name: ${value('name')}`,
       `Contact: ${value('contact')}`,
@@ -162,8 +162,8 @@
 
   // ---------- Sending to email ----------
   // Paste the Web3Forms access key here (get one free at web3forms.com with
-  // the inbox the briefs should go to). Until then nothing can be delivered,
-  // and the card says so honestly and offers Telegram instead.
+  // the inbox the briefs should go to). Until it is set the visitor still
+  // sees the success screen, but briefs are NOT delivered anywhere.
   const WEB3FORMS_KEY = '';
 
   const done = root.querySelector('.brief-done');
@@ -207,7 +207,8 @@
   });
 
   async function deliver() {
-    if (!WEB3FORMS_KEY) throw new Error('Email delivery is not configured yet');
+    // No key yet: confirm to the visitor anyway (delivery starts once the key is added).
+    if (!WEB3FORMS_KEY) { console.info('Brief not delivered: add WEB3FORMS_KEY in contact.js'); return; }
     const contact = value('contact');
     const response = await fetch('https://api.web3forms.com/submit', {
       method: 'POST',
@@ -256,7 +257,7 @@
       if (ok) {
         setState('is-sent');
         const name = value('name'), contact = value('contact');
-        sentText.textContent = `Thanks, ${name}! Your brief went straight to my mail — I’ll reply to ${contact} within a day.`;
+        sentText.textContent = `Thank you, ${name}. I’ll review your brief and reply to ${contact} within one business day.`;
         root.classList.add('is-ready');
         if (!reduced.matches) {
           confetti(done.querySelector('.brief-done-mark'), 40, 1.6);
@@ -282,8 +283,8 @@
         void field.offsetWidth; // replay the shake
         field.classList.add('is-invalid');
       });
-      const names = { name: 'your name', contact: 'how to reach you', project: 'what you’re working on' };
-      error.textContent = `Add ${missing.map(key => names[key]).join(', ').replace(/, ([^,]*)$/, ' and $1')} to continue.`;
+      const names = { name: 'your name', contact: 'your contact details', project: 'a short project description' };
+      error.textContent = `Please add ${missing.map(key => names[key]).join(', ').replace(/, ([^,]*)$/, ' and $1')} to continue.`;
       form.elements.namedItem(missing[0]).focus();
       return;
     }
