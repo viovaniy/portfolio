@@ -136,16 +136,15 @@
     render(key);
   });
 
-  const typing = root.querySelector('.im-typing');
-  const reply = root.querySelector('.im-reply');
+  const tapback = root.querySelector('.im-tapback');
+  const readTime = root.querySelector('[data-read-time]');
   const sentBubble = bubble;
   let timers = [];
   const later = (ms, fn) => timers.push(setTimeout(fn, ms));
   function resetConversation() {
     timers.forEach(clearTimeout);
     timers = [];
-    typing.hidden = true;
-    reply.hidden = true;
+    root.classList.remove('is-read', 'is-loved');
     sentBubble.classList.remove('is-sending');
   }
   const pop = el => { el.hidden = false; if (!reduced.matches) { el.classList.remove('im-pop'); void el.offsetWidth; el.classList.add('im-pop'); } };
@@ -242,7 +241,7 @@
     setState('is-sending');
     root.classList.add('is-sending-chat');
     showCard();
-    // The chat whooshes the message and shows viovaniy typing while it sends.
+    // The chat whooshes the message while it sends.
     if (!reduced.matches) {
       sentBubble.classList.add('is-sending');
       later(550, () => sentBubble.classList.remove('is-sending'));
@@ -259,11 +258,13 @@
         const name = value('name'), contact = value('contact');
         sentText.textContent = `Thank you, ${name}. I’ll review your brief and reply to ${contact} within one business day.`;
         root.classList.add('is-ready');
+        // iMessage: Sent → Read → a heart tapback on the message.
+        readTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         if (!reduced.matches) {
           confetti(done.querySelector('.brief-done-mark'), 40, 1.6);
-          pop(typing);
-          later(1600, () => { typing.hidden = true; pop(reply); });
-        } else reply.hidden = false;
+          later(1400, () => root.classList.add('is-read'));
+          later(2300, () => root.classList.add('is-loved'));
+        } else root.classList.add('is-read', 'is-loved');
       } else {
         setState('is-failed');
         root.classList.add('is-failed');

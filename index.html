@@ -20,7 +20,8 @@
   <link rel="stylesheet" href="text-reveal.css?v=3">
   <link rel="stylesheet" href="island.css?v=2">
   <link rel="stylesheet" href="scroll-reveal.css?v=2">
-  <link rel="stylesheet" href="contact.css?v=19">
+  <link rel="stylesheet" href="contact.css?v=21">
+  <link rel="stylesheet" href="footer.css?v=3">
 </head>
 <body>
   <svg class="icon-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -301,6 +302,7 @@
           <div class="brief-chat">
             <p class="im-time" aria-hidden="true"><b>iMessage</b><span data-im-time>Today</span></p>
             <div class="brief-bubble" aria-live="polite">
+              <span class="im-tapback" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10.3A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.6c0 5.7-7.5 10.3-7.5 10.3Z"/></svg><i></i><i></i></span>
               <p><span data-part="greeting">Hello! I would like to discuss a motion design project.</span></p>
               <p><span class="brief-k">Name</span> <span data-part="name" data-empty="full name"></span></p>
               <p><span class="brief-k">Contact</span> <span data-part="contact" data-empty="email or Telegram"></span></p>
@@ -308,9 +310,7 @@
               <p><span class="brief-k">Budget</span> <span data-part="budget" data-empty="to be discussed"></span></p>
               <p><span class="brief-k">Timeline</span> <span data-part="timeline" data-empty="flexible"></span></p>
             </div>
-            <p class="im-status" aria-hidden="true"><span class="im-draft">Draft</span><span class="im-sending">Sending…</span><span class="im-ready">Delivered</span><span class="im-failed">Not Delivered</span></p>
-            <div class="im-typing" aria-hidden="true" hidden><i></i><i></i><i></i></div>
-            <div class="im-reply" role="status" hidden><p>Thank you for the brief. I’ll review the details and get back to you within one business day.</p></div>
+            <p class="im-status" aria-hidden="true"><span class="im-draft">Draft</span><span class="im-sending">Sending…</span><span class="im-ready">Sent</span><span class="im-read">Read <b data-read-time></b></span><span class="im-failed">Not Delivered</span></p>
           </div>
           <div id="brief-review" class="brief-ready" hidden>
             <h3 id="review-title" tabindex="-1">Your brief is ready.</h3>
@@ -330,6 +330,41 @@
       </div>
     </section>
   </main>
+  <footer class="site-footer" aria-labelledby="footer-title">
+    <div class="footer-glow" aria-hidden="true"></div>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-cta">
+          <p class="footer-title" id="footer-title"><span class="footer-muted">Let’s make something that</span> <span class="footer-chip" aria-hidden="true"><img src="assets/avatar.png" width="56" height="56" alt="" draggable="false"></span> moves.</p>
+          <a class="footer-start" href="#contact" data-pointer-fill><span>Start a project</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+        </div>
+        <nav class="footer-cols" aria-label="Footer">
+          <div class="footer-col">
+            <p class="footer-head">Navigate</p>
+            <ul>
+              <li><a href="#home">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#work">Work</a></li>
+              <li><a href="#products">Products</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <p class="footer-head">Elsewhere</p>
+            <ul>
+              <li><a href="https://t.me/designmevova" target="_blank" rel="noopener noreferrer">Telegram <span aria-hidden="true">↗</span></a></li>
+            </ul>
+            <p class="footer-status"><span class="footer-dot" aria-hidden="true"></span>Available for new projects</p>
+          </div>
+        </nav>
+      </div>
+      <p class="footer-wordmark" aria-label="viovaniy"><span style="--i:0">v</span><span style="--i:1">i</span><span style="--i:2">o</span><span style="--i:3">v</span><span style="--i:4">a</span><span style="--i:5">n</span><span style="--i:6">i</span><span style="--i:7">y</span></p>
+      <div class="footer-bottom">
+        <p>© <span data-year>2026</span> viovaniy · Motion design for SaaS &amp; digital products</p>
+        <button class="footer-top-btn" type="button">Back to top <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+      </div>
+    </div>
+  </footer>
   <div class="bottom-blur" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
   <nav class="bottom-nav" aria-label="Main navigation">
     <a draggable="false" href="#home" aria-label="Home" aria-current="location"><span class="magnetic-label"><svg class="home-icon" aria-hidden="true"><use href="#icon-home"/></svg></span><span class="nav-tooltip" aria-hidden="true">Home</span></a>
@@ -344,8 +379,9 @@
   <script src="navigation.js?v=20261018-1" defer></script>
   <script src="dock.js?v=20261018-1" defer></script>
   <script src="island.js?v=2" defer></script>
-  <script src="contact.js?v=10" defer></script>
-  <script src="scroll-reveal.js?v=3" defer></script>
+  <script src="contact.js?v=11" defer></script>
+  <script src="footer.js?v=3" defer></script>
+  <script src="scroll-reveal.js?v=4" defer></script>
   <script src="shimmer.js?v=3" defer></script>
   <script src="work.js?v=8" defer></script>
   <script src="about.js?v=20261018-10" defer></script>
