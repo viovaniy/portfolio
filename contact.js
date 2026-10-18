@@ -66,7 +66,15 @@
     }
     progress.style.setProperty('--p', (filled / keys.length).toFixed(3));
     progress.querySelector('b').textContent = `${filled} of ${keys.length} filled`;
-    root.classList.toggle('is-complete', required.every(key => value(key)));
+    const complete = required.every(key => value(key));
+    if (complete && !root.classList.contains('is-complete') && !reduced.matches && changedKey) {
+      const send = root.querySelector('.im-send');
+      send.classList.remove('is-celebrate');
+      void send.offsetWidth;
+      send.classList.add('is-celebrate');
+      setTimeout(() => send.classList.remove('is-celebrate'), 800);
+    }
+    root.classList.toggle('is-complete', complete);
     if (changedKey && !reduced.matches) {
       bubble.classList.add('is-bump');
       clearTimeout(bumpTimer);
