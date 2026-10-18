@@ -99,7 +99,7 @@
   radial-gradient(closest-side at 50% 47%,#ffbb96f2,#ffc4a2d9 40%,#ffd2b6a6 62%,#ffe2cf52 82%,#fff0 100%),
   radial-gradient(closest-side at 54% 68%,#ffb59a8c,#ffcdb740 58%,#fff0 100%)}
 @media(hover:hover){.studio-scene:hover .studio-sunset::after{opacity:1}}
-@media(max-width:800px){.studio-sunset{inset:-6% -14% -4% -14%}}
+@media(max-width:800px){.studio-sunset{inset:-6% -9% -4% -9%}}
 /* A white silhouette of the building sits between the glow and the art, so the
    multiply blend tints only the background; the building keeps its own colors. */
 .studio-cover{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;user-select:none}
