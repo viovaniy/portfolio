@@ -18,31 +18,55 @@
   const folds = new Map();
   let minimized = false;
   let shake;
+  // Keep the section (and its sky) a fixed height while the window changes,
+  // so the background never resizes, re-rasterises or shifts the page.
+  let lockedHeight = 0;
+  function lockSection() {
+    if (lockedHeight) return;
+    lockedHeight = section.offsetHeight;
+    section.style.minHeight = `${lockedHeight}px`;
+  }
+  window.addEventListener('resize', () => {
+    if (minimized || glass.classList.contains('is-enlarged')) return;
+    lockedHeight = 0;
+    section.style.minHeight = '';
+  }, { passive: true });
+
+  const EASE = 'cubic-bezier(.32,.72,0,1)';
   function fold(element, closed) {
+    const running = folds.get(element);
     const from = element.getBoundingClientRect().height;
-    const opacity = getComputedStyle(element).opacity;
-    folds.get(element)?.cancel();
+    const opacity = running ? getComputedStyle(element).opacity : (closed ? '1' : '0');
+    running?.cancel();
     element.hidden = false;
     element.style.height = '';
     const to = closed ? 0 : element.getBoundingClientRect().height;
+    element.style.marginTop = '';
+    const margin = getComputedStyle(element).marginTop;
+    const fromMargin = running ? `${parseFloat(getComputedStyle(element).marginTop) || 0}px` : (closed ? margin : '0px');
     element.inert = closed;
     const finish = () => {
       element.hidden = closed;
       element.style.height = '';
+      element.style.marginTop = '';
       element.style.overflow = '';
+      element.style.willChange = '';
       folds.delete(element);
     };
     if (reduced.matches) { finish(); return; }
     element.style.overflow = 'hidden';
-    const motion = element.animate([
-      {height: `${from}px`, opacity},
-      {height: `${to}px`, opacity: closed ? 0 : 1}
-    ], {duration: 380, easing: 'cubic-bezier(.22,1,.36,1)'});
+    element.style.willChange = 'opacity';
+    // Content fades quickly while the frame settles, like a native window.
+    const keyframes = closed
+      ? [{ height: `${from}px`, marginTop: fromMargin, opacity }, { opacity: 0, offset: .45 }, { height: '0px', marginTop: '0px', opacity: 0 }]
+      : [{ height: `${from}px`, marginTop: fromMargin, opacity }, { opacity: Number(opacity), offset: .3 }, { height: `${to}px`, marginTop: margin, opacity: 1 }];
+    const motion = element.animate(keyframes, { duration: closed ? 420 : 480, easing: EASE });
     folds.set(element, motion);
     motion.onfinish = finish;
   }
   function setMinimized(value) {
     if (value === minimized) return;
+    lockSection();
     minimized = value;
     minimize.setAttribute('aria-expanded', String(!value));
     minimize.setAttribute('aria-label', value ? 'Restore description' : 'Minimize description');
@@ -51,6 +75,7 @@
   }
   minimize.addEventListener('click', () => setMinimized(!minimized));
   resize.addEventListener('click', () => {
+    lockSection();
     const enlarged = glass.classList.toggle('is-enlarged');
     resize.setAttribute('aria-pressed', String(enlarged));
     resize.setAttribute('aria-label', enlarged ? 'Restore window size' : 'Enlarge window');

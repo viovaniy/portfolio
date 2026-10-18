@@ -87,10 +87,12 @@
 .about-glass.is-enlarged{width:calc(100% + min(8vw,96px));margin-left:calc(min(8vw,96px) / -2)}
 @media(prefers-reduced-motion:reduce){.about-glass,.about-window-lights button span{transition:none}}
 .about-heading[hidden],.about-panels[hidden]{display:none}
+/* Keep the title's bottom spacing inside its box so folding it has no jump. */
+.about-heading{display:flow-root}
 
 /* ---------- About tab content: photo with a matte glass plate + info cards ---------- */
 .about-panel-me{--me-ink:#24242a;--me-grey:#9b9ba1;--me-soft:#74747e;--me-hair:rgba(28,25,40,.07);--me-ease:cubic-bezier(.22,1,.36,1);--me-enter:cubic-bezier(.16,1,.3,1)}
-.about-panels:has(.about-panel-me:not([hidden])) .about-panel-me{padding:14px}
+.about-panel.about-panel-me{padding:14px}
 .me-layout{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:14px;align-items:stretch}
 
 /* Square photo; replace assets/about-photo.jpg with the real portrait. */
@@ -144,7 +146,7 @@
  .me-photo{aspect-ratio:1}
 }
 @media(max-width:650px){
- .about-panels:has(.about-panel-me:not([hidden])) .about-panel-me{padding:10px}
+ .about-panel.about-panel-me{padding:10px}
  .me-photo{border-radius:16px}
  .me-plate{left:10px;right:10px;bottom:10px;padding:12px 12px 12px 15px;border-radius:12px}
  .me-plate-name{font-size:17px}
@@ -159,3 +161,14 @@
  .me-photo>img,.me-plate,.me-card,.me-likes li{transition:none}
 }
 @media(prefers-reduced-transparency:reduce){.me-plate{background:#3a3836;backdrop-filter:none;-webkit-backdrop-filter:none}}
+
+/* Traffic-light glyphs: drawn icons centred exactly in each 12px light. */
+.about-window-lights button span{position:absolute;inset:0;display:grid;place-items:center;line-height:0}
+.about-window-lights button svg{display:block;width:12px;height:12px;stroke-width:1.15;stroke-linecap:round}
+.about-window-lights button:nth-child(1) svg{color:#7e0508}
+.about-window-lights button:nth-child(2) svg{color:#985712}
+.about-window-lights button:nth-child(3) svg{color:#0b650d}
+.about-window-lights button:nth-child(3) path{fill:currentColor;stroke:none}
+.about-window-lights .lights-in,.about-window-lights [aria-pressed="true"] .lights-out{display:none}
+.about-window-lights [aria-pressed="true"] .lights-in{display:block}
+@media(max-width:650px){.about-window-lights button svg{width:11px;height:11px}}
