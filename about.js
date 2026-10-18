@@ -201,3 +201,67 @@
   word.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') play(); });
   word.addEventListener('animationend', event => { if (event.target === word.querySelector('.me-burst i:last-child')) word.classList.remove('is-burst'); });
 })();
+
+// Projects tab: blue glass folder holding the cases.
+(() => {
+  const folder = document.querySelector('[data-pj]');
+  if (!folder) return;
+  const panel = folder.closest('.about-panel');
+  const hit = folder.querySelector('.pj-hit');
+  const sheets = [...folder.querySelectorAll('.pj-sheet')];
+  const types = [...panel.querySelectorAll('.pj-types button')];
+  const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+  let open = false;
+
+  const setOpen = value => {
+    open = value;
+    folder.toggleAttribute('data-open', value);
+    hit.setAttribute('aria-expanded', String(value));
+    hit.setAttribute('aria-label', `${value ? 'Close' : 'Open'} My cases, ${sheets.length} projects`);
+    // Closed cards stay out of the tab order.
+    sheets.forEach(sheet => { sheet.tabIndex = value ? 0 : -1; });
+  };
+  setOpen(false);
+  hit.addEventListener('click', () => setOpen(!open));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && open) { setOpen(false); hit.focus({ preventScroll: true }); }
+  });
+  document.addEventListener('pointerdown', event => {
+    if (open && !folder.contains(event.target) && !event.target.closest?.('.pj-types')) setOpen(false);
+  });
+
+  // Light and parallax follow the cursor (rAF-batched, CSS vars only).
+  let raf = 0, px = 0, py = 0;
+  const write = () => { raf = 0; folder.style.setProperty('--px', px.toFixed(3)); folder.style.setProperty('--py', py.toFixed(3)); };
+  folder.addEventListener('pointermove', event => {
+    if (event.pointerType === 'touch') return;
+    const r = folder.getBoundingClientRect();
+    px = ((event.clientX - r.left) / r.width) * 2 - 1;
+    py = ((event.clientY - r.top) / r.height) * 2 - 1;
+    if (!raf) raf = requestAnimationFrame(write);
+  });
+  folder.addEventListener('pointerleave', () => { px = py = 0; if (!raf) raf = requestAnimationFrame(write); });
+
+  // Hovering a project type lifts its case out of the folder.
+  const peek = index => {
+    sheets.forEach((sheet, i) => sheet.classList.toggle('is-peek', i === index));
+    types.forEach((button, i) => button.classList.toggle('is-on', i === index));
+    folder.classList.toggle('is-peeking', index >= 0 && !open);
+  };
+  types.forEach((button, i) => {
+    button.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse' && finePointer.matches) peek(i); });
+    button.addEventListener('pointerleave', () => peek(-1));
+    button.addEventListener('focus', () => peek(i));
+    button.addEventListener('blur', () => peek(-1));
+    button.addEventListener('click', () => { setOpen(true); peek(i); });
+  });
+
+  // Assemble the folder the first time the tab is shown; close it when leaving.
+  const sync = () => {
+    if (!panel.hidden && !folder.hasAttribute('data-entered')) setTimeout(() => folder.setAttribute('data-entered', ''), 120);
+    if (panel.hidden && open) setOpen(false);
+    if (panel.hidden) peek(-1);
+  };
+  new MutationObserver(sync).observe(panel, { attributes: true, attributeFilter: ['hidden'] });
+  sync();
+})();
