@@ -160,46 +160,117 @@
     }
   }
 
+  // ---------- Sending to email ----------
+  // Paste the Web3Forms access key here (get one free at web3forms.com with
+  // the inbox the briefs should go to). Until then nothing can be delivered,
+  // and the card says so honestly and offers Telegram instead.
+  const WEB3FORMS_KEY = '';
+
   const done = root.querySelector('.brief-done');
-  const doneTg = done.querySelector('.brief-done-tg');
-  function showDone() {
-    root.classList.remove('is-opened');
-    if (reduced.matches) {
-      root.classList.add('is-done');
-      done.hidden = false;
-      done.querySelector('.brief-done-title').focus({ preventScroll: true });
-      return;
-    }
-    root.classList.add('is-folding');
-    later(420, () => {
+  const sentText = done.querySelector('[data-sent-text]');
+  const STATES = ['is-sending', 'is-sent', 'is-failed'];
+  const setState = state => { root.classList.remove(...STATES); if (state) root.classList.add(state); };
+
+  function showCard() {
+    const reveal = () => {
       root.classList.remove('is-folding');
       root.classList.add('is-done');
       done.hidden = false;
-      done.classList.remove('is-in'); void done.offsetWidth; done.classList.add('is-in');
+      if (!reduced.matches) { done.classList.remove('is-in'); void done.offsetWidth; done.classList.add('is-in'); }
       done.querySelector('.brief-done-title').focus({ preventScroll: true });
-      if (matchMedia('(max-width: 900px)').matches) done.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
+      if (matchMedia('(max-width: 900px)').matches) done.scrollIntoView({ behavior: reduced.matches ? 'instant' : 'smooth', block: 'center' });
+    };
+    if (reduced.matches || root.classList.contains('is-done')) { reveal(); return; }
+    root.classList.add('is-folding');
+    setTimeout(reveal, 420);
   }
-  function hideDone() {
-    root.classList.remove('is-done', 'is-folding', 'is-opened');
+  function backToForm() {
+    root.classList.remove('is-done', 'is-folding', 'is-sending-chat', 'is-ready');
+    setState(null);
     done.hidden = true;
-  }
-  done.querySelector('.brief-edit').addEventListener('click', () => {
-    hideDone();
     resetConversation();
     setReady(false);
     if (!reduced.matches) form.animate([{ opacity: 0, transform: 'translateY(12px)', filter: 'blur(5px)' }, { opacity: 1, transform: 'none', filter: 'blur(0)' }],
       { duration: 520, easing: 'cubic-bezier(.16,1,.3,1)' });
+  }
+  done.querySelector('.brief-edit').addEventListener('click', () => {
+    const fresh = root.classList.contains('is-sent');
+    backToForm();
+    if (fresh) {
+      // A new brief starts from the project; who you are stays filled in.
+      textarea.value = '';
+      form.querySelectorAll('input[type=radio]').forEach(radio => { radio.checked = false; });
+      grow();
+      render();
+    }
     form.elements.namedItem('project').focus({ preventScroll: true });
   });
-  // Opening Telegram is the moment the brief actually leaves the site.
-  function opened(origin) {
-    const first = !root.classList.contains('is-opened');
-    root.classList.add('is-opened');
-    if (first && !reduced.matches) confetti(origin, 40, 1.6);
+
+  async function deliver() {
+    if (!WEB3FORMS_KEY) throw new Error('Email delivery is not configured yet');
+    const contact = value('contact');
+    const response = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: `New project brief from ${value('name')}`,
+        from_name: 'viovaniy portfolio',
+        ...(contact.includes('@') && !contact.startsWith('@') ? { replyto: contact } : {}),
+        name: value('name'),
+        contact,
+        project: value('project'),
+        budget: value('budget') || 'To be discussed',
+        timeline: value('timeline') || 'Flexible',
+        message: message(),
+        botcheck: form.elements.namedItem('botcheck').checked
+      })
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || !result.success) throw new Error(result.message || `HTTP ${response.status}`);
   }
-  doneTg.addEventListener('click', () => opened(doneTg));
-  document.getElementById('telegram-brief').addEventListener('click', event => opened(event.currentTarget));
+
+  let sending = false;
+  async function send() {
+    if (sending) return;
+    sending = true;
+    briefText.value = message();
+    const started = performance.now();
+    resetConversation();
+    setReady(false);
+    setState('is-sending');
+    root.classList.add('is-sending-chat');
+    showCard();
+    // The chat whooshes the message and shows viovaniy typing while it sends.
+    if (!reduced.matches) {
+      sentBubble.classList.add('is-sending');
+      later(550, () => sentBubble.classList.remove('is-sending'));
+    }
+    let ok = true;
+    try { await deliver(); } catch (problem) { ok = false; console.warn('Brief not delivered:', problem.message); }
+    // Let the "sending" moment breathe a little even on a fast connection.
+    const wait = reduced.matches ? 0 : Math.max(0, 900 - (performance.now() - started));
+    setTimeout(() => {
+      sending = false;
+      root.classList.remove('is-sending-chat');
+      if (ok) {
+        setState('is-sent');
+        const name = value('name'), contact = value('contact');
+        sentText.textContent = `Thanks, ${name}! Your brief went straight to my mail — I’ll reply to ${contact} within a day.`;
+        root.classList.add('is-ready');
+        if (!reduced.matches) {
+          confetti(done.querySelector('.brief-done-mark'), 40, 1.6);
+          pop(typing);
+          later(1600, () => { typing.hidden = true; pop(reply); });
+        } else reply.hidden = false;
+      } else {
+        setState('is-failed');
+        root.classList.add('is-failed');
+      }
+      done.querySelector('.brief-done-title').focus({ preventScroll: true });
+    }, wait);
+  }
+  done.querySelector('.brief-retry').addEventListener('click', send);
 
   form.addEventListener('submit', event => {
     event.preventDefault();
@@ -216,41 +287,8 @@
       form.elements.namedItem(missing[0]).focus();
       return;
     }
-    const text = message();
-    briefText.value = text;
-    const url = new URL('https://t.me/designmevova');
-    url.searchParams.set('text', text);
-    document.getElementById('telegram-brief').href = url.href;
-    doneTg.href = url.href;
-    status.textContent = '';
-    // Send sequence: whoosh, viovaniy types for ~2s, replies, then the actions.
-    resetConversation();
-    setReady(false);
-    root.classList.add('is-ready');
-    const finish = () => setReady(true);
-    if (reduced.matches) { reply.hidden = false; finish(); }
-    else {
-      sentBubble.classList.add('is-sending');
-      later(550, () => sentBubble.classList.remove('is-sending'));
-      later(500, () => pop(typing));
-      later(2500, () => { typing.hidden = true; pop(reply); });
-      later(3000, finish);
-    }
-    showDone();
-  });
-
-  root.querySelector('.brief-copy-link').addEventListener('click', async () => {
-    const note = root.querySelector('.brief-copy-status');
-    try { await navigator.clipboard.writeText(briefText.value); note.textContent = 'Copied ✓'; }
-    catch { note.textContent = 'Couldn’t copy — use Continue in Telegram.'; }
-  });
-  document.getElementById('copy-brief').addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(briefText.value);
-      status.textContent = 'Copied. Paste it in Telegram whenever you like.';
-    } catch {
-      status.textContent = 'Couldn’t copy automatically — use Continue in Telegram instead.';
-    }
+    if (form.elements.namedItem('botcheck').checked) return; // spam bot
+    send();
   });
 
   // iMessage-style timestamp: "Today 20:30".
