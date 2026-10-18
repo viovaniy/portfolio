@@ -83,7 +83,7 @@
 /* Sunset glow behind the studio: pink at rest, peach on hover.
    Pure gradients that fade out before their box edge, so there is no blur
    filter, no mask and no visible seams; hover only crossfades opacity. */
-.home-section{clip-path:inset(-30px calc((100% - 100vw)/2) -30px 0)}
+.home-section{clip-path:inset(-30px calc((100% - 100vw)/2))}
 .studio-scene{overflow:visible}
 .studio-art{position:relative;z-index:1;mix-blend-mode:multiply}
 .studio-sunset{position:absolute;inset:-7% -30% -5% -30%;z-index:0;pointer-events:none;contain:strict}
@@ -111,3 +111,14 @@
 @keyframes studio-bird-wiggle{0%,100%{transform:translateY(0) rotate(-1.2deg)}50%{transform:translateY(-3px) rotate(1.2deg)}}
 @media(max-width:800px){.studio-bird{right:-1.85%;top:-5.23%;width:35.7%}}
 @media(prefers-reduced-motion:reduce){.studio-bird{animation:none;transform:none}}
+
+/* Avatar hover: it straightens past level with a soft spring, lifts, and its
+   shadow deepens with a hint of its own pink; the face leans in slightly. */
+.home-section .avatar{transition:transform .6s cubic-bezier(.34,1.45,.5,1),box-shadow .5s cubic-bezier(.22,1,.36,1)}
+.home-section .avatar img{transition:transform .8s cubic-bezier(.22,1,.36,1)}
+@media(hover:hover){
+ .home-section .avatar:hover{transform:translateY(-3px) rotate(4deg) scale(1.07);box-shadow:0 0 0 1px #00000006,0 6px 10px #0000000d,0 22px 30px -12px #d8467a59}
+ .home-section .avatar:hover img{transform:scale(1.25) rotate(-3deg)}
+}
+.home-section .avatar:active{transform:translateY(-1px) rotate(2deg) scale(1.02);transition-duration:.18s}
+@media(prefers-reduced-motion:reduce){.home-section .avatar,.home-section .avatar img{transition:none}}
