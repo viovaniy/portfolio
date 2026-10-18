@@ -209,7 +209,7 @@
   const panel = folder.closest('.about-panel');
   const hit = folder.querySelector('.pj-hit');
   const sheets = [...folder.querySelectorAll('.pj-sheet')];
-  const types = [...panel.querySelectorAll('.pj-types button')];
+  const types = [...panel.querySelectorAll('.pj-tile')];
   const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
   let open = false;
 
@@ -227,7 +227,7 @@
     if (event.key === 'Escape' && open) { setOpen(false); hit.focus({ preventScroll: true }); }
   });
   document.addEventListener('pointerdown', event => {
-    if (open && !folder.contains(event.target) && !event.target.closest?.('.pj-types')) setOpen(false);
+    if (open && !folder.contains(event.target) && !event.target.closest?.('.pj-tile')) setOpen(false);
   });
 
   // Light and parallax follow the cursor (rAF-batched, CSS vars only).
@@ -258,7 +258,12 @@
 
   // Assemble the folder the first time the tab is shown; close it when leaving.
   const sync = () => {
-    if (!panel.hidden && !folder.hasAttribute('data-entered')) setTimeout(() => folder.setAttribute('data-entered', ''), 120);
+    if (!panel.hidden && !folder.hasAttribute('data-entered')) {
+      setTimeout(() => folder.setAttribute('data-entered', ''), 120);
+      types.forEach((tile, i) => tile.style.setProperty('--n', i));
+      panel.classList.add('is-shown');
+      setTimeout(() => panel.classList.add('is-settled'), 1400);
+    }
     if (panel.hidden && open) setOpen(false);
     if (panel.hidden) peek(-1);
   };
