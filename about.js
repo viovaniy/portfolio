@@ -230,18 +230,6 @@
     if (open && !folder.contains(event.target) && !event.target.closest?.('.pj-tile')) setOpen(false);
   });
 
-  // Light and parallax follow the cursor (rAF-batched, CSS vars only).
-  let raf = 0, px = 0, py = 0;
-  const write = () => { raf = 0; folder.style.setProperty('--px', px.toFixed(3)); folder.style.setProperty('--py', py.toFixed(3)); };
-  folder.addEventListener('pointermove', event => {
-    if (event.pointerType === 'touch') return;
-    const r = folder.getBoundingClientRect();
-    px = ((event.clientX - r.left) / r.width) * 2 - 1;
-    py = ((event.clientY - r.top) / r.height) * 2 - 1;
-    if (!raf) raf = requestAnimationFrame(write);
-  });
-  folder.addEventListener('pointerleave', () => { px = py = 0; if (!raf) raf = requestAnimationFrame(write); });
-
   // Hovering a project type lifts its case out of the folder.
   const peek = index => {
     sheets.forEach((sheet, i) => sheet.classList.toggle('is-peek', i === index));
