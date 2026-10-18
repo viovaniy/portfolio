@@ -225,17 +225,13 @@
  transform-origin:50% 100%;
  transform:translate(calc(var(--slot) * var(--spread)),calc(var(--lift) + var(--depth) * var(--stack) * -1)) rotate(calc(var(--slot) * var(--fan)));
  transition:transform .75s var(--pj-spring) calc(var(--depth) * 40ms),box-shadow .4s var(--pj-ease)}
-/* Inside the folder the cards read as frosted; they sharpen as they lift out. */
-.pj-sheet{filter:blur(2.5px)}
-.pj-folder:is(:hover,:focus-within,.is-peeking,[data-open]) .pj-sheet{filter:none}
-.pj-folder[data-entered] .pj-sheet{transition:transform .75s var(--pj-spring) calc(var(--depth) * 40ms),box-shadow .4s var(--pj-ease),filter .45s var(--pj-ease),translate .9s var(--pj-ease) calc(.18s + var(--depth) * 90ms),opacity .9s var(--pj-ease) calc(.18s + var(--depth) * 90ms)}
 .pj-sheet:nth-child(1){z-index:1}.pj-sheet:nth-child(2){z-index:2}.pj-sheet:nth-child(3){z-index:3}.pj-sheet:nth-child(4){z-index:4}
 .pj-sheet-art{position:absolute;inset:0;background:radial-gradient(90% 70% at 20% 85%,var(--b),transparent 65%),radial-gradient(80% 80% at 85% 20%,var(--a),transparent 60%),linear-gradient(160deg,var(--c),var(--a))}
 .pj-sheet-art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,0) 36%)}
 .pj-sheet-head{position:absolute;left:14px;right:14px;top:11px;display:flex;align-items:baseline;justify-content:space-between;gap:10px;white-space:nowrap}
 .pj-sheet-name{overflow:hidden;text-overflow:ellipsis;font-size:12.5px;font-weight:560;letter-spacing:-.005em;color:#18181b}
 .pj-sheet-meta{flex:none;font:10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.02em;color:rgba(24,24,27,.5)}
-.pj-sheet.is-peek,.pj-folder[data-open] .pj-sheet:is(:hover,:focus-visible){transform:translate(calc(var(--slot) * var(--spread)),calc(var(--lift) + var(--depth) * var(--stack) * -1 - 22px)) rotate(calc(var(--slot) * var(--fan) * .6));box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 0 .5px rgba(0,0,0,.1),0 22px 40px -12px rgba(10,40,90,.42);transition-delay:0s}
+.pj-sheet.is-peek,.pj-folder[data-open] .pj-sheet:is(:hover,:focus-visible),.pj-folder[data-open] .pj-sheet.is-hover{transform:translate(calc(var(--slot) * var(--spread)),calc(var(--lift) + var(--depth) * var(--stack) * -1 - 22px)) rotate(calc(var(--slot) * var(--fan) * .6));box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 0 .5px rgba(0,0,0,.1),0 22px 40px -12px rgba(10,40,90,.42);transition-delay:0s}
 .pj-sheet:focus-visible{outline:2px solid #4c8dff;outline-offset:2px}
 
 /* Frosted blue glass front, hinged on its bottom edge. */
@@ -251,14 +247,6 @@
 .pj-title{font-size:19px;font-weight:550;line-height:1.15;letter-spacing:-.015em}
 .pj-meta{font:12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.03em;color:rgba(255,255,255,.78)}
 
-/* Entrance: the folder assembles the first time the tab is opened. */
-.pj-folder:not([data-entered]) .pj-back,.pj-folder:not([data-entered]) .pj-back-rim{translate:0 22px;opacity:0}
-.pj-folder:not([data-entered]) .pj-sheet{translate:0 -110px;opacity:0}
-.pj-folder:not([data-entered]) .pj-front{translate:0 46px;opacity:0}
-.pj-folder:not([data-entered]) .pj-shadow{opacity:0}
-.pj-back,.pj-back-rim,.pj-shadow{transition:translate 1s var(--pj-ease),opacity .9s var(--pj-ease)}
-.pj-folder[data-entered] .pj-sheet{transition:transform .75s var(--pj-spring) calc(var(--depth) * 40ms),box-shadow .4s var(--pj-ease),filter .45s var(--pj-ease),translate .9s var(--pj-ease) calc(.18s + var(--depth) * 90ms),opacity .9s var(--pj-ease) calc(.18s + var(--depth) * 90ms)}
-.pj-folder[data-entered] .pj-front{transition:transform .8s var(--pj-spring),translate 1s var(--pj-ease) .42s,opacity 1s var(--pj-ease) .42s}
 
 @media(max-width:760px){
  .pj-layout{grid-template-columns:1fr;gap:20px;justify-items:center}
@@ -273,3 +261,15 @@
  .pj-folder *,.pj-folder *::before,.pj-folder *::after{transition-duration:0s!important;transition-delay:0s!important}
  .pj-tile{animation:none!important;opacity:1!important;transform:none!important}
 }
+
+/* Frosted glass: a blurred copy of the cards, cut to the exact shape of the
+   front panel, sits between the real cards and the glass tint. Card parts
+   above the glass stay sharp; parts behind it read as frosted. No
+   backdrop-filter, so it renders identically in Safari and Chrome. */
+.pj-frost{position:absolute;inset:0;z-index:7;pointer-events:none;clip-path:path("M0 96A22 22 0 0 1 22 74L118 74C144 74 146 106 172 106L318 106A22 22 0 0 1 340 128L340 250A22 22 0 0 1 318 272L22 272A22 22 0 0 1 0 250Z")}
+.pj-frost-in{position:absolute;inset:0;filter:blur(7px) saturate(1.15)}
+.pj-frost .pj-sheet{pointer-events:none}
+
+/* Entrance (driven by about.js): hidden until the tab is first shown. */
+.pj-folder:not([data-entered]) .pj-tilt{opacity:0}
+.pj-folder:not([data-entered]) .pj-sheet{opacity:0}

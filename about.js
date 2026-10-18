@@ -211,7 +211,35 @@
   const sheets = [...folder.querySelectorAll('.pj-sheet')];
   const types = [...panel.querySelectorAll('.pj-tile')];
   const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const tilt = folder.querySelector('.pj-tilt');
   let open = false;
+
+  // Frosted glass: a blurred twin of every card, clipped to the glass shape.
+  const frost = document.createElement('div');
+  frost.className = 'pj-frost';
+  frost.setAttribute('aria-hidden', 'true');
+  const frostInner = document.createElement('div');
+  frostInner.className = 'pj-frost-in';
+  frost.append(frostInner);
+  const twins = sheets.map(sheet => {
+    const twin = sheet.cloneNode(true);
+    twin.removeAttribute('href');
+    twin.removeAttribute('data-case');
+    twin.removeAttribute('data-pointer-passive');
+    twin.tabIndex = -1;
+    frostInner.append(twin);
+    return twin;
+  });
+  folder.querySelector('.pj-files').after(frost);
+  // Keep each twin exactly where its card is when a card is hovered or focused.
+  sheets.forEach((sheet, i) => {
+    const mirror = on => () => twins[i].classList.toggle('is-hover', on && open);
+    sheet.addEventListener('pointerenter', mirror(true));
+    sheet.addEventListener('pointerleave', mirror(false));
+    sheet.addEventListener('focus', mirror(true));
+    sheet.addEventListener('blur', mirror(false));
+  });
 
   const setOpen = value => {
     open = value;
@@ -220,6 +248,7 @@
     hit.setAttribute('aria-label', `${value ? 'Close' : 'Open'} My cases, ${sheets.length} projects`);
     // Closed cards stay out of the tab order.
     sheets.forEach(sheet => { sheet.tabIndex = value ? 0 : -1; });
+    if (!value) twins.forEach(twin => twin.classList.remove('is-hover'));
   };
   setOpen(false);
   hit.addEventListener('click', () => setOpen(!open));
@@ -233,6 +262,7 @@
   // Hovering a project type lifts its case out of the folder.
   const peek = index => {
     sheets.forEach((sheet, i) => sheet.classList.toggle('is-peek', i === index));
+    twins.forEach((twin, i) => twin.classList.toggle('is-peek', i === index));
     types.forEach((button, i) => button.classList.toggle('is-on', i === index));
     folder.classList.toggle('is-peeking', index >= 0 && !open);
   };
@@ -244,10 +274,37 @@
     button.addEventListener('click', () => { setOpen(true); peek(i); });
   });
 
+  // Entrance: the folder rises in as one object (fade + blur-to-sharp), then
+  // the cases fall in one by one with gravity, a soft landing and one gentle
+  // rebound; the folder gives a little under each landing.
+  function enter() {
+    folder.setAttribute('data-entered', '');
+    if (reducedMotion.matches) return;
+    tilt.animate([
+      { opacity: 0, transform: 'translateY(22px) scale(.985)', filter: 'blur(8px)' },
+      { opacity: 1, transform: 'none', filter: 'blur(0px)' }
+    ], { duration: 760, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' });
+    const FALL = 900;
+    sheets.forEach((sheet, i) => {
+      const delay = 320 + i * 135;
+      const side = i % 2 ? 1 : -1;
+      const keyframes = [
+        { translate: '0 -165px', rotate: `${side * 6}deg`, opacity: 0, easing: 'cubic-bezier(.55,0,.85,.45)' },
+        { opacity: 1, offset: .2 },
+        { translate: '0 7px', rotate: `${side * -.8}deg`, offset: .58, easing: 'cubic-bezier(.3,0,.4,1)' },
+        { translate: '0 -2px', rotate: '0deg', offset: .8, easing: 'cubic-bezier(.4,0,.6,1)' },
+        { translate: '0 0', rotate: '0deg', opacity: 1 }
+      ];
+      for (const el of [sheet, twins[i]]) el.animate(keyframes, { duration: FALL, delay, fill: 'backwards' });
+      tilt.animate([{ translate: '0 0' }, { translate: '0 1.6px' }, { translate: '0 0' }],
+        { duration: 340, delay: delay + FALL * .58, easing: 'cubic-bezier(.3,0,.4,1)', composite: 'add' });
+    });
+  }
+
   // Assemble the folder the first time the tab is shown; close it when leaving.
   const sync = () => {
     if (!panel.hidden && !folder.hasAttribute('data-entered')) {
-      setTimeout(() => folder.setAttribute('data-entered', ''), 120);
+      enter();
       types.forEach((tile, i) => tile.style.setProperty('--n', i));
       panel.classList.add('is-shown');
       setTimeout(() => panel.classList.add('is-settled'), 1400);
