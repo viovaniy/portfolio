@@ -107,7 +107,7 @@
 @media(prefers-reduced-motion:reduce){.studio-sunset::before,.studio-sunset::after{transition:none}}
 
 /* A quiet wiggle above the studio, independent of the scene's entrance. */
-.studio-bird{position:absolute;right:-8.7%;top:-7.1%;width:37.4%;height:auto;z-index:3;pointer-events:none;user-select:none;transform-origin:50% 60%;animation:studio-bird-wiggle 3.6s ease-in-out infinite}
+.studio-bird{position:absolute;right:-5.9%;top:-4.6%;width:31.8%;height:auto;z-index:3;pointer-events:none;user-select:none;transform-origin:50% 60%;animation:studio-bird-wiggle 3.6s ease-in-out infinite}
 @keyframes studio-bird-wiggle{0%,100%{transform:translateY(0) rotate(-1.2deg)}50%{transform:translateY(-3px) rotate(1.2deg)}}
 @media(max-width:800px){.studio-bird{right:-1.85%;top:-5.23%;width:35.7%}}
 @media(prefers-reduced-motion:reduce){.studio-bird{animation:none;transform:none}}
