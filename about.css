@@ -376,3 +376,36 @@
 }
 @media(prefers-reduced-motion:reduce){.dock-app,.dock-dot,.dock-tip{transition:none}.dock-app.is-bouncing .dock-icon{animation:none}}
 @media(prefers-reduced-transparency:reduce){.dock{background:#f4f4f6;-webkit-backdrop-filter:none;backdrop-filter:none}}
+
+/* ---------- Liquid Glass icons (macOS Tahoe-inspired) ----------
+   A translucent frosted tile with a bright rim, a soft coloured glow inside,
+   and the glyph as tinted glass with depth. Original artwork. */
+.dock-icon,.tl-detail-icon{color:var(--c2);isolation:isolate;overflow:hidden;
+ background:
+  radial-gradient(120% 90% at 50% 115%,color-mix(in srgb,var(--c1) 70%,transparent),transparent 62%),
+  linear-gradient(165deg,rgba(255,255,255,.92) 0%,rgba(255,255,255,.62) 46%,color-mix(in srgb,var(--c1) 38%,rgba(255,255,255,.5)) 100%);
+ box-shadow:
+  inset 0 0 0 1px rgba(255,255,255,.75),
+  inset 0 1.5px 0 rgba(255,255,255,.95),
+  inset 0 -6px 12px -6px color-mix(in srgb,var(--c2) 45%,transparent),
+  0 0 0 .5px rgba(28,25,40,.1),
+  0 3px 6px -2px rgba(28,25,40,.14),
+  0 12px 22px -12px color-mix(in srgb,var(--c2) 60%,transparent)}
+/* Specular sheen across the top and a lens highlight in the corner. */
+.dock-icon::after,.tl-detail-icon::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+ background:
+  radial-gradient(60% 38% at 28% 12%,rgba(255,255,255,.95),rgba(255,255,255,0) 70%),
+  linear-gradient(180deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,0) 42%)}
+.tl-detail-icon{position:relative}
+/* The glyph: tinted glass with an inner light edge and a soft drop. */
+.dock-icon svg,.tl-detail-icon svg{position:relative;z-index:1;width:54%;height:54%;stroke-width:2;
+ filter:drop-shadow(0 1px 0 rgba(255,255,255,.9)) drop-shadow(0 2px 3px color-mix(in srgb,var(--c2) 55%,transparent))}
+.dock-icon svg *,.tl-detail-icon svg *{stroke:url(#none);stroke:var(--c2)}
+.dock-icon svg [fill="currentColor"],.tl-detail-icon svg [fill="currentColor"]{fill:var(--c2)}
+.tl-detail-icon.is-light{color:var(--c2)}
+@media(hover:hover){.dock-app:hover .dock-icon{box-shadow:inset 0 0 0 1px rgba(255,255,255,.85),inset 0 1.5px 0 #fff,inset 0 -6px 12px -6px color-mix(in srgb,var(--c2) 55%,transparent),0 0 0 .5px rgba(28,25,40,.1),0 4px 8px -2px rgba(28,25,40,.16),0 16px 26px -12px color-mix(in srgb,var(--c2) 75%,transparent)}}
+@media(max-width:650px){
+ .dock{--base:23px;gap:3px;padding:5px 6px}
+ .dock-app{--size:23px}
+ .dock-sep{height:20px;margin:0 2px 2px}
+}
