@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="structure.css?v=20261017-1">
   <link rel="stylesheet" href="work.css?v=14">
   <link rel="stylesheet" href="studio.css?v=22">
-  <link rel="stylesheet" href="about.css?v=20261017-2">
+  <link rel="stylesheet" href="about.css?v=20261018-1">
   <link rel="stylesheet" href="text-reveal.css?v=3">
 </head>
 <body>
@@ -93,55 +93,81 @@
     </section>
 
     <section id="about" class="page-section content-section about-section" aria-labelledby="about-title">
-      <div class="about-backdrop" aria-hidden="true"><div class="about-color-field"></div></div>
-      <div class="about-glass">
-      <div class="about-window-chrome">
-        <div class="about-window-lights" role="group" aria-label="Window controls">
-          <button type="button" data-window-action="refuse" aria-label="Keep window open" data-pointer-passive><span aria-hidden="true">×</span></button>
-          <button type="button" data-window-action="minimize" aria-label="Minimize description" aria-expanded="true" aria-controls="about-description" data-pointer-passive><span aria-hidden="true">−</span></button>
-          <button type="button" data-window-action="resize" aria-label="Enlarge window" aria-pressed="false" data-pointer-passive><span aria-hidden="true">↗</span></button>
-        </div>
-      </div>
-      <header class="about-heading">
-        <h2 id="about-title">Hey, I am Viovaniy<span class="about-period">.</span></h2>
+      <div class="about-canvas" aria-hidden="true"><div class="about-glow"></div></div>
+      <header class="about-intro">
+        <p class="about-kicker about-reveal"><span class="about-status" aria-hidden="true"></span>Open for new projects</p>
+        <h2 id="about-title" class="about-title">
+          <span class="about-line about-reveal">Hey, I’m <span class="about-chip about-chip-avatar" aria-hidden="true"><img src="assets/avatar.png" alt="" width="96" height="96" draggable="false"></span> Viovaniy.</span>
+          <span class="about-line about-line-muted about-reveal"><span class="about-ink">A motion designer</span> for SaaS brands, <span class="about-chip about-chip-dark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5Z"/></svg></span> product films and <span class="about-chip about-chip-dark" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="3.5"/><path d="M3.5 9h17M7 6.8h.01M9.6 6.8h.01"/></svg></span> <span class="about-ink">interfaces that feel alive.</span></span>
+        </h2>
       </header>
-      <div class="about-card">
-        <div class="about-tabs" role="tablist" aria-label="About Viovaniy">
-          <button type="button" role="tab" id="about-tab-0" aria-controls="about-panel-0" aria-selected="true" tabindex="0">About</button>
-          <button type="button" role="tab" id="about-tab-1" aria-controls="about-panel-1" aria-selected="false" tabindex="-1">Projects</button>
-          <button type="button" role="tab" id="about-tab-2" aria-controls="about-panel-2" aria-selected="false" tabindex="-1">Tools</button>
-          <button type="button" role="tab" id="about-tab-3" aria-controls="about-panel-3" aria-selected="false" tabindex="-1">Process</button>
-        </div>
-        <div class="about-panels" id="about-description">
-          <div class="about-panel" id="about-panel-0" role="tabpanel" aria-labelledby="about-tab-0" tabindex="0"><h3>A little about me</h3><div class="about-body">
-            <p>I’m Viovaniy, a motion designer working with SaaS brands and digital products.</p>
-            <p class="about-secondary">I like clean interfaces, playful details, and that moment when a small animation makes everything click. That’s the feeling I try to bring to my work.</p>
-          </div></div>
-          <div class="about-panel" id="about-panel-1" role="tabpanel" aria-labelledby="about-tab-1" tabindex="0" hidden inert><h3>What I make</h3><div class="about-body">
-            <p>Product films that get to the point. Interfaces that feel alive. A launch with a little more personality.</p>
-            <div class="about-project-types"><span>SaaS &amp; product films</span><span>UI animation</span><span>Brand motion</span><span>Product demos</span></div>
-            <p class="about-secondary">From a single interaction to a whole product story, I shape the motion around what people need to notice, understand, and remember.</p>
-          </div></div>
-          <div class="about-panel" id="about-panel-2" role="tabpanel" aria-labelledby="about-tab-2" tabindex="0" hidden inert><h3>Tools & software</h3><div class="about-body">
-            <p>My everyday toolkit, from the first frame to the final export.</p>
-            <ul class="about-tools" aria-label="Design and animation software">
-              <li><span class="tool-monogram" aria-hidden="true">Ae</span><span>After Effects<small>Motion &amp; compositing</small></span></li>
-              <li><span class="tool-monogram" aria-hidden="true">Pr</span><span>Premiere Pro<small>Editing &amp; rhythm</small></span></li>
-              <li><span class="tool-monogram" aria-hidden="true">Ps</span><span>Photoshop<small>Images &amp; textures</small></span></li>
-              <li><span class="tool-monogram" aria-hidden="true">Ai</span><span>Illustrator<small>Shapes &amp; vector graphics</small></span></li>
+
+      <div class="about-stage">
+        <div class="about-note">
+          <p class="about-note-lead about-reveal">I like clean interfaces, playful details, and that moment when a small animation makes everything <span class="about-click">click<svg class="about-scribble" viewBox="0 0 40 40" aria-hidden="true"><path pathLength="1" d="M5 34C16 35 27 30 31 21 33 16 33 11 31 5"/><path pathLength="1" d="m25 10 6-6 5 7"/></svg><span class="about-annotation" aria-hidden="true">that exact moment</span></span>.</p>
+          <p class="about-note-sub about-reveal">That’s the feeling I bring to every frame — from a single interaction to a whole product story.</p>
+          <div class="about-toolkit about-reveal">
+            <p class="about-label" id="about-tools-label">Everyday toolkit</p>
+            <ul class="about-dock" aria-labelledby="about-tools-label">
+              <li class="about-tool" style="--tool-bg:#00005b;--tool-ink:#9999ff"><span class="about-tool-icon" aria-hidden="true">Ae</span><span class="about-tool-tip">After Effects<small>Motion &amp; compositing</small></span></li>
+              <li class="about-tool" style="--tool-bg:#00005b;--tool-ink:#ea77ff"><span class="about-tool-icon" aria-hidden="true">Pr</span><span class="about-tool-tip">Premiere Pro<small>Editing &amp; rhythm</small></span></li>
+              <li class="about-tool" style="--tool-bg:#001e36;--tool-ink:#31a8ff"><span class="about-tool-icon" aria-hidden="true">Ps</span><span class="about-tool-tip">Photoshop<small>Images &amp; textures</small></span></li>
+              <li class="about-tool" style="--tool-bg:#330000;--tool-ink:#ff9a00"><span class="about-tool-icon" aria-hidden="true">Ai</span><span class="about-tool-tip">Illustrator<small>Shapes &amp; vectors</small></span></li>
+              <li class="about-tool about-tool-ai"><span class="about-tool-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 2.3 6.7L21 12l-6.7 2.3L12 21l-2.3-6.7L3 12l6.7-2.3Z"/></svg></span><span class="about-tool-tip">AI models<small>Ideas, visuals &amp; experiments</small></span></li>
             </ul>
-            <p class="about-ai"><svg aria-hidden="true"><use href="#star"/></svg><span>Plus the latest generation of AI models for exploring ideas, creating visuals, and experimenting with motion.</span></p>
-          </div></div>
-          <div class="about-panel" id="about-panel-3" role="tabpanel" aria-labelledby="about-tab-3" tabindex="0" hidden inert><h3>How I work</h3><div class="about-body">
-            <p>First, the idea. Then, the keyframes.</p>
-            <ol class="about-process">
-              <li><strong>Find the point.</strong><span>What should someone understand or feel after watching?</span></li>
-              <li><strong>Find the direction.</strong><span>Build the visual language and rhythm around that idea.</span></li>
-              <li><strong>Make the details count.</strong><span>Refine the timing, transitions, and those last few frames.</span></li>
-            </ol>
-          </div></div>
+          </div>
         </div>
-      </div>
+
+        <figure class="about-timeline about-reveal" aria-labelledby="about-timeline-title">
+          <div class="tl-bar">
+            <span class="tl-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="tl-file" id="about-timeline-title">how-i-work<span>.aep</span></span>
+            <button class="tl-play" type="button" aria-label="Pause the timeline" aria-pressed="false" data-pointer-shape="circle">
+              <svg class="tl-icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.5v11M15 6.5v11"/></svg>
+              <svg class="tl-icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 6v12l9.5-6Z"/></svg>
+            </button>
+            <span class="tl-time" aria-hidden="true">00:00:00</span>
+          </div>
+
+          <div class="tl-caption" aria-live="polite">
+            <span class="tl-step-num" aria-hidden="true">01</span>
+            <div class="tl-step-copy">
+              <p class="tl-step-title">Find the point.</p>
+              <p class="tl-step-text">What should someone understand or feel after watching?</p>
+            </div>
+          </div>
+
+          <div class="tl-body">
+            <div class="tl-names">
+              <span class="tl-names-head">What I make</span>
+              <ul aria-label="What I make">
+                <li style="--hue:#2a6fd6">SaaS &amp; product films</li>
+                <li style="--hue:#9a4fd0">UI animation</li>
+                <li style="--hue:#e0567f">Brand motion</li>
+                <li style="--hue:#d9741f">Product demos</li>
+              </ul>
+            </div>
+            <div class="tl-area">
+              <div class="tl-ruler" aria-hidden="true">
+                <button class="tl-marker" type="button" style="--at:6%" data-step="0" tabindex="-1">01</button>
+                <button class="tl-marker" type="button" style="--at:40%" data-step="1" tabindex="-1">02</button>
+                <button class="tl-marker" type="button" style="--at:74%" data-step="2" tabindex="-1">03</button>
+              </div>
+              <div class="tl-tracks" aria-hidden="true">
+                <div class="tl-track"><span class="tl-clip" style="--from:3%;--to:42%;--fill:#eef5ff;--edge:#2a6fd6"><i style="--k:0"></i><i style="--k:.55"></i><i style="--k:1"></i></span></div>
+                <div class="tl-track"><span class="tl-clip" style="--from:20%;--to:63%;--fill:#f6edff;--edge:#9a4fd0"><i style="--k:0"></i><i style="--k:.4"></i><i style="--k:1"></i></span></div>
+                <div class="tl-track"><span class="tl-clip" style="--from:44%;--to:86%;--fill:#fff0f4;--edge:#e0567f"><i style="--k:0"></i><i style="--k:.6"></i><i style="--k:1"></i></span></div>
+                <div class="tl-track"><span class="tl-clip" style="--from:60%;--to:97%;--fill:#fdefe2;--edge:#d9741f"><i style="--k:0"></i><i style="--k:.45"></i><i style="--k:1"></i></span></div>
+              </div>
+              <div class="tl-playhead" role="slider" tabindex="0" aria-label="How I work — drag to scrub" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Step 1 of 3: Find the point."><span class="tl-head" aria-hidden="true"></span></div>
+            </div>
+          </div>
+          <ol class="sr-only">
+            <li>Find the point. What should someone understand or feel after watching?</li>
+            <li>Find the direction. Build the visual language and rhythm around that idea.</li>
+            <li>Make the details count. Refine the timing, transitions, and those last few frames.</li>
+          </ol>
+        </figure>
       </div>
     </section>
 
@@ -263,7 +289,7 @@
   <script src="dock-selection.js?v=3" defer></script>
   <script src="shimmer.js?v=3" defer></script>
   <script src="work.js?v=8" defer></script>
-  <script src="about.js?v=20261016-2" defer></script>
+  <script src="about.js?v=20261018-1" defer></script>
   <script src="studio.js?v=8" defer></script>
   <script src="text-reveal.js?v=2" defer></script>
   <script defer src="/_vercel/insights/script.js"></script>
