@@ -243,12 +243,25 @@
         project: value('project'),
         budget: value('budget') || 'To be discussed',
         timeline: value('timeline') || 'Flexible',
-        botcheck: form.elements.namedItem('botcheck').checked
+        botcheck: form.elements.namedItem('botcheck').checked,
+        device: deviceId(),
+        sentBefore: sentBefore()
       })
     });
     const result = await response.json().catch(() => ({}));
     if (!response.ok || !result.success) throw new Error(result.message || `HTTP ${response.status}`);
+    try { localStorage.setItem('brief-sent', String(sentBefore() + 1)); } catch {}
+    return result.number || '';
   }
+  // A random id kept by this browser, so repeat briefs from it can be recognised.
+  function deviceId() {
+    try {
+      let id = localStorage.getItem('brief-device');
+      if (!id) { id = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now().toString(36)); localStorage.setItem('brief-device', id); }
+      return id;
+    } catch { return ''; }
+  }
+  function sentBefore() { try { return parseInt(localStorage.getItem('brief-sent'), 10) || 0; } catch { return 0; } }
 
   let sending = false;
   async function send() {
@@ -266,8 +279,8 @@
       sentBubble.classList.add('is-sending');
       later(550, () => sentBubble.classList.remove('is-sending'));
     }
-    let ok = true;
-    try { await deliver(); } catch (problem) { ok = false; console.warn('Brief not delivered:', problem.message); }
+    let ok = true, number = '';
+    try { number = await deliver(); } catch (problem) { ok = false; console.warn('Brief not delivered:', problem.message); }
     // Let the "sending" moment breathe a little even on a fast connection.
     const wait = reduced.matches ? 0 : Math.max(0, 900 - (performance.now() - started));
     setTimeout(() => {
@@ -276,7 +289,7 @@
       if (ok) {
         setState('is-sent');
         const name = value('name');
-        sentText.textContent = `Thank you, ${name}. I’ll review the details and get back to you as soon as possible.`;
+        sentText.textContent = `Thank you, ${name}. I’ll review the details and get back to you as soon as possible.${number ? ` Your brief number is ${number}.` : ''}`;
         root.classList.add('is-ready');
         // iMessage: Sent → Read → a heart tapback on the message.
         readTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
