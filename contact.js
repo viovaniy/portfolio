@@ -245,7 +245,8 @@
         timeline: value('timeline') || 'Flexible',
         botcheck: form.elements.namedItem('botcheck').checked,
         device: deviceId(),
-        sentBefore: sentBefore()
+        sentBefore: sentBefore(),
+        insight: window.briefInsight ? window.briefInsight() : null
       })
     });
     const result = await response.json().catch(() => ({}));

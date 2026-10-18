@@ -6,6 +6,7 @@
 // Optional, for sequential numbers and repeat-sender counts:
 //   an Upstash Redis store connected to the project (Vercel → Storage), which
 //   adds KV_REST_API_URL / KV_REST_API_TOKEN (or UPSTASH_REDIS_REST_*) itself.
+//   IPINFO_TOKEN (optional) raises the free limit of the provider lookup.
 
 const crypto = require('crypto');
 
@@ -17,6 +18,36 @@ const ordinal = n => { const v = n % 100; return n + (['th', 'st', 'nd', 'rd'][(
 const flag = cc => /^[A-Z]{2}$/.test(cc) ? String.fromCodePoint(...[...cc].map(c => 0x1f1a5 + c.charCodeAt(0))) : '';
 const header = (req, name) => { const v = req.headers[name]; return Array.isArray(v) ? v[0] : (v || ''); };
 const decode = s => { try { return decodeURIComponent(s); } catch { return s; } };
+
+// "iPhone · iOS 18 · Safari" from the User-Agent.
+function deviceOf(ua) {
+  if (!ua) return 'Unknown device';
+  let device = /iPad/.test(ua) ? 'iPad' : /iPhone/.test(ua) ? 'iPhone' : /Android/.test(ua) ? (/Mobile/.test(ua) ? 'Android phone' : 'Android tablet') : /Macintosh/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows PC' : /Linux/.test(ua) ? 'Linux PC' : 'Unknown device';
+  let os = '';
+  let m;
+  if ((m = ua.match(/OS (\d+)[_.](\d+)/)) && /iPhone|iPad/.test(ua)) os = `iOS ${m[1]}`;
+  else if ((m = ua.match(/Android (\d+)/))) os = `Android ${m[1]}`;
+  else if (/Windows NT 10/.test(ua)) os = 'Windows 10/11';
+  else if ((m = ua.match(/Mac OS X (\d+)[_.](\d+)/))) os = `macOS ${m[1]}.${m[2]}`;
+  const browser = /Edg\//.test(ua) ? 'Edge' : /OPR\/|Opera/.test(ua) ? 'Opera' : /YaBrowser/.test(ua) ? 'Yandex Browser' : /SamsungBrowser/.test(ua) ? 'Samsung Internet' : /Firefox|FxiOS/.test(ua) ? 'Firefox' : /Chrome|CriOS/.test(ua) ? 'Chrome' : /Safari/.test(ua) ? 'Safari' : '';
+  if (/Telegram|Instagram|FBAN|FBAV/.test(ua)) device += ` (${/Telegram/.test(ua) ? 'Telegram' : /Instagram/.test(ua) ? 'Instagram' : 'Facebook'} in-app)`;
+  return [device, os, browser].filter(Boolean).join(' · ');
+}
+const duration = sec => { sec = Math.max(0, Math.round(sec || 0)); if (sec < 60) return `${sec} s`; const m = Math.floor(sec / 60); return m < 60 ? `${m} min ${sec % 60} s` : `${Math.floor(m / 60)} h ${m % 60} min`; };
+const plain = (v, n = 120) => String(v == null ? '' : v).replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, n);
+
+// Internet provider / organisation of the IP (ipinfo.io; optional IPINFO_TOKEN raises the free limit).
+async function networkOf(ip) {
+  if (!ip || ip === 'unknown' || /^(10\.|127\.|192\.168\.|::1)/.test(ip)) return '';
+  const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 1500);
+  try {
+    const q = process.env.IPINFO_TOKEN ? `?token=${encodeURIComponent(process.env.IPINFO_TOKEN)}` : '';
+    const r = await fetch(`https://ipinfo.io/${encodeURIComponent(ip)}/json${q}`, { signal: ctrl.signal });
+    if (!r.ok) return '';
+    const j = await r.json();
+    return plain((j.org || '').replace(/^AS\d+\s+/, ''), 80);
+  } catch { return ''; } finally { clearTimeout(t); }
+}
 
 // Counters in Upstash Redis (REST). Returns null when no store is connected.
 async function counters(ipKey, deviceKey) {
@@ -62,9 +93,24 @@ module.exports = async (req, res) => {
   const device = /^[a-z0-9-]{8,64}$/i.test(String(body.device || '')) ? String(body.device) : '';
   const localCount = Math.min(Math.max(parseInt(body.sentBefore, 10) || 0, 0), 999) + 1;
 
-  const counts = await counters(hash(`ip:${ip}`), device ? hash(`dev:${device}`) : '');
+  const [counts, network] = await Promise.all([counters(hash(`ip:${ip}`), device ? hash(`dev:${device}`) : ''), networkOf(ip)]);
+
+  // Visit context sent by the page (insight.js) plus what the request itself tells.
+  const v = body.insight && typeof body.insight === 'object' ? body.insight : {};
+  const ua = header(req, 'user-agent');
+  const languages = plain(v.languages, 60) || plain(header(req, 'accept-language').split(';')[0], 60);
+  const tz = plain(v.timeZone, 50) || decode(header(req, 'x-vercel-ip-timezone'));
+  const seen = Array.isArray(v.seen) ? v.seen.slice(0, 12).map(x => plain(x, 40)).filter(Boolean) : [];
+  const visits = Math.max(1, Math.min(parseInt(v.visits, 10) || 1, 9999));
+  const filling = Math.max(0, parseInt(v.filling, 10) || 0);
+  const firstVisit = /^\d{4}-\d{2}-\d{2}/.test(String(v.firstVisit || '')) ? String(v.firstVisit).slice(0, 10) : '';
+  const source = plain(v.source, 100) || 'direct';
+  const firstSource = plain(v.firstSource, 100);
+  const suspicious = filling > 0 && filling < 15;
   const now = new Date();
-  const number = counts ? `#${String(counts.seq).padStart(4, '0')}` : `#${now.toISOString().slice(2, 10).replace(/-/g, '')}-${String(now.getUTCHours()).padStart(2, '0')}${String(now.getUTCMinutes()).padStart(2, '0')}`;
+  // Without a store, the number is the date and time in Diana's time zone: #YYMMDD-HHMM.
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Yekaterinburg', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(now).map(x => [x.type, x.value]));
+  const number = counts ? `#${String(counts.seq).padStart(4, '0')}` : `#${p.year}${p.month}${p.day}-${p.hour}${p.minute}`;
 
   const ipNote = counts && counts.ip > 1 ? ` · ${ordinal(counts.ip)} brief from this IP` : '';
   const deviceCount = counts && counts.device ? counts.device : localCount;
@@ -81,9 +127,19 @@ module.exports = async (req, res) => {
     '',
     `<b>Project:</b>\n${esc(f.project)}`,
     '',
+    '<b>About the sender</b>',
     `${flag(country) || '🌍'} ${esc(place)}`,
-    `🌐 IP <code>${esc(ip)}</code>${ipNote}`,
-    `💻 ${deviceNote}`
+    `🕒 Local time: ${esc(plain(v.localTime, 40) || '—')}${tz ? ` (${esc(tz)})` : ''}`,
+    `🗣 Language: ${esc(languages || '—')}`,
+    `📱 ${esc(deviceOf(ua))}${v.screen ? ` · screen ${esc(plain(v.screen, 20))}` : ''}`,
+    `🌐 IP <code>${esc(ip)}</code>${network ? ` · ${esc(network)}` : ''}${ipNote}`,
+    `💻 ${deviceNote}`,
+    '',
+    '<b>Visit</b>',
+    `🔗 Came from: ${esc(source)}${firstSource && firstSource !== source ? ` (first time: ${esc(firstSource)})` : ''}`,
+    `👀 Visit ${visits === 1 ? '1 (first)' : `${visits}`}${firstVisit && visits > 1 ? ` · first seen ${firstVisit}` : ''}`,
+    `📖 Viewed: ${esc(seen.join(', ') || '—')}`,
+    `⏱ On site ${duration(v.onSite)} · filled the brief in ${filling ? duration(filling) : '—'}${suspicious ? '  ⚠️ <i>very fast, could be spam</i>' : ''}`
   ].join('\n');
 
   try {
