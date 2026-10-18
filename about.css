@@ -63,13 +63,26 @@
 
 /* Selection settles inward from outside the pill; hover shows the full rim. */
 @property --about-rim-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
-.about-tabs button::before,.about-tabs button::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;opacity:0;transition:opacity .16s ease}
+.about-tabs button::before,.about-tabs button::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;opacity:0}
 .about-tabs button::before{background:conic-gradient(from var(--about-rim-angle),#8c8bff,#72c9f4,#89ddcb,#f2d99c,#eea8cb,#b596f2,#8c8bff);padding:1.5px;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 .about-tabs button::after{inset:2px;background:radial-gradient(ellipse at 12% 70%,#a7a0fa 0,transparent 50%),radial-gradient(ellipse at 70% 20%,#9cddf3 0,transparent 48%),radial-gradient(ellipse at 90% 80%,#f4b7d7 0,transparent 50%),radial-gradient(ellipse at 40% 100%,#b9edd8 0,transparent 45%);background-size:150% 170%;filter:blur(4px);-webkit-mask:radial-gradient(ellipse,#0003 20%,#000 80%);mask:radial-gradient(ellipse,#0003 20%,#000 80%)}
-@media(hover:hover) and (pointer:fine){.about-tabs button[aria-selected="true"]:hover::before{opacity:.75;animation:about-rim-flow 8s linear infinite}.about-tabs button[aria-selected="true"]:hover::after{opacity:.42;animation:about-tab-mesh 3.8s ease-in-out infinite alternate}}
-.about-tabs button[aria-selected="true"].is-selecting::before{opacity:.75;animation:about-rim-settle .42s cubic-bezier(.2,.7,.3,1) both,about-rim-flow 8s linear infinite}
-.about-tabs button[aria-selected="true"].is-selecting::after{opacity:.42;animation:about-tab-mesh 3.8s ease-in-out infinite alternate}
-@keyframes about-rim-settle{from{transform:scale(1.08,1.3);opacity:0;filter:blur(2px)}to{transform:scale(1);opacity:.75;filter:blur(0)}}
+
+/* The rainbow stays attached to the selected tab and is only paused, so it
+   never resets mid-effect. Exit: a soft fade while the rim contracts toward
+   the tab and blurs away (~400ms). Entering reverses from wherever it is. */
+.about-tabs button::before{scale:.94 .8;filter:blur(1.5px);transition:opacity .4s cubic-bezier(.4,0,.2,1),scale .45s cubic-bezier(.22,1,.36,1),filter .4s ease}
+.about-tabs button::after{scale:.9 .78;filter:blur(8px);transition:opacity .36s cubic-bezier(.4,0,.2,1),scale .45s cubic-bezier(.22,1,.36,1),filter .4s ease}
+.about-tabs button[aria-selected="true"]::before{animation:about-rim-flow 8s linear infinite paused}
+.about-tabs button[aria-selected="true"]::after{animation:about-tab-mesh 3.8s ease-in-out infinite alternate paused}
+.about-tabs button[aria-selected="true"].is-selecting::before{opacity:.75;scale:1;filter:blur(0);animation-play-state:running;transition:opacity .24s ease-out,scale .5s cubic-bezier(.34,1.3,.5,1),filter .3s ease}
+.about-tabs button[aria-selected="true"].is-selecting::after{opacity:.42;scale:1;filter:blur(4px);animation-play-state:running;transition:opacity .28s ease-out,scale .5s cubic-bezier(.34,1.3,.5,1),filter .3s ease}
+@media(hover:hover) and (pointer:fine){
+ .about-tabs button[aria-selected="true"]:hover::before{opacity:.75;scale:1;filter:blur(0);animation-play-state:running;transition:opacity .24s ease-out,scale .5s cubic-bezier(.34,1.3,.5,1),filter .3s ease}
+ .about-tabs button[aria-selected="true"]:hover::after{opacity:.42;scale:1;filter:blur(4px);animation-play-state:running;transition:opacity .28s ease-out,scale .5s cubic-bezier(.34,1.3,.5,1),filter .3s ease}
+}
+/* A newly selected tab arrives from slightly wider than the pill. */
+.about-tabs button[aria-selected="true"].is-selecting::before{animation:about-rim-settle .42s cubic-bezier(.2,.7,.3,1),about-rim-flow 8s linear infinite}
+@keyframes about-rim-settle{from{scale:1.08 1.3;filter:blur(2px)}}
 @keyframes about-rim-flow{to{--about-rim-angle:360deg}}
 @keyframes about-tab-mesh{from{background-position:0% 20%;transform:scale(.97)}to{background-position:100% 80%;transform:scale(1.02)}}
 @media(prefers-reduced-motion:reduce){.about-tabs button::before,.about-tabs button::after{animation:none!important;transition:none}}
