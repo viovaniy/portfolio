@@ -24,12 +24,12 @@
   function lockSection() {
     if (lockedHeight) return;
     lockedHeight = section.offsetHeight;
-    section.style.minHeight = `${lockedHeight}px`;
+    section.style.height = `${lockedHeight}px`;
   }
   window.addEventListener('resize', () => {
     if (minimized || glass.classList.contains('is-enlarged')) return;
     lockedHeight = 0;
-    section.style.minHeight = '';
+    section.style.height = '';
   }, { passive: true });
 
   const EASE = 'cubic-bezier(.32,.72,0,1)';
@@ -74,11 +74,32 @@
     fold(description, value);
   }
   minimize.addEventListener('click', () => setMinimized(!minimized));
+  // Zoom (green light): FLIP the window so the size change runs on the GPU.
+  // The new layout is applied once; a transform then eases from the old
+  // frame to the new one, so nothing is re-laid-out or repainted per frame.
+  let zoom;
   resize.addEventListener('click', () => {
     lockSection();
+    const first = glass.getBoundingClientRect(); // includes any running zoom
+    zoom?.cancel();
+    shake?.cancel();
+    section.classList.add('is-zooming');
     const enlarged = glass.classList.toggle('is-enlarged');
     resize.setAttribute('aria-pressed', String(enlarged));
     resize.setAttribute('aria-label', enlarged ? 'Restore window size' : 'Enlarge window');
+    const last = glass.getBoundingClientRect();
+    requestAnimationFrame(() => requestAnimationFrame(() => section.classList.remove('is-zooming')));
+    if (reduced.matches || !last.width || !last.height) return;
+    const dx = first.left - last.left;
+    const dy = first.top - last.top;
+    const sx = first.width / last.width;
+    const sy = first.height / last.height;
+    glass.style.willChange = 'transform';
+    zoom = glass.animate([
+      { transformOrigin: '0 0', transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` },
+      { transformOrigin: '0 0', transform: 'none' }
+    ], { duration: 460, easing: 'cubic-bezier(.32,.72,0,1)' });
+    zoom.onfinish = zoom.oncancel = () => { glass.style.willChange = ''; };
   });
   section.querySelector('[data-window-action="refuse"]').addEventListener('click', () => {
     shake?.cancel();

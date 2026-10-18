@@ -83,7 +83,9 @@
 .about-window-lights:hover button span,.about-window-lights button:focus-visible span{opacity:1}
 .about-window-lights button:focus-visible{outline:2px solid #1677ed;outline-offset:5px}
 .about-window-lights button:active{filter:brightness(.85)}
-.about-glass{width:100%;transition:width .5s cubic-bezier(.22,1,.36,1),margin-left .5s cubic-bezier(.22,1,.36,1)}
+.about-glass{width:100%}
+/* While the window zooms, the tab pill jumps to its new spot instead of sliding. */
+.about-section.is-zooming .about-tabs::before{transition:none}
 .about-glass.is-enlarged{width:calc(100% + min(8vw,96px));margin-left:calc(min(8vw,96px) / -2)}
 @media(prefers-reduced-motion:reduce){.about-glass,.about-window-lights button span{transition:none}}
 .about-heading[hidden],.about-panels[hidden]{display:none}
