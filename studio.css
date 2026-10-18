@@ -80,24 +80,16 @@
 @keyframes studio-enter{from{opacity:0;transform:translateY(24px) scale(.98);filter:blur(5px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
 @media(prefers-reduced-motion:reduce){.studio-scene{animation:none}}
 
-/* Keep the reference composition around the silhouette, with a short one-way drift. */
+/* A soft sunset behind the studio; warmth crossfades on hover. */
 .home-section{clip-path:inset(-30px calc((100% - 100vw)/2) -30px 0)}
 .studio-scene{overflow:visible}
-.studio-clouds{position:absolute;inset:0 calc(-1 * min(12vw,100px)) 0 0;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 94%,transparent),linear-gradient(0deg,transparent,#000 8%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 94%,transparent),linear-gradient(0deg,transparent,#000 8%,#000 94%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}
-.studio-clouds--back{z-index:0}
-.studio-clouds--front{z-index:2}
-.studio-art{position:relative;z-index:1;clip-path:polygon(1.4% 17.6%,57.5% 2%,98.2% 21.2%,98.2% 100%,1.4% 100%)}
-.studio-cloud{position:absolute;left:var(--cloud-left);width:var(--cloud-width);top:var(--cloud-top);opacity:1;animation:studio-cloud-drift 28s ease-in-out infinite alternate;animation-delay:var(--cloud-delay);will-change:transform;pointer-events:none}
-.studio-cloud img{display:block;width:100%;height:auto;opacity:1;filter:blur(var(--cloud-blur)) drop-shadow(0 0 7px #fff) drop-shadow(0 0 16px #abcaff) drop-shadow(0 0 26px #ffd1f1);pointer-events:none}
-.studio-cloud--1{--cloud-left:0%;--cloud-top:12%;--cloud-width:25%;--cloud-blur:1px;--cloud-delay:-12s}
-.studio-cloud--2{--cloud-left:74%;--cloud-top:28%;--cloud-width:23%;--cloud-blur:2px;--cloud-delay:-26s}
-.studio-cloud--4{--cloud-left:7%;--cloud-top:52%;--cloud-width:13%;--cloud-blur:1px;--cloud-delay:-33s}
-.studio-cloud--5{--cloud-left:0%;--cloud-top:72%;--cloud-width:32%;--cloud-blur:2px;--cloud-delay:-18s}
-.studio-cloud--6{--cloud-left:65%;--cloud-top:84%;--cloud-width:25%;--cloud-blur:4px;--cloud-delay:-39s}
-.studio-cloud--7{--cloud-left:48%;--cloud-top:1%;--cloud-width:18%;--cloud-blur:10px;--cloud-delay:-21s}
-@keyframes studio-cloud-drift{from{transform:translateX(40px)}to{transform:translateX(-40px)}}
-@media(max-width:800px){.studio-clouds{right:-18px}.studio-cloud--4{--cloud-left:9%}}
-@media(prefers-reduced-motion:reduce){.studio-cloud{animation:none;will-change:auto;transform:none;opacity:1}}
+.studio-art{position:relative;z-index:1;mix-blend-mode:multiply}
+.studio-sunset{position:absolute;inset:-10% -17% -2% -12%;z-index:0;pointer-events:none;filter:blur(18px);-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.studio-sunset::before,.studio-sunset::after{content:"";position:absolute;inset:0;transition:opacity .85s cubic-bezier(.22,1,.36,1);background-repeat:no-repeat}
+.studio-sunset::before{opacity:1;background:radial-gradient(ellipse at 48% 38%,#f5c5dc99 0%,#f8d8e878 31%,#ffe8df55 49%,transparent 70%),radial-gradient(ellipse at 64% 58%,#ffd4be66,transparent 58%)}
+.studio-sunset::after{opacity:0;background:radial-gradient(ellipse at 48% 38%,#ffd3b399 0%,#ffe1cc78 31%,#ffece055 49%,transparent 70%),radial-gradient(ellipse at 64% 58%,#ffc5ad66,transparent 58%)}
+@media(hover:hover){.studio-scene:hover .studio-sunset::before{opacity:0}.studio-scene:hover .studio-sunset::after{opacity:1}}
+@media(prefers-reduced-motion:reduce){.studio-sunset::before,.studio-sunset::after{transition:none}}
 
 /* A quiet wiggle above the studio, independent of the scene's entrance. */
 .studio-bird{position:absolute;right:-8.7%;top:-7.1%;width:37.4%;height:auto;z-index:3;pointer-events:none;user-select:none;transform-origin:50% 60%;animation:studio-bird-wiggle 3.6s ease-in-out infinite}
