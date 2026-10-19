@@ -204,12 +204,9 @@
 @media(max-width:900px){.brief-phone{margin-top:76px}}
 
 /* ---------- Little life for the camera and + ---------- */
-.im-video svg rect,.im-video svg path{transform-box:fill-box;transition:transform .45s cubic-bezier(.34,1.6,.5,1)}
-.im-video svg rect{transform-origin:100% 50%}
-.im-video svg path{transform-origin:0 50%}
+.im-video svg rect,.im-video svg path{fill:rgba(0,122,255,0);transition:fill .25s ease}
 @media(hover:hover){
- .im-video:not(.is-locked):hover svg rect{transform:translateX(-1.5px) scale(.96)}
- .im-video:not(.is-locked):hover svg path{transform:translateX(1px) scaleX(1.35) scaleY(1.12)}
+ .im-video:not(.is-locked):hover svg rect,.im-video:not(.is-locked):hover svg path{fill:currentColor}
  .brief-preview:not(.is-refs-open) .im-plus:not(.is-locked):hover svg:first-child{transform:rotate(90deg)}
 }
 .im-video:active svg{transform:scale(.88);transition:transform .12s}
