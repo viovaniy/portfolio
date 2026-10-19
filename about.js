@@ -400,30 +400,51 @@
   });
   select(1, false); // After Effects first: the heart of the work.
 
-  // Magnification: icons grow with a smooth falloff around the cursor.
+  // Magnification like the macOS Dock: icons grow with a smooth falloff around
+  // the cursor. Sizes ease toward their target every frame (no springs, no
+  // overshoot), so entering, moving and leaving all glide.
   const BASE = () => parseFloat(getComputedStyle(apps[0]).getPropertyValue('--size')) || 52;
-  let frame = 0, x = 0, base = 52;
-  function magnify() {
-    frame = 0;
-    // Read every position first, then write, so layout is computed once.
-    const centers = apps.map(app => { const r = app.getBoundingClientRect(); return r.left + r.width / 2; });
-    apps.forEach((app, i) => {
-      const d = Math.abs(x - centers[i]);
-      const m = 1 + .48 * Math.cos(Math.min(1, d / 150) * Math.PI / 2) ** 2;
-      app.style.width = app.style.height = `${(base * m).toFixed(1)}px`;
-    });
+  let frame = 0, x = null, base = 52;
+  const sizes = apps.map(() => 0);
+  let centers = [];
+  function measure() {
+    // Centers at rest, so the falloff doesn't chase the icons as they grow.
+    apps.forEach(app => { app.style.width = app.style.height = ''; });
+    centers = apps.map(app => { const r = app.getBoundingClientRect(); return r.left + r.width / 2; });
+    apps.forEach((app, i) => { if (sizes[i]) app.style.width = app.style.height = `${sizes[i]}px`; });
   }
-  dock.addEventListener('pointerenter', () => { base = BASE(); });
+  function tick() {
+    frame = 0;
+    let moving = false;
+    apps.forEach((app, i) => {
+      const target = x === null ? base : base * (1 + .5 * Math.cos(Math.min(1, Math.abs(x - centers[i]) / (base * 2.9)) * Math.PI / 2) ** 2);
+      const now = sizes[i] || base;
+      const next = Math.abs(target - now) < .05 ? target : now + (target - now) * .24;
+      if (next !== target) moving = true;
+      sizes[i] = next;
+      app.style.width = app.style.height = `${next.toFixed(2)}px`;
+    });
+    if (moving) frame = requestAnimationFrame(tick);
+    else if (x === null) { apps.forEach((app, i) => { app.style.width = app.style.height = ''; sizes[i] = 0; }); }
+  }
+  const run = () => { if (!frame) frame = requestAnimationFrame(tick); };
+  dock.addEventListener('pointerenter', event => {
+    if (event.pointerType !== 'mouse' || !fine.matches || reduced.matches) return;
+    base = BASE();
+    if (!sizes.some(Boolean)) measure();
+  });
   dock.addEventListener('pointermove', event => {
     if (event.pointerType !== 'mouse' || !fine.matches || reduced.matches) return;
+    if (!centers.length) measure();
     x = event.clientX;
     dock.classList.add('is-tracking');
-    if (!frame) frame = requestAnimationFrame(magnify);
+    run();
   });
   dock.addEventListener('pointerleave', () => {
-    cancelAnimationFrame(frame); frame = 0;
+    x = null;
     dock.classList.remove('is-tracking');
-    apps.forEach(app => { app.style.width = app.style.height = ''; });
+    centers = [];
+    run();
   });
 })();
 

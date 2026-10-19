@@ -490,3 +490,26 @@
  .about-panel-process *{animation:none!important;transition:none!important}
  .ps-check{transform:none}.ps-bar i{transform:none}
 }
+
+/* ---------- Official icons as macOS Tahoe glass tiles ----------
+   The artwork fills the squircle; a glass layer on top adds the lensed rim
+   (bright top-left, soft dark bottom-right) and a gentle sheen. A layered,
+   soft shadow keeps white icons visible on the white page. */
+.dock-app.has-logo .dock-icon,.tl-detail-icon.has-logo{background:#fff;overflow:hidden;
+ box-shadow:0 0 0 .5px rgba(28,25,40,.14),0 1px 1.5px rgba(28,25,40,.08),0 4px 10px -2px rgba(28,25,40,.14),0 14px 22px -12px rgba(28,25,40,.3)}
+.dock-app.has-logo .dock-icon img,.tl-detail-icon.has-logo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.03);filter:none;border-radius:inherit}
+.dock-app.has-logo .dock-icon::before,.tl-detail-icon.has-logo::before{content:none}
+.dock-app.has-logo .dock-icon::after,.tl-detail-icon.has-logo::after{content:"";position:absolute;inset:0;z-index:2;border-radius:inherit;pointer-events:none;
+ background:radial-gradient(120% 70% at 18% 0%,rgba(255,255,255,.42),rgba(255,255,255,.1) 42%,rgba(255,255,255,0) 62%),linear-gradient(180deg,rgba(255,255,255,0) 60%,rgba(20,16,40,.07));
+ box-shadow:inset 0 0 0 1px rgba(255,255,255,.26),inset 1.2px 1.6px 0 -.2px rgba(255,255,255,.75),inset -1px -1.4px 0 -.2px rgba(20,16,40,.14);mix-blend-mode:normal}
+@media(hover:hover){.dock-app.has-logo:hover .dock-icon{box-shadow:0 0 0 .5px rgba(28,25,40,.14),0 1px 2px rgba(28,25,40,.08),0 6px 12px -2px rgba(28,25,40,.16),0 18px 26px -12px rgba(28,25,40,.34)}}
+
+/* macOS press: the icon darkens a touch while held, nothing else moves. */
+.dock-app:active .dock-icon{filter:brightness(.82);transition:filter .08s}
+/* One calm hop when chosen (no double bounce), and the running dot fades in. */
+.dock-app.is-bouncing .dock-icon{animation:dock-hop .62s both}
+@keyframes dock-hop{0%{transform:translateY(0);animation-timing-function:cubic-bezier(.2,.6,.35,1)}42%{transform:translateY(-12px);animation-timing-function:cubic-bezier(.55,0,.75,.4)}100%{transform:translateY(0)}}
+.dock-dot{transition:opacity .35s ease,transform .35s cubic-bezier(.22,1,.36,1)}
+/* Sizes are eased in JS every frame, so no CSS size transition is needed. */
+.dock-app,.dock.is-tracking .dock-app{transition:none}
+@media(prefers-reduced-motion:reduce){.dock-app.is-bouncing .dock-icon{animation:none}}
