@@ -6,7 +6,7 @@
 // translated before other scripts split words for their reveal animations.
 (function () {
   const LANGS = [
-    ['en', 'English', 'English', 'GB'],
+    ['en', 'English', 'English', 'US'],
     ['zh', '中文', 'Chinese', 'CN'],
     ['es', 'Español', 'Spanish', 'ES'],
     ['fr', 'Français', 'French', 'FR'],
@@ -100,6 +100,7 @@
 
   // ---------- flags: Apple emoji where available, small drawn flags elsewhere ----------
   const FLAG_SVG = {
+    US: '<rect width="30" height="20" fill="#fff"/><path d="M0 0h30M0 3.08h30M0 6.15h30M0 9.23h30M0 12.3h30M0 15.4h30M0 18.46h30" stroke="#B22234" stroke-width="1.54" transform="translate(0 .77)"/><rect width="13" height="10.77" fill="#3C3B6E"/><g fill="#fff">'+[...Array(20)].map((_, i) => `<circle cx="${1.6 + (i % 5) * 2.45 + (Math.floor(i / 5) % 2) * 1.2}" cy="${1.4 + Math.floor(i / 5) * 2.6}" r=".45"/>`).join('')+'</g>',
     GB: '<rect width="30" height="20" fill="#012169"/><path d="M0 0l30 20M30 0L0 20" stroke="#fff" stroke-width="4"/><path d="M0 0l30 20M30 0L0 20" stroke="#C8102E" stroke-width="1.6"/><path d="M15 0v20M0 10h30" stroke="#fff" stroke-width="6"/><path d="M15 0v20M0 10h30" stroke="#C8102E" stroke-width="3.4"/>',
     CN: '<rect width="30" height="20" fill="#DE2910"/><path fill="#FFDE00" d="M5.5 2.6l.9 2.7h2.8l-2.3 1.7.9 2.7-2.3-1.7-2.3 1.7.9-2.7L1.8 5.3h2.8z"/><circle cx="11" cy="2.6" r=".8" fill="#FFDE00"/><circle cx="12.6" cy="4.7" r=".8" fill="#FFDE00"/><circle cx="12.6" cy="7.4" r=".8" fill="#FFDE00"/><circle cx="11" cy="9.4" r=".8" fill="#FFDE00"/>',
     ES: '<rect width="30" height="20" fill="#AA151B"/><rect y="5" width="30" height="10" fill="#F1BF00"/>',

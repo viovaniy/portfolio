@@ -1,0 +1,61 @@
+/* Apple-style light matte glass for every white card on the site.
+   No grey outlines: surfaces are defined by a soft white fill, a bright edge
+   light on top, and layered, very soft shadows. Loaded last so it wins. */
+:root{
+ --glass-fill:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,255,255,.84));
+ --glass-edge:inset 0 1px 0 #fff,inset 0 0 0 1px rgba(255,255,255,.7);
+ --glass-shadow:0 .5px 1px rgba(28,25,40,.04),0 2px 6px -1px rgba(28,25,40,.04),0 10px 22px -8px rgba(28,25,40,.08),0 26px 48px -26px rgba(28,25,40,.16);
+ --glass-shadow-hover:0 .5px 1px rgba(28,25,40,.05),0 4px 10px -2px rgba(28,25,40,.06),0 16px 30px -10px rgba(28,25,40,.12),0 34px 60px -30px rgba(28,25,40,.22);
+ --glass-blur:blur(22px) saturate(1.7);
+ --glass-well:rgba(118,118,128,.075); /* iOS-style fill for wells and chips */
+}
+
+/* ---------- About window ---------- */
+/* The panel area: a calm grouped background instead of an outlined box. */
+.about-panels{border:0;background:linear-gradient(180deg,rgba(242,242,246,.75),rgba(246,246,249,.6));box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+.about-panels:has(#about-panel-0:not([hidden])){background:transparent;box-shadow:none}
+
+/* About tab cards */
+.me-card{background:var(--glass-fill);box-shadow:var(--glass-edge),var(--glass-shadow)}
+@media(hover:hover){.me-card:hover{box-shadow:var(--glass-edge),var(--glass-shadow-hover)}}
+.me-photo{box-shadow:0 .5px 1px rgba(28,25,40,.05),0 10px 22px -8px rgba(28,25,40,.12),0 26px 48px -26px rgba(28,25,40,.2)}
+.me-likes li{background:var(--glass-well);box-shadow:none}
+@media(hover:hover){.me-likes li:hover{background:rgba(118,118,128,.12);box-shadow:none}}
+
+/* Process tab */
+.ps-card{background:var(--glass-fill);box-shadow:var(--glass-edge),var(--glass-shadow)}
+@media(hover:hover){.ps-card:hover{box-shadow:var(--glass-edge),var(--glass-shadow-hover)}}
+.ps-vis{background:var(--glass-well);box-shadow:none}
+.ps-aa,.ps-file{box-shadow:0 .5px 1px rgba(28,25,40,.06),0 3px 8px -2px rgba(28,25,40,.1)}
+.ps-icon,.me-icon{box-shadow:none}
+
+/* Tools tab */
+.tl-detail{background:var(--glass-fill);box-shadow:var(--glass-edge),var(--glass-shadow)}
+
+/* ---------- Contact ---------- */
+.brief-done,.brief-preview{background:rgba(255,255,255,.82);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:var(--glass-edge),0 1px 2px rgba(28,25,40,.04),0 12px 28px -12px rgba(28,25,40,.1),0 40px 80px -40px rgba(28,25,40,.22)}
+.brief-done::after,.brief-preview::after{box-shadow:inset 0 1px 0 rgba(255,255,255,.95)}
+.brief-chat{background:transparent}
+.brief-chip span{background:rgba(255,255,255,.9);box-shadow:var(--glass-edge),0 .5px 1px rgba(28,25,40,.06),0 3px 8px -3px rgba(28,25,40,.12)}
+
+/* ---------- Small floating controls ---------- */
+.lang-pop{background:rgba(255,255,255,.82);box-shadow:var(--glass-edge),0 1px 2px rgba(28,25,40,.05),0 12px 28px -10px rgba(28,25,40,.16),0 36px 64px -28px rgba(28,25,40,.26)}
+.footer-tg,.footer-top-btn{background:rgba(255,255,255,.85);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:var(--glass-edge),0 .5px 1px rgba(28,25,40,.06),0 4px 10px -3px rgba(28,25,40,.12)}
+@media(hover:hover){.footer-tg:hover{box-shadow:var(--glass-edge),0 1px 2px rgba(28,25,40,.06),0 10px 20px -8px rgba(28,25,40,.2)}}
+.gallery-control{border:0;background:rgba(255,255,255,.85);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:var(--glass-edge),0 .5px 1px rgba(28,25,40,.06),0 4px 10px -3px rgba(28,25,40,.12)}
+.gallery-control:hover:not(:disabled){background:#fff}
+.studio-client-card{box-shadow:inset 0 1px 0 #fff,0 1px 2px rgba(0,0,0,.04),0 12px 30px -10px rgba(0,0,0,.12),0 40px 70px -30px rgba(0,0,0,.18)}
+
+@media(prefers-reduced-transparency:reduce){
+ .brief-done,.brief-preview,.lang-pop,.footer-tg,.footer-top-btn,.gallery-control{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}
+}
+@media(forced-colors:active){
+ .me-card,.ps-card,.tl-detail,.brief-done,.brief-preview{border:1px solid CanvasText}
+}
+
+/* Tools dock bar: frosted white, no outline. */
+.dock::before{background:rgba(255,255,255,.7);box-shadow:var(--glass-edge),0 .5px 1px rgba(28,25,40,.05),0 6px 16px -6px rgba(28,25,40,.1),0 22px 40px -22px rgba(28,25,40,.2)}
+/* Floating surfaces over busy content stay readable. */
+.lang-pop{background:rgba(255,255,255,.92)}
+/* Contact windows sit on the white page, so they get a touch more depth. */
+.brief-done,.brief-preview{box-shadow:var(--glass-edge),0 1px 2px rgba(28,25,40,.05),0 6px 16px -6px rgba(28,25,40,.08),0 20px 44px -16px rgba(28,25,40,.14),0 48px 90px -44px rgba(28,25,40,.24)}
