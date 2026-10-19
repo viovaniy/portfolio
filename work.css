@@ -188,3 +188,6 @@
 .cg-slide:not(.is-active) .cg-pblur{display:none}
 /* a slightly stronger white wash on light films, starting a bit higher */
 .cg-slide[data-tone="light"] .cg-media::after{height:64%;background:linear-gradient(to top,rgba(255,255,255,.96) 0%,rgba(255,255,255,.8) 28%,rgba(255,255,255,.35) 55%,rgba(255,255,255,0) 80%)}
+/* Even line breaks: no lonely last word on titles and descriptions. */
+.cg-title,.cg-desc{text-wrap:balance}
+.cg-desc{max-width:46ch}
