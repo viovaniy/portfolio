@@ -17,7 +17,7 @@ svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.6;stroke
 .intro{margin-top:36px}
 h1{font-size:clamp(29px,3.5vw,43px);line-height:1.23;letter-spacing:-1.2px;font-weight:500;margin:0}
 .description{font-size:clamp(21px,2.3vw,28px);line-height:1.35;letter-spacing:-.65px;color:#929292;margin:17px 0 0}
-.contact-button{position:relative;display:inline-flex;align-items:center;justify-content:center;background:transparent;color:#087bff;padding:12px 13px;margin-top:31px;margin-left:-13px;border:0;border-radius:999px;font-size:20px;font-weight:450;letter-spacing:-.5px;min-height:49px;touch-action:manipulation;transition:background .18s}
+.contact-button{position:relative;display:inline-flex;align-items:center;justify-content:center;background:transparent;color:#087bff;padding:12px 22px;margin-top:31px;margin-left:-22px;border:0;border-radius:999px;font-size:20px;font-weight:450;letter-spacing:-.5px;min-height:49px;touch-action:manipulation;transition:background .18s}
 .contact-button{user-select:none;-webkit-user-select:none}
 .contact-button:hover,.contact-button:active{background:#f0f1f3}
 .magnetic-label{position:relative;z-index:31;display:inline-flex;align-items:center;gap:10px;transform:translate3d(var(--pull-x,0px),var(--pull-y,0px),0) scale(var(--press-scale,1));transition:transform .3s cubic-bezier(.2,.8,.25,1);pointer-events:none}
