@@ -208,6 +208,7 @@
   }
   function backToForm() {
     window.briefRefs?.lock(false);
+    window.briefCall?.lock(false);
     root.classList.remove('is-done', 'is-folding', 'is-sending-chat', 'is-ready');
     setState(null);
     done.hidden = true;
@@ -223,6 +224,7 @@
       // A new brief starts from the project; who you are stays filled in.
       textarea.value = '';
       window.briefRefs?.clear();
+      window.briefCall?.clear();
       form.querySelectorAll('input[type=radio]').forEach(radio => { radio.checked = false; });
       fieldOf('project')?.classList.remove('is-pill');
       grow();
@@ -272,7 +274,8 @@
         botcheck: form.elements.namedItem('botcheck').checked,
         device: deviceId(),
         sentBefore: sentBefore(),
-        insight: window.briefInsight ? window.briefInsight() : null
+        insight: window.briefInsight ? window.briefInsight() : null,
+        call: window.briefCall ? window.briefCall.get() : null
     };
     // With references, the brief and the files travel together in one request.
     // XHR (not fetch) so the real upload progress can drive both windows.
@@ -323,6 +326,7 @@
       later(550, () => sentBubble.classList.remove('is-sending'));
     }
     window.briefRefs?.lock(true); // pinning reopens with "Send another brief"
+    window.briefCall?.lock(true);
     resetProgress();
     root.classList.add('is-uploading');
     setProgress(.04, window.briefRefs?.count() || 0);
@@ -440,4 +444,17 @@
   form.addEventListener('focusin', event => {
     if (event.target.matches('.brief-field input, .brief-field textarea')) event.target.closest('.brief-field').classList.remove('is-pill');
   });
+
+  // On phones the "Send brief" row moves below the iMessage card, so the
+  // visitor sees the finished message (and its +/camera) before sending.
+  const actions = form.querySelector('.brief-actions');
+  const phone = root.querySelector('.brief-phone');
+  const narrow = matchMedia('(max-width: 900px)');
+  function placeActions() {
+    if (!actions || !phone) return;
+    if (narrow.matches && actions.parentElement === form) phone.after(actions);
+    else if (!narrow.matches && actions.parentElement !== form) form.append(actions);
+  }
+  narrow.addEventListener('change', placeActions);
+  placeActions();
 })();

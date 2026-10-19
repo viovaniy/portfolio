@@ -1,0 +1,179 @@
+/* ---------- Video call booking: camera button → Calendar-style sheet ---------- */
+.brief-phone{position:relative;min-width:0;display:flex;flex-direction:column}
+.brief-phone>.brief-preview{flex:1 1 auto}
+.brief:not(.is-live) .brief-phone{display:none}
+
+/* The camera button in the Messages header */
+.im-video{display:grid;place-items:center;right:12px;top:24px;width:38px;height:32px;padding:0;border:0;border-radius:10px;background:none;color:#007aff;cursor:pointer;transition:transform .15s cubic-bezier(.22,1,.36,1),background-color .2s ease}
+.im-video svg{width:26px;height:18px}
+@media(hover:hover){.im-video:hover{background:rgba(0,122,255,.08)}}
+.im-video:active{transform:scale(.9)}
+.im-video:focus-visible{outline:2px solid #91baff;outline-offset:1px}
+.im-video-dot{position:absolute;top:3px;right:3px;width:9px;height:9px;border-radius:50%;background:#34c759;box-shadow:0 0 0 2px #f6f6f8;animation:refs-pop .5s cubic-bezier(.34,1.45,.5,1)}
+.im-video-dot[hidden]{display:none}
+.im-video.is-locked{color:#b4b4bb;cursor:not-allowed}
+.im-video.is-nope{animation:refs-shake .42s cubic-bezier(.22,1,.36,1)}
+.im-video-tip{position:absolute;right:10px;top:62px;z-index:8;max-width:calc(100% - 20px);padding:7px 11px;border-radius:12px;background:rgba(40,40,44,.92);color:#fff;font-size:12.5px;line-height:1.3;
+ opacity:0;transform:translateY(-4px);pointer-events:none;transition:opacity .2s ease,transform .3s cubic-bezier(.22,1,.36,1)}
+.im-video-tip.is-on{opacity:1;transform:none}
+.im-video-tip::after{content:"";position:absolute;right:20px;bottom:100%;border:5px solid transparent;border-bottom-color:rgba(40,40,44,.92)}
+.brief-preview.is-call-open .brief-chat{opacity:.22;transform:scale(.97) translateY(-6px)}
+
+/* The sheet (same family as the references sheet) */
+.call-sheet{position:absolute;left:10px;right:10px;bottom:60px;top:auto;z-index:6;max-height:calc(100% - 112px);overflow:hidden;border-radius:24px;
+ background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(24px) saturate(1.8);backdrop-filter:blur(24px) saturate(1.8);
+ box-shadow:inset 0 1px 0 #fff,0 1px 2px rgba(28,25,40,.05),0 12px 30px -10px rgba(28,25,40,.18),0 40px 70px -30px rgba(28,25,40,.28);
+ transform-origin:calc(100% - 28px) -40px;opacity:0;transform:translateY(-10px) scale(.94);transition:opacity .2s ease,transform .3s cubic-bezier(.22,1,.36,1)}
+.call-sheet.is-open{opacity:1;transform:none;transition:opacity .22s ease,transform .55s cubic-bezier(.34,1.45,.5,1)}
+.call-sheet[hidden]{display:none}
+.call-pages{display:flex;width:200%;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.call-pages[data-page="2"]{transform:translateX(-50%)}
+.call-page{width:50%;min-width:0;padding:14px 14px 12px;display:flex;flex-direction:column;transition:opacity .35s ease}
+.call-pages[data-page="1"] .call-page[data-page="2"],.call-pages[data-page="2"] .call-page[data-page="1"]{opacity:0;pointer-events:none}
+
+.call-head{display:flex;align-items:flex-start;justify-content:space-between;margin:0 0 10px;padding:0 2px}
+.call-head h4{margin:0;font-size:17px;font-weight:600;letter-spacing:-.022em;color:#1f1f22}
+.call-sub{margin:2px 0 0;font-size:12.5px;color:#8e8e93}
+.call-tz{flex:none;margin-left:10px;padding:3px 8px;border-radius:999px;background:rgba(118,118,128,.1);font-size:11px;color:#6e6e73;white-space:nowrap}
+.call-back{display:inline-flex;align-items:center;margin:0 0 4px -4px;padding:2px 4px;border:0;border-radius:8px;background:none;color:#007aff;font:inherit;font-size:14px;cursor:pointer}
+.call-back svg,.call-nav svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.call-back svg{margin-right:2px}
+
+/* Month: iOS date picker */
+.call-month-bar{display:flex;align-items:center;justify-content:space-between;margin:0 2px 6px}
+.call-month-bar b{font-size:15px;font-weight:600;letter-spacing:-.015em;color:#1f1f22;text-transform:capitalize}
+.call-navs{display:inline-flex}
+.call-nav{display:grid;place-items:center;width:28px;height:28px;padding:0;border:0;border-radius:50%;background:none;color:#007aff;cursor:pointer}
+.call-nav:disabled{color:#c7c7cc;cursor:default}
+@media(hover:hover){.call-nav:not(:disabled):hover{background:rgba(0,122,255,.08)}}
+.call-dow,.call-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));justify-items:center}
+.call-dow span{font-size:10.5px;font-weight:600;color:#a1a1a8;text-transform:uppercase;padding:2px 0 4px}
+.call-days{row-gap:2px}
+.call-days.is-slide-l{animation:call-slide-l .35s cubic-bezier(.22,1,.36,1)}
+.call-days.is-slide-r{animation:call-slide-r .35s cubic-bezier(.22,1,.36,1)}
+@keyframes call-slide-l{from{opacity:0;transform:translateX(18px)}}
+@keyframes call-slide-r{from{opacity:0;transform:translateX(-18px)}}
+.call-day{position:relative;width:32px;height:32px;padding:0;border:0;border-radius:50%;background:none;color:#1f1f22;font:inherit;font-size:14.5px;font-weight:500;font-variant-numeric:tabular-nums;cursor:pointer;transition:background-color .2s ease,color .2s ease,transform .3s cubic-bezier(.34,1.45,.5,1)}
+.call-day:disabled{color:#c7c7cc;cursor:default}
+.call-day.is-today{color:#ff3b30}
+.call-day:not(:disabled)::after{content:"";position:absolute;left:50%;bottom:3px;width:3px;height:3px;margin-left:-1.5px;border-radius:50%;background:#34c759;opacity:.8}
+@media(hover:hover){.call-day:not(:disabled):not(.is-picked):hover{background:rgba(0,122,255,.08)}}
+.call-day.is-picked{background:#007aff;color:#fff;font-weight:600;transform:scale(1.04)}
+.call-day.is-picked::after{background:#fff}
+.call-day:focus-visible,.call-time:focus-visible{outline:2px solid #91baff;outline-offset:1px}
+
+/* Times: a horizontal row of iOS pills */
+.call-times{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:10px -14px 0;padding:2px 14px 4px;min-height:38px;scroll-snap-type:x proximity}
+.call-times::-webkit-scrollbar{display:none}
+.call-times>*+*{margin-left:6px}
+.call-time{flex:none;height:32px;padding:0 13px;border:0;border-radius:999px;background:rgba(118,118,128,.1);color:#1f1f22;font:inherit;font-size:14px;font-weight:500;font-variant-numeric:tabular-nums;cursor:pointer;scroll-snap-align:start;
+ transition:background-color .2s ease,color .2s ease,transform .3s cubic-bezier(.34,1.45,.5,1)}
+@media(hover:hover){.call-time:hover{background:rgba(118,118,128,.16)}}
+.call-time[aria-selected="true"]{background:#007aff;color:#fff;transform:scale(1.04)}
+.call-times.is-in .call-time{animation:refs-rise .4s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i) * 30ms)}
+.call-times-empty{margin:0;align-self:center;font-size:12.5px;color:#a1a1a8}
+
+/* Page 2 */
+.call-label{margin:6px 2px 6px;font-size:12.5px;font-weight:500;color:#6e6e73}
+.call-seg{--i:0;position:relative;display:grid;grid-template-columns:1fr 1fr;padding:2px;border-radius:10px;background:rgba(118,118,128,.12)}
+.call-seg button{position:relative;z-index:1;height:30px;border:0;background:none;color:#1f1f22;font:inherit;font-size:13.5px;font-weight:500;cursor:pointer;border-radius:8px}
+.call-seg button[aria-checked="true"]{font-weight:600}
+.call-seg button:focus-visible{outline:2px solid #91baff;outline-offset:-1px}
+.call-seg-thumb{position:absolute;top:2px;bottom:2px;left:2px;width:calc(50% - 2px);border-radius:8px;background:#fff;box-shadow:0 1px 2px rgba(28,25,40,.08),0 3px 8px -2px rgba(28,25,40,.12);transform:translateX(calc(var(--i) * 100%));transition:transform .4s cubic-bezier(.34,1.3,.5,1)}
+.call-field{display:block;margin-top:8px}
+.call-input{display:block;width:100%;height:40px;padding:0 12px;border:0;border-radius:12px;background:rgba(118,118,128,.1);color:#1f1f22;font:inherit;font-size:15px;outline:none;transition:background-color .2s ease,box-shadow .2s ease}
+.call-input:focus{background:#fff;box-shadow:0 0 0 2px rgba(0,122,255,.35)}
+.call-field.is-shake{animation:refs-shake .42s cubic-bezier(.22,1,.36,1)}
+.call-error{min-height:16px;margin:6px 2px 0;font-size:12px;color:#d0477c}
+
+.call-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:12px}
+.call-cancel{height:34px;padding:0 10px;border:0;border-radius:999px;background:none;color:#007aff;font:inherit;font-size:14px;cursor:pointer}
+.call-primary{position:relative;isolation:isolate;height:34px;padding:0 18px;border:1.5px solid transparent;border-radius:999px;color:#c2416f;font:inherit;font-size:14px;font-weight:600;cursor:pointer;
+ background:linear-gradient(#fff,#fff) padding-box,linear-gradient(100deg,#ffc4d8,#ffd9c6) border-box;transition:transform .15s cubic-bezier(.22,1,.36,1),color .25s ease,box-shadow .3s ease,opacity .2s}
+.call-primary::before{content:"";position:absolute;inset:-1.5px;z-index:-1;border-radius:inherit;background:linear-gradient(100deg,#ff7eaa,#ff9f86 55%,#ffbf8a);opacity:0;transition:opacity .3s ease}
+@media(hover:hover){.call-primary:not(:disabled):hover{color:#fff;box-shadow:0 10px 20px -10px rgba(255,110,150,.7)}.call-primary:not(:disabled):hover::before{opacity:1}}
+.call-primary:active{transform:scale(.96)}
+.call-primary:disabled{opacity:.45;cursor:default}
+.call-primary:focus-visible,.call-cancel:focus-visible,.call-back:focus-visible{outline:2px solid #91baff;outline-offset:2px}
+
+/* The booked call in the chat, like a Calendar invite */
+.im-event{display:flex;align-items:center;align-self:flex-end;max-width:86%;margin:0 0 8px;padding:9px 14px 9px 9px;border:0;border-radius:18px;background:#f2f2f6;color:#1f1f22;font:inherit;text-align:left;cursor:pointer;
+ box-shadow:inset 0 0 0 .5px rgba(28,25,40,.06);transition:transform .15s cubic-bezier(.22,1,.36,1)}
+.im-event[hidden]{display:none}
+.im-event:active{transform:scale(.97)}
+.im-event:disabled{cursor:default}
+.im-event.is-in{animation:refs-pop .55s cubic-bezier(.34,1.45,.5,1)}
+.im-event-cal{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;width:42px;height:42px;margin-right:10px;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(28,25,40,.1)}
+.im-event-cal b{font-size:9px;font-weight:700;line-height:1;color:#ff3b30;text-transform:uppercase;letter-spacing:.02em}
+.im-event-cal i{font-style:normal;font-size:20px;font-weight:500;line-height:1.05;letter-spacing:-.02em}
+.im-event-text{display:flex;flex-direction:column;min-width:0}
+.im-event-text b{font-size:14px;font-weight:600;letter-spacing:-.01em}
+.im-event-text span{font-size:12.5px;color:#6e6e73;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Handwritten hint for the call: inside the phone, pointing up at the camera */
+.call-hint{position:absolute;right:30px;top:96px;z-index:4;display:flex;align-items:flex-start;pointer-events:none;transition:opacity .35s ease}
+.call-hint .refs-hint-arrow{position:relative;left:auto;top:-30px;flex:none;width:46px;height:50px;margin-left:2px}
+.call-hint-text{white-space:nowrap;margin-top:10px}
+.call-hint.is-done,.call-hint.is-crowded,.brief-preview.is-refs-open~.call-hint,.brief-preview.is-call-open~.call-hint,.brief.is-done .call-hint{opacity:0}
+.call-hint.is-drawn .refs-hint-arrow path:first-child{animation:refs-draw .9s cubic-bezier(.6,.1,.3,1) .35s forwards}
+.call-hint.is-drawn .refs-hint-arrow path:last-child{animation:refs-draw .35s ease-out 1.2s forwards}
+.call-hint.is-drawn .refs-hint-text{animation:refs-hand .6s cubic-bezier(.16,1,.3,1) .7s forwards}
+
+/* References hint: beside the phone on desktop (pointing at +), under it on mobile */
+.refs-hint .hint-side{display:none}
+@media(min-width:901px){
+ .refs-hint{position:absolute;grid-column:auto;right:calc(100% + 6px);bottom:14px;height:auto;margin:0;padding:0 78px 6px 0;text-align:right;white-space:nowrap}
+ .refs-hint .hint-up{display:none}
+ .refs-hint .hint-side{display:block;left:auto;right:-6px;top:auto;bottom:-6px;width:78px;height:44px}
+ .refs-hint-text{transform:rotate(-2deg);transform-origin:100% 50%}
+}
+@media(max-width:900px){
+ .brief-phone{order:2}
+ .brief>.brief-actions{order:3;margin-top:0;padding-top:0}
+ .refs-hint{position:relative;margin-top:-6px}
+}
+.brief.is-done>.brief-actions{display:none}
+@media(prefers-reduced-motion:reduce){
+ .call-sheet,.call-sheet.is-open,.call-pages,.call-seg-thumb,.call-day,.call-time{transition:none}
+ .call-days.is-slide-l,.call-days.is-slide-r,.call-times.is-in .call-time,.im-event.is-in,.im-video-dot{animation:none}
+ .call-hint .refs-hint-arrow path{stroke-dashoffset:0}.call-hint .refs-hint-text{opacity:1}
+}
+
+/* ---------- Laptop fit: the whole brief (form + iMessage) fits one screen ---------- */
+@media(min-width:901px){
+ .contact-section{padding-top:clamp(28px,5vh,56px);padding-bottom:clamp(88px,12vh,110px)}
+ .contact-section h2{margin-bottom:10px}
+ .contact-section .form-intro{margin-bottom:clamp(16px,3vh,28px);font-size:15.5px;line-height:1.5}
+ .brief-line{margin-bottom:clamp(6px,1.5vh,14px);font-size:clamp(17px,min(1.7vw,2.7vh),23px);line-height:1.48}
+ .content-section.contact-section h2{font-size:clamp(28px,min(3.4vw,4.6vh),39px)}
+ .brief-line legend{line-height:1.5}
+ .brief-chips{gap:7px}
+ .brief-chip span{padding:clamp(4px,.7vh,6px) 13px;font-size:14px}
+ .brief-actions{padding-top:clamp(12px,2.2vh,22px)}
+ .brief-send{height:clamp(40px,5.6vh,46px)}
+ .brief-chat-head{padding:12px 18px 8px}
+ .brief-chat-avatar{width:44px;height:44px}
+ .brief-chat{min-height:0}
+ .im-back{top:24px}.im-video{top:19px}
+ .call-hint{top:84px}
+}
+
+/* The phone grows while the booking sheet is open, so the whole sheet fits. */
+.brief-preview.is-call-open .brief-chat{min-height:452px}
+.call-sheet{overflow:clip}
+.call-day{width:30px;height:30px}
+@media(max-width:900px){.brief-preview.is-call-open .brief-chat{min-height:470px}}
+
+/* Phones: the video-call hint sits just above the card, pointing down at the camera. */
+@media(max-width:900px){
+ .brief-phone{margin-top:40px}
+ .call-hint{top:-46px;right:30px}
+ .call-hint .refs-hint-arrow{top:6px;transform:scaleY(-1)}
+ .call-hint-text{margin-top:0}
+}
+@media(max-width:900px){
+ .brief-phone{margin-top:62px}
+ .call-hint{top:auto;bottom:calc(100% - 2px);right:30px;align-items:flex-end}
+ .call-hint .refs-hint-arrow{top:22px}
+ .call-hint-text{white-space:normal;max-width:min(240px,calc(100vw - 130px));text-align:right;line-height:1.05;margin-bottom:12px}
+}

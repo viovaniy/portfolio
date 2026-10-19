@@ -24,7 +24,7 @@
       } catch (e) {}
       if (ok.indexOf(l) > -1) {
         document.documentElement.lang = l;
-        document.write('<script src="i18n/' + l + '.js?v=3"><\/script>');
+        document.write('<script src="i18n/' + l + '.js?v=4"><\/script>');
       }
     })();
   </script>
@@ -40,7 +40,8 @@
   <link rel="stylesheet" href="footer.css?v=5">
   <link rel="stylesheet" href="lang.css?v=2">
   <link rel="stylesheet" href="refs.css?v=2">
-  <link rel="stylesheet" href="glass.css?v=4">
+  <link rel="stylesheet" href="call.css?v=6">
+  <link rel="stylesheet" href="glass.css?v=5">
 </head>
 <body>
   <svg class="icon-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -322,12 +323,12 @@
       <div class="brief" data-brief>
         <form id="project-brief" class="brief-letter" novalidate hidden>
           <input type="checkbox" name="botcheck" class="brief-trap" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <p class="brief-line">Hello! My name is <label class="brief-field" data-key="name"><span class="sr-only">Your name</span><input name="name" autocomplete="name" maxlength="80" required placeholder="full name" spellcheck="false"></label>, and I can be reached at <label class="brief-field" data-key="contact"><span class="sr-only">Email or Telegram</span><input name="contact" autocomplete="email" maxlength="120" required placeholder="email or Telegram" spellcheck="false"></label>.</p>
+          <p class="brief-line">Hello! My name is <label class="brief-field" data-key="name"><span class="sr-only">Your name</span><input name="name" autocomplete="name" maxlength="80" required placeholder="full name" spellcheck="false"></label>, and I can be reached at <label class="brief-field" data-key="contact"><span class="sr-only">Email or Telegram</span><input name="contact" autocomplete="email" maxlength="120" required placeholder="email or @telegram" spellcheck="false"></label>.</p>
           <p class="brief-line brief-line-area"><span id="brief-project-label">The project I’d like to discuss:</span> <label class="brief-field brief-field-area" data-key="project"><textarea name="project" rows="1" maxlength="1800" required aria-labelledby="brief-project-label" placeholder="the product, its goals, and what you would like animated…"></textarea></label></p>
           <fieldset class="brief-line brief-choice" data-key="budget"><legend>Estimated budget:</legend><div class="brief-chips"><label class="brief-chip" data-pointer-fill><input type="radio" name="budget" value="Under $1k"><span>Under $1k</span></label><label class="brief-chip" data-pointer-fill><input type="radio" name="budget" value="$1–3k"><span>$1–3k</span></label><label class="brief-chip" data-pointer-fill><input type="radio" name="budget" value="$3–5k"><span>$3–5k</span></label><label class="brief-chip" data-pointer-fill><input type="radio" name="budget" value="$5k+"><span>$5k+</span></label><label class="brief-chip" data-pointer-fill><input type="radio" name="budget" value="To be discussed"><span>To be discussed</span></label></div></fieldset>
           <fieldset class="brief-line brief-choice" data-key="timeline"><legend>Preferred timeline:</legend><div class="brief-chips"><label class="brief-chip" data-pointer-fill><input type="radio" name="timeline" value="As soon as possible"><span>As soon as possible</span></label><label class="brief-chip" data-pointer-fill><input type="radio" name="timeline" value="Within a month"><span>Within a month</span></label><label class="brief-chip" data-pointer-fill><input type="radio" name="timeline" value="This quarter"><span>This quarter</span></label><label class="brief-chip" data-pointer-fill><input type="radio" name="timeline" value="Flexible"><span>Flexible</span></label></div></fieldset>
           <div class="brief-actions">
-            <button class="brief-send" type="submit"><span class="brief-send-label">Send brief</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></button>
+            <button class="brief-send" type="submit" form="project-brief"><span class="brief-send-label">Send brief</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></button>
             <p class="brief-error" role="alert"></p>
           </div>
         </form>
@@ -341,21 +342,26 @@
             <button class="brief-edit t-after" type="button"><span class="t-sent">Send another brief</span><span class="t-failed">Edit brief</span></button>
           </div>
         </div>
+        <div class="brief-phone">
         <aside class="brief-preview" aria-labelledby="brief-preview-title">
           <header class="brief-chat-head"><span class="im-progress" aria-hidden="true"><i></i></span>
             <span class="im-back" aria-hidden="true"><svg viewBox="0 0 12 20"><path d="M10 2 2 10l8 8"/></svg></span>
             <span class="brief-chat-avatar" aria-hidden="true"><img src="assets/avatar.png" width="56" height="56" alt=""></span>
             <span class="brief-chat-who"><strong id="brief-preview-title">viovaniy<svg viewBox="0 0 8 12" aria-hidden="true"><path d="m2 2 4 4-4 4"/></svg></strong></span>
-            <span class="im-video" aria-hidden="true"><svg viewBox="0 0 26 18"><rect x="1" y="2" width="16" height="14" rx="4"/><path d="m18 7.5 6-3.5v10l-6-3.5Z"/></svg></span>
+            <button class="im-video" type="button" aria-label="Book a video call" aria-haspopup="dialog" aria-expanded="false" aria-controls="call-sheet" data-pointer-shape="circle"><svg viewBox="0 0 26 18" aria-hidden="true"><rect x="1" y="2" width="16" height="14" rx="4"/><path d="m18 7.5 6-3.5v10l-6-3.5Z"/></svg><span class="im-video-dot" hidden></span></button>
           </header>
           <div class="brief-chat">
             <p class="im-time" aria-hidden="true"><b>iMessage</b><span data-im-time>Today</span></p>
+            <button class="im-event" type="button" hidden aria-label="Change the video call">
+              <span class="im-event-cal" aria-hidden="true"><b data-ev-dow></b><i data-ev-day></i></span>
+              <span class="im-event-text"><b>Video call</b><span data-ev-when></span><span data-ev-where></span></span>
+            </button>
             <div class="im-attach" role="img" hidden></div>
             <div class="brief-bubble" aria-live="polite">
               <span class="im-tapback" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10.3A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.6c0 5.7-7.5 10.3-7.5 10.3Z"/></svg><i></i><i></i></span>
               <p><span data-part="greeting">Hello! I would like to discuss a motion design project.</span></p>
               <p><span class="brief-k">Name</span> <span data-part="name" data-empty="full name"></span></p>
-              <p><span class="brief-k">Contact</span> <span data-part="contact" data-empty="email or Telegram"></span></p>
+              <p><span class="brief-k">Contact</span> <span data-part="contact" data-empty="email or @telegram"></span></p>
               <p data-part="project" data-empty="Project details…"></p>
               <p><span class="brief-k">Budget</span> <span data-part="budget" data-empty="to be discussed"></span></p>
               <p><span class="brief-k">Timeline</span> <span data-part="timeline" data-empty="flexible"></span></p>
@@ -384,6 +390,28 @@
             <ul class="refs-grid" aria-label="Pinned references"></ul>
             <div class="refs-foot"><p class="refs-note" role="status"></p><button class="refs-done" type="button">Done</button></div>
           </div>
+          <div class="call-sheet" id="call-sheet" role="dialog" aria-labelledby="call-title" hidden>
+            <div class="call-pages">
+              <section class="call-page" data-page="1">
+                <header class="call-head"><div><h4 id="call-title">Book a video call</h4><p class="call-sub">Pick a day and time</p></div><span class="call-tz" data-call-tz></span></header>
+                <div class="call-month-bar"><b data-call-month></b><span class="call-navs"><button class="call-nav" type="button" data-dir="-1" aria-label="Previous month"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg></button><button class="call-nav" type="button" data-dir="1" aria-label="Next month"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4.5 2.5 8 6 4.5 9.5"/></svg></button></span></div>
+                <div class="call-dow" aria-hidden="true"></div>
+                <div class="call-days" role="grid" aria-label="Days"></div>
+                <div class="call-times" role="listbox" aria-label="Time"></div>
+                <div class="call-foot"><button class="call-cancel" type="button">Cancel</button><button class="call-next call-primary" type="button" disabled>Next</button></div>
+              </section>
+              <section class="call-page" data-page="2">
+                <header class="call-head"><div><button class="call-back" type="button"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5"/></svg><span>Back</span></button><h4>Almost there</h4><p class="call-sub" data-call-summary></p></div></header>
+                <p class="call-label">Where should I send the invite?</p>
+                <div class="call-seg" data-seg="via" role="radiogroup" aria-label="Invite via"><span class="call-seg-thumb" aria-hidden="true"></span><button type="button" role="radio" aria-checked="true" data-v="email">Email</button><button type="button" role="radio" aria-checked="false" data-v="telegram">Telegram</button></div>
+                <label class="call-field"><span class="sr-only">Email or Telegram</span><input class="call-input" type="email" autocomplete="email" placeholder="name@email.com" spellcheck="false"></label>
+                <p class="call-label">Where do you prefer to talk?</p>
+                <div class="call-seg" data-seg="platform" role="radiogroup" aria-label="Platform"><span class="call-seg-thumb" aria-hidden="true"></span><button type="button" role="radio" aria-checked="true" data-v="Google Meet">Google Meet</button><button type="button" role="radio" aria-checked="false" data-v="Zoom">Zoom</button></div>
+                <p class="call-error" role="alert"></p>
+                <div class="call-foot"><button class="call-cancel" type="button">Cancel</button><button class="call-book call-primary" type="button">Book call</button></div>
+              </section>
+            </div>
+          </div>
                   <div class="im-bar">
             <button class="im-plus" type="button" aria-label="Add references" aria-haspopup="dialog" aria-expanded="false" aria-controls="refs-sheet" data-pointer-shape="circle"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg><svg class="im-lock" viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="9" width="10" height="7.5" rx="2"/><path d="M7.2 9V7a2.8 2.8 0 0 1 5.6 0v2"/></svg><span class="im-plus-count" hidden>0</span></button>
             <span class="im-field" aria-hidden="true">iMessage</span>
@@ -391,8 +419,14 @@
           </div>
         </aside>
         <div class="refs-hint" aria-hidden="true">
-          <svg class="refs-hint-arrow" viewBox="0 0 64 56"><path pathLength="1" d="M58 47C37 50 18 41 13 12"/><path pathLength="1" d="M6 19 12.5 9.5 20 18"/></svg>
+          <svg class="refs-hint-arrow hint-up" viewBox="0 0 64 56"><path pathLength="1" d="M58 47C37 50 18 41 13 12"/><path pathLength="1" d="M6 19 12.5 9.5 20 18"/></svg>
           <span class="refs-hint-text">you can pin references here</span>
+          <svg class="refs-hint-arrow hint-side" viewBox="0 0 78 44"><path pathLength="1" d="M4 30C24 38 48 36 70 18"/><path pathLength="1" d="M60 15 71 17 68 28"/></svg>
+        </div>
+        <div class="call-hint" aria-hidden="true">
+          <span class="refs-hint-text call-hint-text">you can book a video call</span>
+          <svg class="refs-hint-arrow" viewBox="0 0 56 60"><path pathLength="1" d="M8 54C30 50 44 34 46 8"/><path pathLength="1" d="M38 15 46 5 53 15"/></svg>
+        </div>
         </div>
       </div>
     </section>
@@ -431,7 +465,8 @@
   <script src="island.js?v=2" defer></script>
   <script src="insight.js?v=2" defer></script>
   <script src="refs.js?v=2" defer></script>
-  <script src="contact.js?v=23" defer></script>
+  <script src="call.js?v=3" defer></script>
+  <script src="contact.js?v=24" defer></script>
   <script src="footer.js?v=4" defer></script>
   <script src="scroll-reveal.js?v=5" defer></script>
   <script src="shimmer.js?v=3" defer></script>

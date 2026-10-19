@@ -74,3 +74,7 @@
 @media(max-width:650px){.dock{--pad:6px}}
 .dock{padding:var(--pad)}
 @media(max-width:380px){.dock{--pad:5px}}
+
+/* The hero's sunset glow may spill past the window edge on narrower laptops;
+   clip it there so the page never scrolls sideways (the spill is off-screen anyway). */
+.home-section{overflow-x:clip}

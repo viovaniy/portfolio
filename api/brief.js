@@ -141,6 +141,21 @@ module.exports = async (req, res) => {
   const firstSource = plain(v.firstSource, 100);
   const suspicious = filling > 0 && filling < 15;
   const refs = files.length;
+  // Video call request (times shown in Diana's zone, plus the client's own).
+  const callLines = [];
+  const c = body.call && typeof body.call === 'object' ? body.call : null;
+  const at = c && Date.parse(c.at);
+  if (c && at && at > Date.now() - 864e5 && at < Date.now() + 120 * 864e5) {
+    const when = (tz, withDay = true) => { try { return new Intl.DateTimeFormat('en-GB', { timeZone: tz, ...(withDay ? { weekday: 'short', day: 'numeric', month: 'short' } : {}), hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(at)); } catch { return ''; } };
+    const ctz = plain(c.clientTz, 50);
+    const platformName = /zoom/i.test(c.platform) ? 'Zoom' : 'Google Meet';
+    const handle = plain(c.handle, 120);
+    const viaName = c.via === 'telegram' ? 'Telegram' : 'email';
+    callLines.push('', '📞 <b>Video call requested</b>',
+      `🗓 ${esc(when('Asia/Yekaterinburg'))} <i>(your time)</i>`,
+      ...(ctz && ctz !== 'Asia/Yekaterinburg' ? [`🌍 ${esc(when(ctz))} for the client · ${esc(ctz)}`] : []),
+      `💻 ${platformName} · invite via ${viaName}: ${viaName === 'email' ? esc(handle) : `<code>${esc(handle)}</code>`}`);
+  }
   const now = new Date();
   // Without a store, the number is the date and time in Diana's time zone: #YYMMDD-HHMM.
   const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Yekaterinburg', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(now).map(x => [x.type, x.value]));
@@ -161,6 +176,7 @@ module.exports = async (req, res) => {
     '',
     `<b>Project:</b>\n${esc(f.project)}`,
     ...(refs ? ['', `📎 <b>${refs} reference${refs === 1 ? '' : 's'}</b> attached`] : []),
+    ...callLines,
     '',
     '<b>About the sender</b>',
     `${flag(country) || '🌍'} ${esc(place)}`,
