@@ -36,3 +36,23 @@
  .footer-meta{flex-direction:column;align-items:flex-start;gap:8px;margin-top:20px}
 }
 @media(prefers-reduced-motion:reduce){.footer-dot::after{animation:none}.site-footer *{transition:none!important}}
+
+/* Footer links as pills (the cursor morphs into the same pill). */
+.footer-links{gap:6px}
+.footer-links a{padding:6px 12px;margin:-6px 0;border-radius:999px}
+.footer-links a::after{left:12px;right:12px;bottom:3px}
+html.pointer-enabled .footer-links a::after{display:none}
+
+/* My Blog and back-to-top: the sunset fills them on hover. */
+.footer-tg,.footer-top-btn{position:relative;isolation:isolate;overflow:hidden}
+.footer-tg::before,.footer-top-btn::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:linear-gradient(100deg,#ff7eaa,#ff9f86 55%,#ffbf8a);opacity:0;scale:.6 .4;transition:opacity .28s ease,scale .5s var(--f-spring)}
+.footer-blog{gap:6px;padding:0 14px 0 12px}
+.footer-blog b{font-weight:500}
+.footer-ig{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8}
+.footer-ig-dot{fill:currentColor;stroke:none}
+.footer-tg,.footer-top-btn{transition:transform .45s var(--f-spring),box-shadow .3s,color .25s ease}
+@media(hover:hover){
+ .footer-tg:hover,.footer-top-btn:hover{color:#fff;box-shadow:0 0 0 1px rgba(255,126,170,.25),0 10px 20px -10px rgba(255,110,150,.65)}
+ .footer-tg:hover::before,.footer-top-btn:hover::before{opacity:1;scale:1}
+ .footer-tg:hover span{color:#fff}
+}
