@@ -15,7 +15,7 @@
     const current = previous ? {
       transform: getComputedStyle(card).transform,
       opacity: getComputedStyle(card).opacity,
-      filter: getComputedStyle(card).filter
+      clipPath: getComputedStyle(card).clipPath
     } : null;
     previous?.cancel();
     contentMotion.get(card)?.forEach(animation => animation.cancel());
@@ -30,20 +30,32 @@
     const dy = person.top + person.height * .6 - stage.top - card.offsetTop - card.offsetHeight / 2;
     const distance = Math.hypot(dx, dy) || 1;
     const travel = Math.min(24, distance);
+    // Dynamic Island: the card grows out of a small pill near the character,
+    // overshoots a touch (wider first, then taller) and settles like liquid.
+    const ox = dx / distance * travel, oy = dy / distance * travel;
+    const at = (x, y, sx, sy) => `translateX(-50%) translate(${x}px, ${y}px) scale(${sx}, ${sy})`;
+    const pill = 'inset(38% 26% round 40px)', full = 'inset(0% 0% round 28px)';
     card.style.transformOrigin = 'center';
-    const expanded = { transform: 'translateX(-50%) translate(0px, 0px) scale(1)', opacity: 1 };
-    const folded = { transform: `translateX(-50%) translate(${dx / distance * travel}px, ${dy / distance * travel}px) scale(.96)`, opacity: 0 };
     const complete = () => {
       card.hidden = !opening;
       transitions.delete(card);
     };
     if (reduced.matches) { complete(); return; }
-    const animation = card.animate([
-      current || (opening ? folded : expanded), opening ? expanded : folded
-    ], {
-      duration: opening ? 280 : 180,
-      easing: 'cubic-bezier(.22,1,.36,1)'
-    });
+    const from = current ? [{ transform: current.transform, opacity: current.opacity, clipPath: current.clipPath }] : null;
+    const frames = opening ? [
+      ...(from || [{ offset: 0, transform: at(ox, oy, .62, .42), opacity: .5, clipPath: pill }]).map(k => ({ ...k, easing: 'cubic-bezier(.25,.75,.3,1)' })),
+      { offset: .46, transform: at(0, 0, 1.035, .975), opacity: 1, clipPath: full, easing: 'cubic-bezier(.45,0,.55,1)' },
+      { offset: .7, transform: at(0, 0, .992, 1.012), easing: 'cubic-bezier(.45,0,.55,1)' },
+      { offset: .87, transform: at(0, 0, 1.003, .997), easing: 'cubic-bezier(.45,0,.55,1)' },
+      { offset: 1, transform: at(0, 0, 1, 1), opacity: 1, clipPath: full }
+    ] : [
+      ...(from || [{ offset: 0, transform: at(0, 0, 1, 1), opacity: 1, clipPath: full }]),
+      { offset: .3, transform: at(0, 0, 1.02, .97) },
+      { offset: 1, transform: at(ox, oy, .6, .4), opacity: 0, clipPath: pill }
+    ];
+    const animation = card.animate(frames, opening
+      ? { duration: 720, easing: 'linear' }
+      : { duration: 280, easing: 'cubic-bezier(.4,0,.7,.2)' });
     transitions.set(card, animation);
     animation.onfinish = complete;
     const elements = [...card.querySelectorAll('.studio-client-head, .studio-client-tag-reveal, [id$="-description"]')];
@@ -52,7 +64,7 @@
         { opacity: 0, transform: 'translateY(12px)', filter: 'blur(3px)' },
         { opacity: 1, transform: 'translateY(0)', filter: 'blur(0px)' }
       ] : [{ opacity: 1 }, { opacity: 0 }],
-      opening ? { duration: 500, delay: 80 + index * 40, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' }
+      opening ? { duration: 500, delay: 170 + index * 45, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' }
         : { duration: 200, easing: 'ease', fill: 'forwards' }
     )));
   }
@@ -98,6 +110,23 @@
       document.addEventListener('pointerup', release, true);
       document.addEventListener('pointercancel', release, true);
     }, { passive: true });
+  });
+  // The project tag wobbles like a drop of liquid when the pointer reaches it.
+  scene.querySelectorAll('.studio-client-project').forEach(tag => {
+    let jelly;
+    const wobble = () => {
+      if (reduced.matches || jelly?.playState === 'running') return;
+      jelly = tag.animate([
+        { transform: 'scale(1, 1)' },
+        { transform: 'scale(1.14, .88)', offset: .22 },
+        { transform: 'scale(.94, 1.07)', offset: .44 },
+        { transform: 'scale(1.04, .97)', offset: .64 },
+        { transform: 'scale(.99, 1.01)', offset: .82 },
+        { transform: 'scale(1, 1)' }
+      ], { duration: 680, easing: 'cubic-bezier(.25,.6,.35,1)' });
+    };
+    tag.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') wobble(); });
+    tag.addEventListener('click', wobble);
   });
   scene.querySelectorAll('.studio-client-close').forEach(button => {
     button.addEventListener('click', () => closeCard(true));
