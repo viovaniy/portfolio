@@ -176,3 +176,15 @@
 .cg-slide[data-tone="light"] .cg-seg.is-done i::after{background:rgba(28,25,40,.35)}
 .cg-slide[data-tone="light"] .cg-arrow{color:#1f1f22;background:rgba(255,255,255,.7);box-shadow:inset 0 1px 0 #fff,0 0 0 .5px rgba(28,25,40,.1),0 6px 16px -8px rgba(28,25,40,.3)}
 .cg-slide[data-tone="light"] .cg-frame::before{opacity:.5}
+
+/* Progressive blur under the title on real films: four glass layers, each
+   blurrier and each masked a little lower, so the blur ramps up smoothly. */
+.cg-pblur{position:absolute;left:0;right:0;bottom:0;top:auto!important;height:58%!important;pointer-events:none}
+.cg-pblur i{position:absolute;inset:0}
+.cg-pblur i:nth-child(1){-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);-webkit-mask:linear-gradient(to bottom,transparent 0%,#000 25%,#000 100%);mask:linear-gradient(to bottom,transparent 0%,#000 25%,#000 100%)}
+.cg-pblur i:nth-child(2){-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);-webkit-mask:linear-gradient(to bottom,transparent 20%,#000 45%,#000 100%);mask:linear-gradient(to bottom,transparent 20%,#000 45%,#000 100%)}
+.cg-pblur i:nth-child(3){-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);-webkit-mask:linear-gradient(to bottom,transparent 40%,#000 65%,#000 100%);mask:linear-gradient(to bottom,transparent 40%,#000 65%,#000 100%)}
+.cg-pblur i:nth-child(4){-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);-webkit-mask:linear-gradient(to bottom,transparent 60%,#000 85%);mask:linear-gradient(to bottom,transparent 60%,#000 85%)}
+.cg-slide:not(.is-active) .cg-pblur{display:none}
+/* a slightly stronger white wash on light films, starting a bit higher */
+.cg-slide[data-tone="light"] .cg-media::after{height:64%;background:linear-gradient(to top,rgba(255,255,255,.96) 0%,rgba(255,255,255,.8) 28%,rgba(255,255,255,.35) 55%,rgba(255,255,255,0) 80%)}

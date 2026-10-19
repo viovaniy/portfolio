@@ -24,6 +24,15 @@
     s.querySelector('.cg-frame').append(hud);
   });
   const segRows = slides.map(s => [...s.querySelectorAll('.cg-seg')]);
+  // Real films get a progressive blur under the text (stronger towards the bottom).
+  slides.forEach(s => {
+    const media = s.querySelector('.cg-media');
+    if (!media.querySelector('video')) return;
+    const blur = document.createElement('span');
+    blur.className = 'cg-pblur'; blur.setAttribute('aria-hidden', 'true');
+    blur.innerHTML = '<i></i><i></i><i></i><i></i>';
+    media.append(blur);
+  });
   const n = slides.length;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const tr = s => (window.t ? window.t(s) : s);
