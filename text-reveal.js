@@ -3,7 +3,8 @@
   if (!stage) return;
   const greetings = [['Hello!', 'en'], ['Hallo!', 'de'], ['Bonjour!', 'fr'], ['Привет!', 'ru'], ['Привіт!', 'uk'], ['Hola!', 'es'], ['你好!', 'zh'], ['こんにちは!', 'ja'], ['Ciao!', 'it'], ['Olá!', 'pt'], ['안녕하세요!', 'ko'], ['नमस्ते!', 'hi'], ['مرحبًا!', 'ar']];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let index = 0, visible = false, timer;
+  // Start from the site's language (the first word is already translated in the page).
+  let index = Math.max(0, greetings.findIndex(([, l]) => l === (window.siteLang || document.documentElement.lang))), visible = false, timer;
   function updateTimer() {
     clearInterval(timer);
     if (reduced.matches || document.hidden || !visible) return;

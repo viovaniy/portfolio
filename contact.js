@@ -11,6 +11,7 @@
   const bubble = root.querySelector('.brief-bubble');
   const progress = root.querySelector('.brief-progress');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const tr = (text, vars) => (window.t ? window.t(text, vars) : text.replace(/\{(\w+)\}/g, (m, k) => (vars && k in vars ? vars[k] : m)));
   const keys = ['name', 'contact', 'project', 'budget', 'timeline'];
   const required = keys; // every field must be filled before the brief can be sent
   form.hidden = false;
@@ -59,13 +60,14 @@
     for (const key of keys) {
       const text = value(key);
       if (text) filled++;
-      if (parts[key].textContent !== text) parts[key].textContent = text;
+      const shown = key === 'budget' || key === 'timeline' ? tr(text) : text; // chip values are English
+      if (parts[key].textContent !== shown) parts[key].textContent = shown;
       const field = fieldOf(key);
       field?.classList.toggle('is-filled', Boolean(text));
       if (text) field?.classList.remove('is-invalid');
     }
     progress.style.setProperty('--p', (filled / keys.length).toFixed(3));
-    progress.querySelector('b').textContent = `${filled} of ${keys.length} filled`;
+    progress.querySelector('b').textContent = tr('{n} of {total} filled', { n: filled, total: keys.length });
     const complete = required.every(key => value(key));
     if (complete && !root.classList.contains('is-complete') && !reduced.matches && changedKey) {
       const send = root.querySelector('.im-send');
@@ -290,10 +292,10 @@
       if (ok) {
         setState('is-sent');
         const name = value('name');
-        sentText.textContent = `Thank you, ${name}. I’ll review the details and get back to you as soon as possible.${number ? ` Your brief number is ${number}.` : ''}`;
+        sentText.textContent = tr('Thank you, {name}. I’ll review the details and get back to you as soon as possible.', { name }) + (number ? ` ${tr('Your brief number is {number}.', { number })}` : '');
         root.classList.add('is-ready');
         // iMessage: Sent → Read → a heart tapback on the message.
-        readTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        readTime.textContent = new Date().toLocaleTimeString(window.siteLang || [], { hour: '2-digit', minute: '2-digit' });
         if (!reduced.matches) {
           confetti(done.querySelector('.brief-done-mark'), 40, 1.6);
           later(1400, () => root.classList.add('is-read'));
@@ -319,7 +321,8 @@
         field.classList.add('is-invalid');
       });
       const names = { name: 'your name', contact: 'your contact details', project: 'a short project description', budget: 'a budget', timeline: 'a timeline' };
-      error.textContent = `Please add ${missing.map(key => names[key]).join(', ').replace(/, ([^,]*)$/, ' and $1')} to send the brief.`;
+      const list = missing.map(key => tr(names[key]));
+      error.textContent = tr('Please add {list} to send the brief.', { list: window.tList ? window.tList(list) : list.join(', ').replace(/, ([^,]*)$/, ' and $1') });
       const first = form.querySelector(`[name="${missing[0]}"]`);
       first?.focus({ preventScroll: true });
       fieldOf(missing[0])?.scrollIntoView({ behavior: reduced.matches ? 'instant' : 'smooth', block: 'center' });
@@ -331,7 +334,7 @@
 
   // iMessage-style timestamp: "Today 20:30".
   const stamp = root.querySelector('[data-im-time]');
-  if (stamp) stamp.textContent = `Today ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+  if (stamp) stamp.textContent = tr('Today {time}', { time: new Date().toLocaleTimeString(window.siteLang || [], { hour: '2-digit', minute: '2-digit' }) });
 
   const fitAll = () => { form.querySelectorAll('.brief-field input').forEach(fit); grow(); };
   new ResizeObserver(fitAll).observe(form);

@@ -12,6 +12,22 @@
       if (!document.documentElement.hasAttribute('data-dock-ready')) document.documentElement.classList.remove('dock-pending');
     }, 4000);
   </script>
+  <script>
+    // Language: ?lang=xx or the saved choice loads its dictionary before anything renders.
+    (function () {
+      var ok = ['zh', 'es', 'fr', 'pt', 'ru', 'de', 'ja', 'it', 'uk'], l = null;
+      try {
+        var q = new URLSearchParams(location.search).get('lang');
+        if (q === 'en') localStorage.removeItem('lang');
+        else if (ok.indexOf(q) > -1) localStorage.setItem('lang', q);
+        l = q || localStorage.getItem('lang');
+      } catch (e) {}
+      if (ok.indexOf(l) > -1) {
+        document.documentElement.lang = l;
+        document.write('<script src="i18n/' + l + '.js?v=1"><\/script>');
+      }
+    })();
+  </script>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="structure.css?v=20261017-1">
   <link rel="stylesheet" href="work.css?v=14">
@@ -22,6 +38,7 @@
   <link rel="stylesheet" href="scroll-reveal.css?v=2">
   <link rel="stylesheet" href="contact.css?v=24">
   <link rel="stylesheet" href="footer.css?v=5">
+  <link rel="stylesheet" href="lang.css?v=1">
 </head>
 <body>
   <svg class="icon-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -54,6 +71,11 @@
           <span class="button-arrow" aria-hidden="true">↗</span>
         </span>
       </a>
+      <div class="lang" data-lang-picker data-no-i18n>
+        <button class="lang-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="Language: English">
+          <span class="lang-flag" aria-hidden="true">🇬🇧</span><span class="lang-name">English</span><svg class="lang-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="m2.5 4.5 3.5 3.5 3.5-3.5"/></svg>
+        </button>
+      </div>
     </section>
 
     </div>
@@ -380,20 +402,21 @@
     <a draggable="false" href="#contact" aria-label="Contact"><span class="magnetic-label"><svg aria-hidden="true"><use href="#icon-contact"/></svg></span><span class="nav-tooltip" aria-hidden="true">Contact</span></a>
   </nav>
   <div class="ios-pointer" aria-hidden="true"></div>
+  <script src="i18n.js?v=1" defer></script>
   <script src="pointer.js?v=20261018-1" defer></script>
   <script src="scrolling.js?v=2" defer></script>
   <script src="navigation.js?v=20261018-1" defer></script>
   <script src="dock.js?v=20261018-1" defer></script>
   <script src="island.js?v=2" defer></script>
   <script src="insight.js?v=2" defer></script>
-  <script src="contact.js?v=18" defer></script>
+  <script src="contact.js?v=19" defer></script>
   <script src="footer.js?v=4" defer></script>
   <script src="scroll-reveal.js?v=5" defer></script>
   <script src="shimmer.js?v=3" defer></script>
   <script src="work.js?v=8" defer></script>
   <script src="about.js?v=20261019-3" defer></script>
   <script src="studio.js?v=8" defer></script>
-  <script src="text-reveal.js?v=2" defer></script>
+  <script src="text-reveal.js?v=3" defer></script>
   <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
