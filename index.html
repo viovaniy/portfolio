@@ -24,7 +24,7 @@
       } catch (e) {}
       if (ok.indexOf(l) > -1) {
         document.documentElement.lang = l;
-        document.write('<script src="i18n/' + l + '.js?v=1"><\/script>');
+        document.write('<script src="i18n/' + l + '.js?v=2"><\/script>');
       }
     })();
   </script>
@@ -36,9 +36,10 @@
   <link rel="stylesheet" href="text-reveal.css?v=3">
   <link rel="stylesheet" href="island.css?v=2">
   <link rel="stylesheet" href="scroll-reveal.css?v=2">
-  <link rel="stylesheet" href="contact.css?v=24">
+  <link rel="stylesheet" href="contact.css?v=25">
   <link rel="stylesheet" href="footer.css?v=5">
   <link rel="stylesheet" href="lang.css?v=2">
+  <link rel="stylesheet" href="refs.css?v=1">
   <link rel="stylesheet" href="glass.css?v=4">
 </head>
 <body>
@@ -348,6 +349,7 @@
           </header>
           <div class="brief-chat">
             <p class="im-time" aria-hidden="true"><b>iMessage</b><span data-im-time>Today</span></p>
+            <div class="im-attach" role="img" hidden></div>
             <div class="brief-bubble" aria-live="polite">
               <span class="im-tapback" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10.3A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.6c0 5.7-7.5 10.3-7.5 10.3Z"/></svg><i></i><i></i></span>
               <p><span data-part="greeting">Hello! I would like to discuss a motion design project.</span></p>
@@ -368,12 +370,29 @@
             <p id="copy-status" class="copy-status" role="status"></p>
             <textarea id="brief-text" class="sr-only" tabindex="-1" aria-hidden="true" readonly></textarea>
           </div>
+          <div class="refs-sheet" id="refs-sheet" role="dialog" aria-labelledby="refs-title" hidden>
+            <header class="refs-head">
+              <div class="refs-titles"><h4 id="refs-title">References</h4><p class="refs-sub">Images, videos or files · up to 10</p></div>
+              <span class="refs-count" aria-live="polite"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15"/><circle class="refs-ring-bar" cx="18" cy="18" r="15" pathLength="1"/></svg><span><b>0</b>/10</span></span>
+            </header>
+            <label class="refs-drop">
+              <input class="refs-input" type="file" multiple>
+              <span class="refs-stack" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="refs-drop-text"><b class="r-idle">Drop images or files</b><b class="r-over">Release to pin</b><b class="r-full">All 10 pinned</b><span class="refs-browse">or choose from your device</span></span>
+            </label>
+            <ul class="refs-grid" aria-label="Pinned references"></ul>
+            <div class="refs-foot"><p class="refs-note" role="status"></p><button class="refs-done" type="button">Done</button></div>
+          </div>
                   <div class="im-bar">
-            <span class="im-plus" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M10 4v12M4 10h12"/></svg></span>
+            <button class="im-plus" type="button" aria-label="Add references" aria-haspopup="dialog" aria-expanded="false" aria-controls="refs-sheet" data-pointer-shape="circle"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg><span class="im-plus-count" hidden>0</span></button>
             <span class="im-field" aria-hidden="true">iMessage</span>
             <button class="brief-progress im-send" type="submit" form="project-brief" aria-label="Send brief"><svg class="im-ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16"/><circle class="brief-progress-bar" cx="18" cy="18" r="16" pathLength="1"/></svg><span class="im-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M10 16V4M5 9l5-5 5 5"/></svg></span><b class="sr-only">0/5</b></button>
           </div>
         </aside>
+        <div class="refs-hint" aria-hidden="true">
+          <svg class="refs-hint-arrow" viewBox="0 0 64 56"><path pathLength="1" d="M58 47C37 50 18 41 13 12"/><path pathLength="1" d="M6 19 12.5 9.5 20 18"/></svg>
+          <span class="refs-hint-text">you can pin references here</span>
+        </div>
       </div>
     </section>
   </main>
@@ -410,7 +429,8 @@
   <script src="dock.js?v=20261018-1" defer></script>
   <script src="island.js?v=2" defer></script>
   <script src="insight.js?v=2" defer></script>
-  <script src="contact.js?v=19" defer></script>
+  <script src="refs.js?v=1" defer></script>
+  <script src="contact.js?v=20" defer></script>
   <script src="footer.js?v=4" defer></script>
   <script src="scroll-reveal.js?v=5" defer></script>
   <script src="shimmer.js?v=3" defer></script>

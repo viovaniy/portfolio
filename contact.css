@@ -297,3 +297,13 @@
 .brief:not(.is-complete) .brief-send svg{opacity:.7}
 .brief-choice.is-invalid .brief-chips{animation:brief-shake .42s var(--b-ease)}
 .brief-choice.is-invalid .brief-chip span{box-shadow:0 0 0 1.5px #ffb3cd,0 1px 2px rgba(28,25,40,.04)}
+
+/* Finished answers snap into soft rose pills (with a puff of rose dust). */
+.brief-field{transition:background-color .3s ease,padding .35s cubic-bezier(.22,1,.36,1),box-shadow .3s ease}
+.brief-field.is-pill{padding:0 .36em;margin:0 .04em;border-radius:999px;background:linear-gradient(180deg,#fff3f7,#ffe6ef);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 1px 2px rgba(255,110,150,.1),0 8px 18px -10px rgba(255,110,150,.45)}
+.brief-field.is-pill::before,.brief-field.is-pill::after,.brief-field.is-pill.is-filled:not(:focus-within)::after{opacity:0}
+.contact-section .brief-field.is-pill :is(input,textarea){color:#b8336a}
+.brief-field-area.is-pill{display:block;margin-top:6px;padding:.22em .62em .26em;border-radius:22px}
+.brief-dust{position:absolute;z-index:2;border-radius:50%;pointer-events:none;box-shadow:0 0 6px rgba(255,150,190,.55)}
+@media(prefers-reduced-motion:reduce){.brief-field{transition:none}}

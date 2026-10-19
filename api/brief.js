@@ -9,6 +9,7 @@
 //   IPINFO_TOKEN (optional) raises the free limit of the provider lookup.
 
 const crypto = require('crypto');
+const sign = (text, secret) => crypto.createHmac('sha256', secret).update(text).digest('hex');
 
 const LIMITS = { name: 120, contact: 200, project: 4000, budget: 120, timeline: 120 };
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -107,6 +108,7 @@ module.exports = async (req, res) => {
   const source = plain(v.source, 100) || 'direct';
   const firstSource = plain(v.firstSource, 100);
   const suspicious = filling > 0 && filling < 15;
+  const refs = Math.max(0, Math.min(parseInt(body.refs, 10) || 0, 10));
   const now = new Date();
   // Without a store, the number is the date and time in Diana's time zone: #YYMMDD-HHMM.
   const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Yekaterinburg', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(now).map(x => [x.type, x.value]));
@@ -126,6 +128,7 @@ module.exports = async (req, res) => {
     `<b>Timeline:</b> ${esc(f.timeline || 'Flexible')}`,
     '',
     `<b>Project:</b>\n${esc(f.project)}`,
+    ...(refs ? ['', `📎 <b>${refs} reference${refs === 1 ? '' : 's'}</b> pinned below`] : []),
     '',
     '<b>About the sender</b>',
     `${flag(country) || '🌍'} ${esc(place)}`,
@@ -150,7 +153,11 @@ module.exports = async (req, res) => {
     });
     const out = await tg.json().catch(() => ({}));
     if (!tg.ok || !out.ok) return res.status(502).json({ success: false, message: out.description || `Telegram HTTP ${tg.status}` });
-    return res.status(200).json({ success: true, number });
+    // A short-lived, signed ticket lets the page pin up to `refs` files to this message.
+    const messageId = out.result && out.result.message_id;
+    const exp = Date.now() + 20 * 60 * 1000;
+    const ticket = refs && messageId ? { messageId, exp, refs, sig: sign(`${messageId}.${exp}.${refs}`, token), number } : null;
+    return res.status(200).json({ success: true, number, ticket });
   } catch (err) {
     return res.status(502).json({ success: false, message: 'Could not reach Telegram' });
   }
