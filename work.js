@@ -293,6 +293,27 @@
   });
 
   if ('IntersectionObserver' in window) new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) kick(); }, { threshold: .25 }).observe(root);
+
+  // Entrance, once, when the gallery first scrolls into view: the centre film
+  // rises and settles, the neighbours glide in from the sides, then its title,
+  // counter and timeline arrive.
+  if (!reduced.matches && 'IntersectionObserver' in window) {
+    root.classList.add('is-waiting');
+    const io = new IntersectionObserver(([en]) => {
+      if (!en.isIntersecting) return;
+      io.disconnect();
+      slides.forEach((sl, i) => {
+        const o = Math.round(mod(i - pos + n / 2, n) - n / 2);
+        sl.style.setProperty('--edir', Math.sign(o));
+        sl.style.setProperty('--edelay', `${Math.min(Math.abs(o), 2) * 110}ms`);
+      });
+      root.classList.remove('is-waiting');
+      root.classList.add('is-entering');
+      playStart = performance.now();
+      setTimeout(() => root.classList.remove('is-entering'), 1700);
+    }, { threshold: .3 });
+    io.observe(root);
+  }
   addEventListener('resize', () => { place(); });
 
   setActive(0);
