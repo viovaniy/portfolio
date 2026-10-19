@@ -239,3 +239,19 @@
 .cg-slide.has-film .cg-timeline:has(.cg-seg.is-active:hover) .cg-seg.is-active,.cg-slide.has-film .cg-timeline:has(.cg-scrub:hover) .cg-seg.is-active,.cg-slide.has-film .cg-timeline:has(.is-grab) .cg-seg.is-active{opacity:0}
 .cg-time,.cg-left{min-width:34px;font-size:11.5px}
 .cg-scrub .cg-rail{margin:0 8px}
+
+/* Hover glow, take two: no filter (Safari-safe). A soft pink-peach halo made of
+   box-shadows plus a thin gradient edge, both breathing slowly. */
+.cg-slide::before{inset:0;border-radius:34px;background:none;filter:none;transform:none;
+ box-shadow:0 0 0 1px rgba(255,141,184,.0),0 0 34px 6px rgba(255,141,184,.55),0 0 80px 22px rgba(255,180,143,.38);opacity:0;transition:opacity .45s ease}
+.cg-slide::after{content:"";position:absolute;inset:-2px;z-index:3;border-radius:36px;padding:2px;pointer-events:none;
+ background:linear-gradient(120deg,#ff8db8,#ffb48f 40%,#ffadcd 70%,#ffc9a8);
+ -webkit-mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+ opacity:0;transition:opacity .45s ease}
+.cg-slide.is-active:is(.is-hover,:hover)::before{opacity:1;animation:cg-glow 2.6s ease-in-out .45s infinite;transform:none}
+.cg-slide.is-active:is(.is-hover,:hover)::after{opacity:.95;animation:cg-glow-edge 2.6s ease-in-out .45s infinite}
+@keyframes cg-glow{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes cg-glow-edge{0%,100%{opacity:.95}50%{opacity:.55}}
+@media(max-width:650px){.cg-slide::before{border-radius:26px}.cg-slide::after{border-radius:28px}}
+@media(prefers-reduced-motion:reduce){.cg-slide.is-active:is(.is-hover,:hover)::before,.cg-slide.is-active:is(.is-hover,:hover)::after{animation:none}}
+.cg-slide::before{box-shadow:0 0 40px 10px rgba(255,141,184,.62),0 0 96px 32px rgba(255,180,143,.45)}

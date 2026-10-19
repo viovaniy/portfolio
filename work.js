@@ -264,6 +264,11 @@
     }
   });
   track.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') hovered = true; });
+  // glow on the film under the pointer (class, so it works with the custom cursor everywhere)
+  slides.forEach(sl => {
+    sl.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') sl.classList.add('is-hover'); });
+    sl.addEventListener('pointerleave', () => sl.classList.remove('is-hover'));
+  });
   track.addEventListener('pointerleave', () => { hovered = false; });
 
   document.addEventListener('keydown', e => {
