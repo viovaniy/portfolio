@@ -151,3 +151,12 @@
 .wf-paper{top:12%}
 .wf-front{height:62%;background:linear-gradient(180deg,color-mix(in srgb,var(--a) 45%,rgba(255,255,255,.35)),color-mix(in srgb,var(--b) 62%,rgba(255,255,255,.2)))}
 .wf.is-live .loop i{animation-play-state:running}
+
+/* Die-cut stickers on the folder fronts; they wiggle when the folder opens. */
+.wf-sticker{position:absolute;right:9%;bottom:14%;display:grid;place-items:center;width:30%;aspect-ratio:1;max-width:46px;border-radius:50%;
+ background:#fff;box-shadow:0 0 0 1px rgba(28,25,40,.04),0 2px 4px rgba(28,25,40,.12),0 6px 12px -6px rgba(28,25,40,.25);
+ font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;font-size:clamp(14px,2.2vw,22px);line-height:1;transform:rotate(var(--r))}
+@media(hover:hover){.wf:hover .wf-sticker{animation:wf-wiggle .6s cubic-bezier(.34,1.45,.5,1)}}
+@keyframes wf-wiggle{0%{transform:rotate(var(--r))}30%{transform:rotate(calc(var(--r) - 12deg)) scale(1.08)}60%{transform:rotate(calc(var(--r) + 8deg))}100%{transform:rotate(var(--r))}}
+@media(max-width:650px){.wf-sticker{font-size:17px;max-width:34px}}
+@media(prefers-reduced-motion:reduce){.wf-sticker{animation:none!important}}
