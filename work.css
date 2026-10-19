@@ -359,3 +359,10 @@
 .cg-slide::after,.cg-frame::before{-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
 /* The pink edge line is gone; only the soft halo remains on hover. */
 .cg-slide::after{display:none}
+
+/* Safari can drop overflow+radius clipping on a <video> (and on backdrop-blur
+   layers) when nearby layers animate, so the film's square corners poke out.
+   Clip the media three ways that WebKit always honours. */
+.cg-media{clip-path:inset(0 round 34px);-webkit-mask-image:-webkit-radial-gradient(white,black);isolation:isolate;transform:translateZ(0)}
+.cg-media video{border-radius:inherit;clip-path:inset(0 round 34px)}
+@media(max-width:650px){.cg-media,.cg-media video{clip-path:inset(0 round 26px)}}
