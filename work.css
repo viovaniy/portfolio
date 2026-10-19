@@ -355,3 +355,5 @@
 .cg-frame::before,.cg-frame::after{transition:opacity 1.3s cubic-bezier(.45,0,.25,1)}
 .cg-slide.is-active:is(.is-hover,:hover) .cg-frame::before{opacity:0;transition:opacity .6s cubic-bezier(.3,0,.2,1)}
 .cg-slide.is-active:is(.is-hover,:hover) .cg-frame::after{opacity:0;transition:opacity .6s cubic-bezier(.3,0,.2,1)}
+/* Safari: make the ring masks explicit (xor for WebKit, exclude for the rest). */
+.cg-slide::after,.cg-frame::before{-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
