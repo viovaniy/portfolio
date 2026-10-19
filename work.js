@@ -1,121 +1,173 @@
-// Work — scroll is the playhead. The section is tall and one screen stays
-// pinned inside it; page scroll moves the playhead across the timeline and
-// the clip under it plays on the big screen. Clicking a clip jumps there,
-// dragging the playhead scrubs, ← → step between clips.
-// A clip can show a real film later: add data-video="assets/work/x.mp4"
-// (optional data-poster) to its <li class="tl-clip">.
+// Work — cinema gallery. Slides ride a spring (a little underdamped, so they
+// overshoot and settle like liquid) and stretch slightly with their speed.
+// Drag/swipe, arrows, ← → keys or the timeline switch cases; the timeline
+// fills while a case plays and moves on by itself.
+// Real films later: put <video src="…" muted loop playsinline> in a slide's
+// .cg-media instead of its .loop — the timeline then follows the video length.
 (() => {
-  const section = document.getElementById('work');
-  const pin = section?.querySelector('.tl-pin');
-  if (!pin) return;
-  const clips = [...section.querySelectorAll('.tl-clip')];
-  const screen = section.querySelector('.tl-screen');
-  const stage = section.querySelector('.tl-stage');
-  const caption = section.querySelector('.tl-caption');
-  const track = section.querySelector('.tl-clips');
-  const playhead = section.querySelector('.tl-playhead');
-  const time = section.querySelector('.tl-time');
-  const field = k => section.querySelector(`[data-tl="${k}"]`);
+  const root = document.querySelector('.cg');
+  if (!root) return;
+  const track = root.querySelector('.cg-track');
+  const slides = [...root.querySelectorAll('.cg-slide')];
+  const segs = [...root.querySelectorAll('.cg-seg')];
+  const caption = root.querySelector('.cg-caption');
+  const count = root.querySelector('.cg-count b');
+  const n = slides.length;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const durs = clips.map(c => Number(c.dataset.dur) || 20);
-  const total = durs.reduce((a, b) => a + b, 0);
-  const starts = durs.map((_, i) => durs.slice(0, i).reduce((a, b) => a + b, 0));
-  const FPS = 25;
-  let active = -1;
+  const tr = s => (window.t ? window.t(s) : s);
+  const STIFF = 190, DAMP = 17;           // spring: ~0.62 damping ratio → a soft bounce
+  const PLAY = 6500;                      // ms per case when it has no video
+  let pos = 0, target = 0, vel = 0, active = -1;
+  let raf = 0, last = 0;
+  let playStart = performance.now(), playHeld = 0, paused = false, visible = true, hovered = false, drag = null;
 
-  const range = () => Math.max(1, section.offsetHeight - pin.offsetHeight);
-  const top = () => section.getBoundingClientRect().top + scrollY;
-  const progress = () => Math.min(1, Math.max(0, (scrollY - top()) / range()));
-  const pad = n => String(n).padStart(2, '0');
-  const timecode = t => { const f = Math.floor(t * FPS); return `${pad(Math.floor(f / FPS / 60))}:${pad(Math.floor(f / FPS) % 60)}:${pad(f % FPS)}`; };
+  const mod = (a, b) => ((a % b) + b) % b;
+  const gap = () => parseFloat(getComputedStyle(root).getPropertyValue('--gap')) || track.clientWidth * .5;
+  const pad = x => String(x).padStart(2, '0');
+  root.querySelector('.cg-count span').textContent = `/ ${pad(n)}`;
 
-  function media(clip) {
-    if (clip.dataset.video) {
-      const v = document.createElement('video');
-      Object.assign(v, { src: clip.dataset.video, muted: true, loop: true, autoplay: true, playsInline: true });
-      v.setAttribute('playsinline', '');
-      if (clip.dataset.poster) v.poster = clip.dataset.poster;
-      return v;
-    }
-    return clip.querySelector('template').content.firstElementChild.cloneNode(true);
+  function place() {
+    const g = gap();
+    const stretch = reduced.matches ? 0 : Math.min(.07, Math.abs(vel) * .028);
+    slides.forEach((s, i) => {
+      let o = mod(i - pos + n / 2, n) - n / 2;          // offset from centre, wrapped for an endless loop
+      const a = Math.abs(o);
+      const x = Math.sign(o) * (Math.min(a, 1) * g + Math.max(a - 1, 0) * g * .42);
+      const sc = 1 - Math.min(a, 1.6) * .26;
+      const near = Math.max(0, 1 - a);                  // 1 at the centre
+      const sx = sc * (1 + stretch * near), sy = sc * (1 - stretch * .55 * near);
+      s.style.transform = `translate3d(${x}px,0,0) scale(${sx},${sy})`;
+      s.style.opacity = a > 2.2 ? 0 : String(Math.min(1, 1.15 - a * .35));
+      s.style.setProperty('--dim', Math.min(a, 1) * .5);
+      s.style.zIndex = String(100 - Math.round(a * 10));
+      s.style.visibility = a > 2.4 ? 'hidden' : '';
+      s.inert = Math.round(o) !== 0;
+    });
   }
 
-  function cut(index) {
+  function setActive(index) {
     if (index === active) return;
-    const clip = clips[index];
-    const data = k => clip.querySelector(`[data-k="${k}"]`)?.textContent || '';
-    clips.forEach((c, i) => c.classList.toggle('is-active', i === index));
-    ['--a', '--b', '--c'].forEach(v => screen.style.setProperty(v, clip.style.getPropertyValue(v)));
-    caption.querySelector('.tl-title').textContent = clip.querySelector('.tl-clip-name').textContent;
-    caption.querySelector('.tl-desc').textContent = data('desc');
-    field('kind').textContent = data('kind');
-    field('tools').textContent = data('tools');
-    field('index').textContent = index + 1;
-    const next = media(clip);
-    const old = [...stage.children];
-    if (active < 0 || reduced.matches) old.forEach(n => n.remove());
-    else {
-      old.forEach(n => { n.classList.add('is-out'); setTimeout(() => n.remove(), 320); });
-      next.classList.add('is-in');
-      caption.classList.remove('is-in'); void caption.offsetWidth; caption.classList.add('is-in');
-    }
-    stage.append(next);
     active = index;
+    const s = slides[index];
+    slides.forEach((x, i) => { x.classList.toggle('is-active', i === index); x.setAttribute('aria-hidden', String(i !== index)); });
+    ['--a', '--b', '--c'].forEach(v => root.style.setProperty(v, s.style.getPropertyValue(v)));
+    caption.querySelector('.cg-kind').textContent = tr(s.dataset.kind);
+    caption.querySelector('.cg-title').textContent = tr(s.dataset.title);
+    caption.querySelector('.cg-desc').textContent = tr(s.dataset.desc);
+    if (!reduced.matches) { caption.classList.remove('is-in'); void caption.offsetWidth; caption.classList.add('is-in'); }
+    count.textContent = pad(index + 1);
+    segs.forEach((g, i) => {
+      g.classList.toggle('is-active', i === index);
+      g.classList.toggle('is-done', i < index);
+      g.setAttribute('aria-current', i === index ? 'true' : 'false');
+      g.style.setProperty('--p', 0);
+    });
+    slides.forEach((x, i) => x.querySelectorAll('video').forEach(v => { if (i === index) { v.currentTime = 0; v.play().catch(() => {}); } else v.pause(); }));
+    playStart = performance.now(); playHeld = 0;
   }
 
-  function render() {
-    const p = progress();
-    const t = p * total;
-    playhead.style.transform = `translateX(${p * track.clientWidth}px)`;
-    time.textContent = timecode(t);
-    // keep the timecode label inside the panel near the right end
-    time.style.transform = p > .82 ? 'translateX(calc(-100% - 24px))' : '';
-    let index = starts.findIndex((s, i) => t >= s && t < s + durs[i]);
-    if (index < 0) index = clips.length - 1;
-    cut(index);
-    section.classList.toggle('is-scrubbing', p > .015);
+  function go(to) {
+    target = to;
+    setActive(mod(Math.round(target), n));
+    if (reduced.matches) { pos = target; vel = 0; place(); }
+    kick();
+  }
+  const step = d => go(Math.round(target) + d);
+
+  function duration() {
+    const v = slides[active]?.querySelector('video');
+    return v && isFinite(v.duration) && v.duration > 0 ? v.duration * 1000 : PLAY;
   }
 
-  let frame = 0;
-  const schedule = () => { if (!frame) frame = requestAnimationFrame(() => { frame = 0; render(); }); };
-  addEventListener('scroll', schedule, { passive: true });
-  addEventListener('resize', schedule);
-
-  // Jump to a moment on the timeline (the middle of a clip, or any time t).
-  function seek(t, smooth = true) {
-    const y = top() + (Math.min(total - .01, Math.max(0, t)) / total) * range();
-    if (smooth && !reduced.matches && window.siteScroll) {
-      const marker = document.createElement('div');
-      marker.style.cssText = `position:absolute;left:0;top:${y - top()}px;height:1px;width:1px;pointer-events:none`;
-      section.append(marker);
-      window.siteScroll.to(marker, () => marker.remove());
-      setTimeout(() => marker.remove(), 1600);
-    } else scrollTo({ top: y, behavior: smooth && !reduced.matches ? 'smooth' : 'instant' });
+  function tick(now) {
+    const dt = Math.min(.034, last ? (now - last) / 1000 : 1 / 60);
+    last = now;
+    if (!drag) {
+      // semi-implicit Euler, two sub-steps for stability
+      for (let k = 0; k < 2; k++) {
+        const h = dt / 2;
+        vel += (STIFF * (target - pos) - DAMP * vel) * h;
+        pos += vel * h;
+      }
+      if (Math.abs(target - pos) < .0005 && Math.abs(vel) < .0005) { pos = target; vel = 0; }
+    }
+    place();
+    // autoplay progress on the active timeline segment
+    const hold = paused || hovered || drag || !visible || document.hidden || reduced.matches;
+    if (hold) { if (!playHeld) playHeld = now; }
+    else if (playHeld) { playStart += now - playHeld; playHeld = 0; }
+    const p = Math.min(1, ((playHeld || now) - playStart) / duration());
+    segs[active]?.style.setProperty('--p', p.toFixed(4));
+    if (p >= 1 && !hold) step(1);
+    const moving = drag || pos !== target || vel !== 0;
+    raf = (moving || visible) ? requestAnimationFrame(tick) : 0;
+    if (!raf) last = 0;
   }
-  const middle = i => starts[i] + durs[i] * .5;
-  clips.forEach((c, i) => c.querySelector('.tl-clip-btn').addEventListener('click', () => seek(middle(i))));
+  function kick() { if (!raf) { last = 0; raf = requestAnimationFrame(tick); } }
 
-  // Drag the playhead (or anywhere on the track) to scrub.
-  let dragging = false;
-  const scrubTo = x => {
-    const r = track.getBoundingClientRect();
-    seek(Math.min(1, Math.max(0, (x - r.left) / r.width)) * total, false);
+  // Drag / swipe with velocity: a quick flick moves one (or two) cases.
+  track.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    drag = { x: e.clientX, y: e.clientY, pos, t: performance.now(), vx: 0, lx: e.clientX, lt: performance.now(), moved: false, id: e.pointerId };
+    kick();
+  });
+  addEventListener('pointermove', e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.x;
+    if (!drag.moved) {
+      if (Math.abs(dx) < 6) return;
+      if (Math.abs(e.clientY - drag.y) > Math.abs(dx)) { drag = null; return; }
+      drag.moved = true; track.classList.add('is-drag');
+      try { track.setPointerCapture(e.pointerId); } catch {}
+    }
+    const now = performance.now();
+    drag.vx = (e.clientX - drag.lx) / Math.max(1, now - drag.lt) * 1000;
+    drag.lx = e.clientX; drag.lt = now;
+    const before = pos;
+    pos = drag.pos - dx / gap();
+    vel = (pos - before) * 60;
+  });
+  const release = e => {
+    if (!drag || (e && e.pointerId !== drag.id)) return;
+    const d = drag; drag = null; track.classList.remove('is-drag');
+    if (!d.moved) {
+      // a tap on a side slide brings it to the centre
+      const s = e?.target.closest?.('.cg-slide');
+      if (s) { const i = slides.indexOf(s); const o = mod(i - pos + n / 2, n) - n / 2; if (Math.abs(o) > .5) go(Math.round(target + o)); }
+      return;
+    }
+    const flick = -d.vx / gap() * .22;
+    let to = Math.round(pos + Math.max(-1.4, Math.min(1.4, flick)));
+    const reach = Math.abs(d.vx) > 2200 ? 2 : 1;   // a normal swipe moves one case, a hard flick two
+    to = Math.max(Math.round(d.pos) - reach, Math.min(Math.round(d.pos) + reach, to));
+    vel = -d.vx / gap();
+    go(to);
   };
-  playhead.addEventListener('pointerdown', e => { dragging = true; playhead.setPointerCapture(e.pointerId); e.preventDefault(); });
-  playhead.addEventListener('pointermove', e => { if (dragging) scrubTo(e.clientX); });
-  playhead.addEventListener('pointerup', () => { dragging = false; });
-  playhead.addEventListener('pointercancel', () => { dragging = false; });
+  addEventListener('pointerup', release);
+  addEventListener('pointercancel', release);
+  track.addEventListener('click', e => { if (track.classList.contains('is-drag')) e.preventDefault(); });
 
-  // ← → step clip by clip while the work screen is pinned.
+  root.querySelectorAll('.cg-arrow').forEach(b => b.addEventListener('click', () => step(Number(b.dataset.step))));
+  segs.forEach((g, i) => g.addEventListener('click', () => {
+    let d = i - active; if (d > n / 2) d -= n; if (d < -n / 2) d += n;
+    go(Math.round(target) + d);
+  }));
+  track.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') hovered = true; });
+  track.addEventListener('pointerleave', () => { hovered = false; });
+
   document.addEventListener('keydown', e => {
     if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
     if (/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName)) return;
-    const r = section.getBoundingClientRect();
-    if (r.top > 2 || r.bottom < innerHeight - 2) return;
+    const r = root.getBoundingClientRect();
+    if (r.bottom < innerHeight * .35 || r.top > innerHeight * .65) return;
     e.preventDefault();
-    const next = Math.min(clips.length - 1, Math.max(0, active + (e.key === 'ArrowRight' ? 1 : -1)));
-    seek(middle(next));
+    step(e.key === 'ArrowRight' ? 1 : -1);
   });
 
-  render();
+  if ('IntersectionObserver' in window) new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) kick(); }, { threshold: .25 }).observe(root);
+  addEventListener('resize', () => { place(); });
+
+  setActive(0);
+  place();
+  kick();
 })();
