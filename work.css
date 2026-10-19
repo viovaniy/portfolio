@@ -366,3 +366,9 @@
 .cg-media{clip-path:inset(0 round 34px);-webkit-mask-image:-webkit-radial-gradient(white,black);isolation:isolate;transform:translateZ(0)}
 .cg-media video{border-radius:inherit;clip-path:inset(0 round 34px)}
 @media(max-width:650px){.cg-media,.cg-media video{clip-path:inset(0 round 26px)}}
+
+/* No white glass rim at all: it flashed white in the corners whenever the
+   pink halo faded in or out behind it. The edge is a plain soft hairline now. */
+.cg-frame::before,.cg-frame::after{display:none!important}
+/* The halo only fades — no growing/shifting — so its edge always hugs the card. */
+.cg-slide::before,.cg-slide.is-active:is(.is-hover,:hover)::before{transform:none!important}
