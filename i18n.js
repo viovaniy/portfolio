@@ -175,7 +175,8 @@
   const hl = pop.querySelector('.lang-hl');
   function highlight(opt) {
     if (!opt) { hl.classList.remove('is-on'); return; }
-    hl.style.transform = `translateY(${opt.offsetTop}px)`;
+    hl.style.transform = `translate(${opt.offsetLeft}px, ${opt.offsetTop}px)`;
+    hl.style.width = `${opt.offsetWidth}px`;
     hl.style.height = `${opt.offsetHeight}px`;
     hl.classList.add('is-on');
   }
@@ -188,7 +189,7 @@
       // Open upwards if there isn't room below.
       pop.classList.remove('is-up');
       const r = button.getBoundingClientRect();
-      if (innerHeight - r.bottom < 480 && r.top > innerHeight - r.bottom) pop.classList.add('is-up');
+      if (innerHeight - r.bottom < pop.offsetHeight + 24 && r.top > innerHeight - r.bottom) pop.classList.add('is-up');
       const active = options.find(o => o.dataset.code === lang) || options[0];
       hl.style.transition = 'none'; highlight(active); void hl.offsetWidth; hl.style.transition = '';
       active.focus({ preventScroll: true });

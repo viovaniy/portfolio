@@ -56,3 +56,18 @@ html.lang-leaving body{opacity:0;transition:opacity .26s ease}
    same corners), so the picker doesn't paint a second highlight under it. */
 .pointer-enabled .lang-btn:hover{background:transparent}
 .pointer-enabled .lang-pop .lang-hl{opacity:0}
+
+/* The highlight follows the option's own box (rows on desktop, tiles on phones). */
+.lang-hl{left:0;right:auto;width:0}
+
+/* Phones: a compact two-column grid, so all ten languages fit on the first screen. */
+@media(max-width:650px){
+ .lang-pop{display:grid;grid-template-columns:1fr 1fr;gap:2px;width:min(320px,calc(100vw - 32px));padding:4px 6px 6px}
+ .lang-head{grid-column:1/-1;padding:8px 10px 4px}
+ .lang-opt{height:40px;padding:0 10px;border-radius:12px}
+ .lang-opt .lang-flag{font-size:18px;margin-right:9px}
+ .lang-opt .lang-flag.is-svg svg{width:20px;height:14px}
+ .lang-native{font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .lang-en{display:none}
+ .lang-check{width:13px;height:13px;margin-left:auto;padding-left:4px;box-sizing:content-box}
+}
