@@ -103,7 +103,7 @@
 .im-event:active{transform:scale(.97)}
 .im-event:disabled{cursor:default}
 .im-event.is-in{animation:refs-pop .55s cubic-bezier(.34,1.45,.5,1)}
-.im-event-cal{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;width:42px;height:42px;margin-right:10px;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(28,25,40,.1)}
+.im-event-cal{transform-origin:50% 0;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;width:42px;height:42px;margin-right:10px;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(28,25,40,.1)}
 .im-event-cal b{font-size:9px;font-weight:700;line-height:1;color:#ff3b30;text-transform:uppercase;letter-spacing:.02em}
 .im-event-cal i{font-style:normal;font-size:20px;font-weight:500;line-height:1.05;letter-spacing:-.02em}
 .im-event-text{display:flex;flex-direction:column;min-width:0}
@@ -154,8 +154,7 @@
  .brief-chat-head{padding:12px 18px 8px}
  .brief-chat-avatar{width:44px;height:44px}
  .brief-chat{min-height:0}
- .im-back{top:24px}.im-video{top:19px}
- .call-hint{top:84px}
+ .im-back{top:24px}
 }
 
 /* The phone grows while the booking sheet is open, so the whole sheet fits. */
@@ -177,3 +176,17 @@
  .call-hint .refs-hint-arrow{top:22px}
  .call-hint-text{white-space:normal;max-width:min(240px,calc(100vw - 130px));text-align:right;line-height:1.05;margin-bottom:12px}
 }
+
+/* Camera button: round (and the cursor matches it exactly). */
+.im-video{width:36px;height:36px;border-radius:50%;right:14px;top:22px}
+@media(min-width:901px){.im-video{top:16px}}
+/* With the custom cursor on, the cursor is the only hover shape. */
+.pointer-enabled .im-video:hover,.pointer-enabled .call-day:not(:disabled):not(.is-picked):hover,.pointer-enabled .call-nav:not(:disabled):hover,.pointer-enabled .im-plus:hover{background:transparent}
+.pointer-enabled .im-plus:hover{background:#efeff4}
+
+/* The video-call hint lives outside the phone at every size: just above the
+   card, pointing down at the camera. */
+.call-hint{top:auto;bottom:calc(100% - 2px);right:30px;align-items:flex-end}
+.call-hint .refs-hint-arrow{top:22px;transform:scaleY(-1)}
+.call-hint-text{white-space:normal;max-width:min(260px,calc(100vw - 130px));text-align:right;line-height:1.05;margin:0 0 12px}
+.call-hint.is-crowded{opacity:1}

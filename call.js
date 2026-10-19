@@ -219,7 +219,15 @@
     eventCard.querySelector('[data-ev-when]').textContent = `${fmt({ day: 'numeric', month: 'long' }, d)} · ${timeOf(booking.at)}`;
     eventCard.querySelector('[data-ev-where]').textContent = `${booking.platform} · ${booking.handle}`;
     eventCard.querySelector('.im-event-text b').textContent = tr('Video call');
-    if (animate && !reduced.matches) { eventCard.classList.remove('is-in'); void eventCard.offsetWidth; eventCard.classList.add('is-in'); }
+    if (animate && !reduced.matches) {
+      eventCard.classList.remove('is-in'); void eventCard.offsetWidth; eventCard.classList.add('is-in');
+      // The little calendar page flips over to the chosen date, like a tear-off calendar.
+      eventCard.querySelector('.im-event-cal').animate([
+        { transform: 'perspective(160px) rotateX(-95deg)', opacity: .2 },
+        { offset: .6, transform: 'perspective(160px) rotateX(12deg)', opacity: 1 },
+        { transform: 'none', opacity: 1 }
+      ], { duration: 650, delay: 180, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' });
+    }
   }
   eventCard.addEventListener('click', () => setOpen(true));
 

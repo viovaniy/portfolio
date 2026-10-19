@@ -66,28 +66,24 @@
       const centerY = rect.top + rect.height / 2;
       const dx = position.x - centerX;
       const dy = position.y - centerY;
-      const isAboutTab = target.matches('.about-tabs [role="tab"]') || target.hasAttribute('data-pointer-exact');
+      const isAboutTab = target.matches('.about-tabs [role="tab"]');
+      const isDockTarget = Boolean(target.closest('.bottom-nav'));
       const isCircle = target.dataset.pointerShape === 'circle';
       const scale = pressed && !isAboutTab ? 0.95 : 1;
-      const isDockTarget = Boolean(target.closest('.bottom-nav'));
-      destination.x = centerX + (isDockTarget || isAboutTab || isCircle ? 0 : clamp(dx * 0.1, 8));
-      destination.y = centerY + (isDockTarget || isAboutTab || isCircle ? 0 : clamp(dy * 0.16, 5));
-      destination.width = (isDockTarget || isAboutTab || isCircle ? rect.width : rect.width + 8) * scale;
-      destination.height = (isDockTarget ? rect.width : isAboutTab || isCircle ? rect.height : rect.height + 6) * scale;
-      // Match the element's own corners (+ the small outset), capped to a pill.
+      // Site rule: the morphed cursor always matches the button exactly —
+      // same size, same centre, same corners. No outset, no magnetic drift.
       const ownRadius = targetInfo ? targetInfo.radius : 14;
-      destination.radius = isDockTarget || isCircle ? destination.width / 2 : isAboutTab ? destination.height / 2 : Math.min(destination.height / 2, ownRadius + 3);
-      // Exact targets: the cursor takes the element's own size and shape, nothing more.
-      const exact = target.hasAttribute('data-pointer-exact');
-      if (exact && target.dataset.pointerShape !== 'pill') destination.radius = Math.min(destination.height / 2, ownRadius);
-      if (exact) { destination.width = rect.width * scale; destination.height = rect.height * scale; }
-      // Tabs paint their own white highlight, keeping the label crisp above it.
-      destination.opacity = isDockTarget || (isAboutTab && !exact) ? 0 : (pressed ? 0.23 : 0.14);
-      // Round targets stay perfectly round: grow them evenly.
-      if (!isDockTarget && !isAboutTab && !fill && targetInfo && targetInfo.radius >= Math.min(rect.width, rect.height) / 2 && Math.abs(rect.width - rect.height) < 2) {
-        const d = (isCircle ? rect.width : rect.width + 8) * scale;
-        Object.assign(destination, { x: centerX, y: centerY, width: d, height: d, radius: d / 2 });
-      }
+      destination.x = centerX;
+      destination.y = centerY;
+      destination.width = rect.width * scale;
+      destination.height = (isDockTarget ? rect.width : rect.height) * scale;
+      const round = isCircle || isDockTarget || (Math.abs(rect.width - rect.height) < 2 && ownRadius >= Math.min(rect.width, rect.height) / 2);
+      destination.radius = round ? destination.width / 2
+        : target.dataset.pointerShape === 'pill' || isAboutTab ? destination.height / 2
+        : Math.min(destination.height / 2, ownRadius);
+      if (round && !isDockTarget) destination.height = destination.width;
+      // Tabs and the dock paint their own highlight, keeping the label crisp above it.
+      destination.opacity = isDockTarget || isAboutTab ? 0 : (pressed ? 0.23 : 0.14);
       if (fill) {
         // Flow exactly into the filled button and dissolve into it.
         Object.assign(destination, { x: centerX, y: centerY, width: rect.width * scale, height: rect.height * scale, opacity: 0 });
