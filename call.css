@@ -262,3 +262,23 @@
  .brief .brief-preview .call-sheet,.brief .brief-preview .refs-sheet{transform-origin:50% 100%;transform:translateY(40px)}
  .brief .brief-preview .call-sheet.is-open,.brief .brief-preview .refs-sheet.is-open{transform:none;transition:opacity .2s ease,transform .42s cubic-bezier(.22,1,.36,1)}
 }
+
+/* Call details under the title, like a booking page */
+.call-meta{display:flex;flex-wrap:wrap;gap:4px 12px;margin:4px 0 0;font-size:12.5px;color:#6e6e73}
+.call-meta span{display:inline-flex;align-items:center;gap:5px}
+.call-meta svg{width:13px;height:13px;flex:none;fill:none;stroke:#8e8e93;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.call-meta span+span svg{width:16px;height:11px;stroke-width:2}
+.call-about{margin:-2px 2px 10px;padding:8px 10px;border-radius:12px;background:rgba(118,118,128,.075);font-size:12.5px;line-height:1.4;color:#55555e}
+.call-sheet.is-tight .call-about{margin-bottom:6px;padding:6px 9px;font-size:12px;line-height:1.35}
+.call-sheet.is-tight .call-day{width:26px;height:26px;font-size:13.5px}
+.call-sheet.is-tight .call-day:not(:disabled)::after{bottom:1px}
+.call-sheet.is-tight .call-meta{margin-top:2px}
+.call-sheet.is-tight .call-about{padding:5px 8px;margin-bottom:4px;font-size:11.5px}
+.call-sheet.is-tight .call-page{padding:9px 12px 6px}
+.call-sheet.is-tight .call-head{margin-bottom:4px}
+.call-sheet.is-tight .call-nav{width:24px;height:24px}
+.call-sheet.is-tight :is(.call-cancel,.call-primary){height:30px}
+.call-sheet.is-tight .call-foot{padding-top:4px}
+/* The sheet can rise over the header: the camera steps aside while it's open. */
+.im-video{transition:transform .15s cubic-bezier(.22,1,.36,1),background-color .2s ease,opacity .2s ease}
+.brief-preview.is-call-open .im-video{opacity:0;pointer-events:none}

@@ -193,7 +193,7 @@ module.exports = async (req, res) => {
     const platformName = /zoom/i.test(c.platform) ? 'Zoom' : 'Google Meet';
     const handle = plain(c.handle, 120);
     const viaName = c.via === 'telegram' ? 'Telegram' : 'email';
-    callLines.push('', '📞 <b>Video call requested</b>',
+    callLines.push('', '📞 <b>Video call requested</b> · 25 min intro',
       `🗓 ${esc(when('Asia/Yekaterinburg'))} <i>(your time)</i>`,
       ...(ctz && ctz !== 'Asia/Yekaterinburg' ? [`🌍 ${esc(when(ctz))} for the client · ${esc(ctz)}`] : []),
       `💻 ${platformName} · invite via ${viaName}: ${viaName === 'email' ? esc(handle) : `<code>${esc(handle)}</code>`}`);

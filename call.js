@@ -75,7 +75,7 @@
   let via = 'email', platform = 'Google Meet';
 
   function renderMonth() {
-    monthLabel.textContent = fmt({ month: 'long', year: 'numeric' }, view);
+    monthLabel.textContent = fmt({ month: 'long', year: 'numeric' }, view).replace(/\s*г\.$/, ''); // Russian adds "г." after the year
     days.textContent = '';
     const first = new Date(view.getFullYear(), view.getMonth(), 1);
     const lead = (first.getDay() + 6) % 7; // Monday-first offset
