@@ -56,3 +56,5 @@ html.pointer-enabled .footer-links a::after{display:none}
  .footer-tg:hover::before,.footer-top-btn:hover::before{opacity:1;scale:1}
  .footer-tg:hover span{color:#fff}
 }
+/* The brand is a pill too: avatar and name inside one soft capsule. */
+.footer-brand{padding:5px 16px 5px 5px;margin:-5px 0 -5px -5px;border-radius:999px}
