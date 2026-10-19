@@ -372,3 +372,6 @@
 .cg-frame::before,.cg-frame::after{display:none!important}
 /* The halo only fades — no growing/shifting — so its edge always hugs the card. */
 .cg-slide::before,.cg-slide.is-active:is(.is-hover,:hover)::before{transform:none!important}
+/* neighbours read as clickable */
+.cg-slide:not(.is-active){cursor:pointer}
+@media(hover:hover){.cg-track:not(.is-drag) .cg-slide:not(.is-active):hover{--dim:.2}}

@@ -223,8 +223,12 @@
     const d = drag; drag = null; track.classList.remove('is-drag');
     if (!d.moved) {
       // a tap on a side slide brings it to the centre
-      const s = e?.target.closest?.('.cg-slide');
-      if (s) { const i = slides.indexOf(s); const o = mod(i - pos + n / 2, n) - n / 2; if (Math.abs(o) > .5) go(Math.round(target + o)); }
+      // Side cards are inert (not clickable themselves), so decide by position:
+      // a tap left or right of the centre card brings that neighbour in.
+      const r = track.getBoundingClientRect();
+      const half = slides[0].offsetWidth / 2;
+      const x = (e ? e.clientX : d.x) - (r.left + r.width / 2);
+      if (Math.abs(x) > half + 4) step(x > 0 ? 1 : -1);
       return;
     }
     const flick = -d.vx / gap() * .22;
