@@ -30,7 +30,7 @@
   </script>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="structure.css?v=20261019-3">
-  <link rel="stylesheet" href="work.css?v=20">
+  <link rel="stylesheet" href="work.css?v=23">
   <link rel="stylesheet" href="studio.css?v=28">
   <link rel="stylesheet" href="about.css?v=20261019-11">
   <link rel="stylesheet" href="text-reveal.css?v=3">
@@ -246,105 +246,66 @@
     </section>
 
     <section id="work" class="page-section content-section work-section" aria-labelledby="work-title">
-      <p class="section-label">Motion in practice</p>
-      <div class="work-heading">
-        <h2 id="work-title">Selected work.</h2>
-        <span class="work-count">6 items</span>
-      </div>
-      <p class="work-note">A preview collection. Real projects coming soon.</p>
-      <div class="wv" aria-roledescription="carousel" aria-label="Project viewer">
-        <div class="wv-screen" aria-live="polite">
-          <div class="wv-stage"></div>
-          <button type="button" class="wv-arrow wv-prev" data-step="-1" aria-label="Previous project" data-pointer-shape="circle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
-          <button type="button" class="wv-arrow wv-next" data-step="1" aria-label="Next project" data-pointer-shape="circle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button>
-        </div>
-        <div class="wv-meta">
-          <div class="wv-text">
-            <h3 class="wv-title"></h3>
-            <p class="wv-desc"></p>
+      <div class="tl-pin">
+        <div class="tl-head">
+          <div>
+            <p class="section-label">Motion in practice</p>
+            <h2 id="work-title">Selected work.</h2>
           </div>
-          <div class="wv-facts">
-            <span class="wv-tag" data-wv="kind"></span>
-            <span class="wv-tools" data-wv="tools"></span>
-            <span class="wv-status">Coming soon</span>
+          <p class="tl-note">A preview collection. Real projects coming soon.</p>
+        </div>
+        <div class="tl-screen">
+          <div class="tl-stage" aria-live="polite"></div>
+          <div class="tl-caption">
+            <span class="tl-kind" data-tl="kind"></span>
+            <h3 class="tl-title"></h3>
+            <p class="tl-desc"></p>
+          </div>
+          <span class="tl-status">Coming soon</span>
+        </div>
+        <div class="tl-panel">
+          <div class="tl-bar">
+            <span class="tl-count"><b data-tl="index">1</b> / 6</span>
+            <span class="tl-tools" data-tl="tools"></span>
+            <span class="tl-hint"><svg viewBox="0 0 16 24" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="21" rx="6.5"/><path class="tl-wheel" d="M8 6v4"/></svg>Scroll to scrub</span>
+          </div>
+          <div class="tl-track">
+            <div class="tl-ruler" aria-hidden="true"></div>
+            <ol class="tl-clips" aria-label="Projects">
+            <li class="tl-clip" style="--a:#ffd6e5;--b:#ff9fbf;--c:#fff4f8;--d:24" data-dur="24">
+              <button type="button" class="tl-clip-btn" data-clip="0" data-pointer-passive><span class="tl-clip-name">Product film</span><span class="tl-clip-film" aria-hidden="true"></span></button>
+              <template><span class="loop loop-ease"><i class="g g1"></i><i class="g g2"></i><i class="g g3"></i><i class="b"></i><i class="line"></i></span></template>
+              <span class="tl-data" hidden><span data-k="desc">A short story for a digital product.</span><span data-k="kind">Explainer film</span><span data-k="tools">After Effects, Figma</span></span>
+            </li>
+            <li class="tl-clip" style="--a:#dbe9ff;--b:#8fbcff;--c:#f4f8ff;--d:18" data-dur="18">
+              <button type="button" class="tl-clip-btn" data-clip="1" data-pointer-passive><span class="tl-clip-name">Interface motion</span><span class="tl-clip-film" aria-hidden="true"></span></button>
+              <template><span class="loop loop-toggle"><i class="track"><i class="knob"></i></i><i class="row r1"></i><i class="row r2"></i></span></template>
+              <span class="tl-data" hidden><span data-k="desc">Small interactions, brought to life.</span><span data-k="kind">UI animation</span><span data-k="tools">Figma, After Effects</span></span>
+            </li>
+            <li class="tl-clip" style="--a:#ece0ff;--b:#bf9cf5;--c:#faf6ff;--d:30" data-dur="30">
+              <button type="button" class="tl-clip-btn" data-clip="2" data-pointer-passive><span class="tl-clip-name">Brand in motion</span><span class="tl-clip-film" aria-hidden="true"></span></button>
+              <template><span class="loop loop-morph"><i class="g g1"></i><i class="g g2"></i><i class="b"></i></span></template>
+              <span class="tl-data" hidden><span data-k="desc">A visual identity with its own rhythm.</span><span data-k="kind">Brand motion</span><span data-k="tools">Illustrator, After Effects</span></span>
+            </li>
+            <li class="tl-clip" style="--a:#ffe5d2;--b:#ffb184;--c:#fff7f1;--d:21" data-dur="21">
+              <button type="button" class="tl-clip-btn" data-clip="3" data-pointer-passive><span class="tl-clip-name">Launch story</span><span class="tl-clip-film" aria-hidden="true"></span></button>
+              <template><span class="loop loop-arc"><i class="g g1"></i><i class="g g2"></i><i class="g g3"></i><i class="b"></i><i class="floor"></i></span></template>
+              <span class="tl-data" hidden><span data-k="desc">Introducing the next big idea.</span><span data-k="kind">Launch video</span><span data-k="tools">After Effects, Premiere Pro</span></span>
+            </li>
+            <li class="tl-clip" style="--a:#d8f4e8;--b:#8fd9b9;--c:#f2fbf7;--d:15" data-dur="15">
+              <button type="button" class="tl-clip-btn" data-clip="4" data-pointer-passive><span class="tl-clip-name">Motion studies</span><span class="tl-clip-film" aria-hidden="true"></span></button>
+              <template><span class="loop loop-bounce"><i class="shadow"></i><i class="g g1"></i><i class="g g2"></i><i class="b"></i><i class="floor"></i></span></template>
+              <span class="tl-data" hidden><span data-k="desc">Exploring timing, shape and movement.</span><span data-k="kind">Experiments</span><span data-k="tools">After Effects</span></span>
+            </li>
+            <li class="tl-clip" style="--a:#fff1c4;--b:#ffd36a;--c:#fffbea;--d:27" data-dur="27">
+              <button type="button" class="tl-clip-btn" data-clip="5" data-pointer-passive><span class="tl-clip-name">Product demo</span><span class="tl-clip-film" aria-hidden="true"></span></button>
+              <template><span class="loop loop-click"><i class="btn"></i><i class="ring"></i><i class="cursor"></i><i class="row r1"></i></span></template>
+              <span class="tl-data" hidden><span data-k="desc">Making a useful feature feel simple.</span><span data-k="kind">Feature demo</span><span data-k="tools">Figma, After Effects</span></span>
+            </li>
+            </ol>
+            <div class="tl-playhead" aria-hidden="true"><span class="tl-time">00:00:00</span></div>
           </div>
         </div>
-      </div>
-      <div class="work-desk">
-        <ul class="wf-grid" aria-label="Projects" role="tablist">
-          <li class="wf-item" style="--a:#ffd6e5;--b:#ff9fbf;--c:#fff4f8">
-            <button class="wf" type="button" data-work="0" role="tab" aria-selected="false" data-pointer-passive>
-              <span class="wf-art" aria-hidden="true">
-                <svg class="wf-back" viewBox="0 0 200 150" preserveAspectRatio="none"><path d="M0 26a14 14 0 0 1 14-14h50c9 0 11-12 22-12h100a14 14 0 0 1 14 14v122a14 14 0 0 1-14 14H14A14 14 0 0 1 0 136Z"/></svg>
-                <span class="wf-paper"><span class="loop loop-ease"><i class="g g1"></i><i class="g g2"></i><i class="g g3"></i><i class="b"></i><i class="line"></i></span></span>
-                <span class="wf-front"><span class="wf-sticker" style="--r:-8deg">🎬</span></span>
-              </span>
-              <span class="wf-name">Product film</span>
-              <span class="wf-kind">Explainer film</span>
-              <span class="wf-data" hidden><span data-k="desc">A short story for a digital product.</span><span data-k="kind">Explainer film</span><span data-k="tools">After Effects, Figma</span></span>
-            </button>
-          </li>
-          <li class="wf-item" style="--a:#dbe9ff;--b:#8fbcff;--c:#f4f8ff">
-            <button class="wf" type="button" data-work="1" role="tab" aria-selected="false" data-pointer-passive>
-              <span class="wf-art" aria-hidden="true">
-                <svg class="wf-back" viewBox="0 0 200 150" preserveAspectRatio="none"><path d="M0 26a14 14 0 0 1 14-14h50c9 0 11-12 22-12h100a14 14 0 0 1 14 14v122a14 14 0 0 1-14 14H14A14 14 0 0 1 0 136Z"/></svg>
-                <span class="wf-paper"><span class="loop loop-toggle"><i class="track"><i class="knob"></i></i><i class="row r1"></i><i class="row r2"></i></span></span>
-                <span class="wf-front"><span class="wf-sticker" style="--r:6deg">🎚️</span></span>
-              </span>
-              <span class="wf-name">Interface motion</span>
-              <span class="wf-kind">UI animation</span>
-              <span class="wf-data" hidden><span data-k="desc">Small interactions, brought to life.</span><span data-k="kind">UI animation</span><span data-k="tools">Figma, After Effects</span></span>
-            </button>
-          </li>
-          <li class="wf-item" style="--a:#ece0ff;--b:#bf9cf5;--c:#faf6ff">
-            <button class="wf" type="button" data-work="2" role="tab" aria-selected="false" data-pointer-passive>
-              <span class="wf-art" aria-hidden="true">
-                <svg class="wf-back" viewBox="0 0 200 150" preserveAspectRatio="none"><path d="M0 26a14 14 0 0 1 14-14h50c9 0 11-12 22-12h100a14 14 0 0 1 14 14v122a14 14 0 0 1-14 14H14A14 14 0 0 1 0 136Z"/></svg>
-                <span class="wf-paper"><span class="loop loop-morph"><i class="g g1"></i><i class="g g2"></i><i class="b"></i></span></span>
-                <span class="wf-front"><span class="wf-sticker" style="--r:-5deg">✨</span></span>
-              </span>
-              <span class="wf-name">Brand in motion</span>
-              <span class="wf-kind">Brand motion</span>
-              <span class="wf-data" hidden><span data-k="desc">A visual identity with its own rhythm.</span><span data-k="kind">Brand motion</span><span data-k="tools">Illustrator, After Effects</span></span>
-            </button>
-          </li>
-          <li class="wf-item" style="--a:#ffe5d2;--b:#ffb184;--c:#fff7f1">
-            <button class="wf" type="button" data-work="3" role="tab" aria-selected="false" data-pointer-passive>
-              <span class="wf-art" aria-hidden="true">
-                <svg class="wf-back" viewBox="0 0 200 150" preserveAspectRatio="none"><path d="M0 26a14 14 0 0 1 14-14h50c9 0 11-12 22-12h100a14 14 0 0 1 14 14v122a14 14 0 0 1-14 14H14A14 14 0 0 1 0 136Z"/></svg>
-                <span class="wf-paper"><span class="loop loop-arc"><i class="g g1"></i><i class="g g2"></i><i class="g g3"></i><i class="b"></i><i class="floor"></i></span></span>
-                <span class="wf-front"><span class="wf-sticker" style="--r:9deg">🚀</span></span>
-              </span>
-              <span class="wf-name">Launch story</span>
-              <span class="wf-kind">Launch video</span>
-              <span class="wf-data" hidden><span data-k="desc">Introducing the next big idea.</span><span data-k="kind">Launch video</span><span data-k="tools">After Effects, Premiere Pro</span></span>
-            </button>
-          </li>
-          <li class="wf-item" style="--a:#d8f4e8;--b:#8fd9b9;--c:#f2fbf7">
-            <button class="wf" type="button" data-work="4" role="tab" aria-selected="false" data-pointer-passive>
-              <span class="wf-art" aria-hidden="true">
-                <svg class="wf-back" viewBox="0 0 200 150" preserveAspectRatio="none"><path d="M0 26a14 14 0 0 1 14-14h50c9 0 11-12 22-12h100a14 14 0 0 1 14 14v122a14 14 0 0 1-14 14H14A14 14 0 0 1 0 136Z"/></svg>
-                <span class="wf-paper"><span class="loop loop-bounce"><i class="shadow"></i><i class="g g1"></i><i class="g g2"></i><i class="b"></i><i class="floor"></i></span></span>
-                <span class="wf-front"><span class="wf-sticker" style="--r:-7deg">🧪</span></span>
-              </span>
-              <span class="wf-name">Motion studies</span>
-              <span class="wf-kind">Experiments</span>
-              <span class="wf-data" hidden><span data-k="desc">Exploring timing, shape and movement.</span><span data-k="kind">Experiments</span><span data-k="tools">After Effects</span></span>
-            </button>
-          </li>
-          <li class="wf-item" style="--a:#fff1c4;--b:#ffd36a;--c:#fffbea">
-            <button class="wf" type="button" data-work="5" role="tab" aria-selected="false" data-pointer-passive>
-              <span class="wf-art" aria-hidden="true">
-                <svg class="wf-back" viewBox="0 0 200 150" preserveAspectRatio="none"><path d="M0 26a14 14 0 0 1 14-14h50c9 0 11-12 22-12h100a14 14 0 0 1 14 14v122a14 14 0 0 1-14 14H14A14 14 0 0 1 0 136Z"/></svg>
-                <span class="wf-paper"><span class="loop loop-click"><i class="btn"></i><i class="ring"></i><i class="cursor"></i><i class="row r1"></i></span></span>
-                <span class="wf-front"><span class="wf-sticker" style="--r:5deg">👆</span></span>
-              </span>
-              <span class="wf-name">Product demo</span>
-              <span class="wf-kind">Feature demo</span>
-              <span class="wf-data" hidden><span data-k="desc">Making a useful feature feel simple.</span><span data-k="kind">Feature demo</span><span data-k="tools">Figma, After Effects</span></span>
-            </button>
-          </li>
-        </ul>
       </div>
     </section>
 
@@ -514,7 +475,7 @@
   <script src="footer.js?v=4" defer></script>
   <script src="scroll-reveal.js?v=5" defer></script>
   <script src="shimmer.js?v=3" defer></script>
-  <script src="work.js?v=11" defer></script>
+  <script src="work.js?v=12" defer></script>
   <script src="about.js?v=20261019-5" defer></script>
   <script src="studio.js?v=12" defer></script>
   <script src="text-reveal.js?v=3" defer></script>
