@@ -66,7 +66,7 @@
       const centerY = rect.top + rect.height / 2;
       const dx = position.x - centerX;
       const dy = position.y - centerY;
-      const isAboutTab = target.matches('.about-tabs [role="tab"]');
+      const isAboutTab = target.matches('.about-tabs [role="tab"]') || target.hasAttribute('data-pointer-exact');
       const isCircle = target.dataset.pointerShape === 'circle';
       const scale = pressed && !isAboutTab ? 0.95 : 1;
       const isDockTarget = Boolean(target.closest('.bottom-nav'));
@@ -77,8 +77,12 @@
       // Match the element's own corners (+ the small outset), capped to a pill.
       const ownRadius = targetInfo ? targetInfo.radius : 14;
       destination.radius = isDockTarget || isCircle ? destination.width / 2 : isAboutTab ? destination.height / 2 : Math.min(destination.height / 2, ownRadius + 3);
+      // Exact targets: the cursor takes the element's own size and shape, nothing more.
+      const exact = target.hasAttribute('data-pointer-exact');
+      if (exact && target.dataset.pointerShape !== 'pill') destination.radius = Math.min(destination.height / 2, ownRadius);
+      if (exact) { destination.width = rect.width * scale; destination.height = rect.height * scale; }
       // Tabs paint their own white highlight, keeping the label crisp above it.
-      destination.opacity = isDockTarget || isAboutTab ? 0 : (pressed ? 0.23 : 0.14);
+      destination.opacity = isDockTarget || (isAboutTab && !exact) ? 0 : (pressed ? 0.23 : 0.14);
       // Round targets stay perfectly round: grow them evenly.
       if (!isDockTarget && !isAboutTab && !fill && targetInfo && targetInfo.radius >= Math.min(rect.width, rect.height) / 2 && Math.abs(rect.width - rect.height) < 2) {
         const d = (isCircle ? rect.width : rect.width + 8) * scale;

@@ -162,6 +162,7 @@
     opt.dataset.code = code;
     opt.style.setProperty('--i', i);
     opt.tabIndex = -1;
+    opt.setAttribute('data-pointer-exact', ''); // the cursor becomes the row highlight
     opt.append(flag(cc));
     opt.insertAdjacentHTML('beforeend', `<span class="lang-native">${native}</span><span class="lang-en">${english}</span><svg class="lang-check" viewBox="0 0 24 24" aria-hidden="true"><path d="m5.5 12.5 4 4 9-9.5"/></svg>`);
     pop.append(opt);
