@@ -1,6 +1,7 @@
 // Reference uploader for the brief: the iMessage "+" opens an attachment sheet.
-// Up to 10 files are pinned to the brief and, once the brief reaches Telegram,
-// each one is sent as a reply to it (/api/brief-file, one file per request).
+// Up to 10 files are pinned to the brief. On sending, the browser uploads them
+// straight to Vercel Blob (/api/upload issues the tokens), and /api/brief sends
+// them to Telegram together with the brief as one album.
 (() => {
   const preview = document.querySelector('.brief-preview');
   const plus = preview?.querySelector('.im-plus');
@@ -8,7 +9,9 @@
   const tr = (text, vars) => (window.t ? window.t(text, vars) : text.replace(/\{(\w+)\}/g, (m, k) => (vars && k in vars ? vars[k] : m)));
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const MAX_FILES = 10;
-  const BUDGET = 4.15 * 1024 * 1024;   // brief + all files travel in one request (Vercel: ~4.5 MB)
+  const MAX_FILE = 50 * 1024 * 1024;   // Telegram bots can send files up to 50 MB
+  const MAX_TOTAL = 100 * 1024 * 1024;
+  const BUDGET = 4.15 * 1024 * 1024;   // fallback only: everything in one request (Vercel: ~4.5 MB)
   const PHOTO = /^image\/(jpeg|png|webp|heic|heif|avif)$/i;
 
   const sheet = document.getElementById('refs-sheet');
@@ -64,18 +67,20 @@
   function add(list) {
     const files = [...list].filter(f => f && f.size >= 0);
     if (!files.length) return;
-    let skippedBig = 0, skippedMax = 0;
+    let skippedBig = 0, skippedMax = 0, skippedTotal = 0;
     const added = [];
     for (const file of files) {
       if (items.length >= MAX_FILES) { skippedMax++; continue; }
       const kind = kindOf(file);
-      // Photos are compressed before sending; other files must fit in what's left.
-      if (!PHOTO.test(file.type) && otherBytes() + file.size > BUDGET * .85) { skippedBig++; continue; }
+      // Photos are compressed before sending; other files keep their size.
+      if (!PHOTO.test(file.type) && file.size > MAX_FILE) { skippedBig++; continue; }
+      if (!PHOTO.test(file.type) && otherBytes() + file.size > MAX_TOTAL) { skippedTotal++; continue; }
       const item = { id: ++uid, file, kind, ext: extOf(file), url: kind === 'file' ? '' : URL.createObjectURL(file) };
       items.push(item); added.push(item);
     }
     if (skippedMax) say(tr('Only {max} files can be pinned.', { max: MAX_FILES }), true);
-    else if (skippedBig) say(tr('All files together must fit in 4 MB (photos are compressed automatically).'), true);
+    else if (skippedBig) say(tr('Each file must be under 50 MB.'), true);
+    else if (skippedTotal) say(tr('All files together must be under 100 MB.'), true);
     const tiles = added.map((item, i) => { const li = tile(item, i); grid.append(li); return li; });
     update();
     morph(tiles);
@@ -255,6 +260,35 @@
     return new Blob([head, json, ...files], { type: 'application/octet-stream' });
   }
 
+  // Main path: each file goes from the browser straight to Vercel Blob.
+  // onProgress(0…1) follows the bytes of all files together.
+  async function upload(onProgress) {
+    const { upload: put } = await import('/vendor/blob-client.js?v=1');
+    const files = await Promise.all(items.map(x => compress(x.file, 2560, .88)));
+    const total = files.reduce((n, f) => n + f.size, 0) || 1;
+    const loaded = files.map(() => 0);
+    const tick = () => onProgress?.(loaded.reduce((a, b) => a + b, 0) / total);
+    const safe = name => (name.normalize('NFKD').replace(/[^\w.\- ]+/g, '').replace(/\s+/g, '-').slice(-80) || 'file').replace(/^[.-]+/, '') || 'file';
+    const out = new Array(files.length);
+    let next = 0;
+    async function worker() {
+      while (next < files.length) {
+        const i = next++, f = files[i];
+        const blob = await put(`refs/${safe(f.name)}`, f, {
+          access: 'private',
+          handleUploadUrl: '/api/upload',
+          contentType: f.type || 'application/octet-stream',
+          multipart: f.size > 8 * 1024 * 1024,
+          onUploadProgress: e => { loaded[i] = e.loaded; tick(); }
+        });
+        loaded[i] = f.size; tick();
+        out[i] = { url: blob.url, name: f.name, type: f.type || 'application/octet-stream' };
+      }
+    }
+    await Promise.all([worker(), worker(), worker()]);
+    return out;
+  }
+
   // After a brief is sent, pinning is locked until "Send another brief".
   let locked = false;
   const tip = document.createElement('span');
@@ -284,6 +318,6 @@
     update();
   }
 
-  window.briefRefs = { count: () => items.length, pack, clear, lock, close: () => setOpen(false) };
+  window.briefRefs = { count: () => items.length, upload, pack, clear, lock, close: () => setOpen(false) };
   update();
 })();

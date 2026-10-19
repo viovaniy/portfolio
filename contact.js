@@ -277,16 +277,28 @@
         insight: window.briefInsight ? window.briefInsight() : null,
         call: window.briefCall ? window.briefCall.get() : null
     };
-    // With references, the brief and the files travel together in one request.
+    // References go from the browser straight to Vercel Blob first, then the
+    // brief (with their links) goes to /api/brief, which sends one Telegram album.
+    // If Blob isn't available, they fall back to one packed request (~4 MB max).
+    let body = JSON.stringify(brief), packed = false;
+    if (refs) {
+      try {
+        const blobs = await window.briefRefs.upload(p => setProgress(p * .86, refs));
+        body = JSON.stringify({ ...brief, blobs });
+        setProgress(.88, refs); creepCap = .985;
+      } catch (err) {
+        body = await window.briefRefs.pack(brief);
+        packed = true;
+      }
+    }
     // XHR (not fetch) so the real upload progress can drive both windows.
-    const body = refs ? await window.briefRefs.pack(brief) : JSON.stringify(brief);
     const result = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', '/api/brief');
-      xhr.setRequestHeader('Content-Type', refs ? 'application/octet-stream' : 'application/json');
+      xhr.setRequestHeader('Content-Type', packed ? 'application/octet-stream' : 'application/json');
       xhr.setRequestHeader('Accept', 'application/json');
-      xhr.upload.onprogress = e => { if (e.lengthComputable) setProgress(e.loaded / e.total * .9, refs); };
-      xhr.upload.onload = () => { setProgress(.92, refs); creepCap = .985; }; // uploaded; Telegram is receiving it now
+      xhr.upload.onprogress = e => { if (packed && e.lengthComputable) setProgress(e.loaded / e.total * .9, refs); };
+      xhr.upload.onload = () => { setProgress(Math.max(shownProgress, .92), refs); creepCap = .985; }; // uploaded; Telegram is receiving it now
       xhr.onload = () => {
         let out = {};
         try { out = JSON.parse(xhr.responseText); } catch {}

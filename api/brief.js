@@ -78,6 +78,41 @@ async function counters(ipKey, deviceKey) {
   } catch { return null; }
 }
 
+// ---------- references stored in Vercel Blob ----------
+const MAX_REF = 50 * 1024 * 1024;
+let blobSdk;
+const sdk = () => (blobSdk ||= require('@vercel/blob'));
+// Only files this site uploaded (refs/ in our own store) are accepted.
+function blobList(list) {
+  if (!Array.isArray(list)) return [];
+  return list.slice(0, 10).map(m => {
+    let url;
+    try { url = new URL(String(m && m.url)); } catch { return null; }
+    if (url.protocol !== 'https:' || !/\.blob\.vercel-storage\.com$/.test(url.hostname) || !url.pathname.startsWith('/refs/')) return null;
+    return { url: url.href, name: plain(m.name, 120).replace(/[\\/]/g, ' '), type: plain(m.type, 80).toLowerCase() };
+  }).filter(Boolean);
+}
+async function fetchBlobs(list) {
+  return Promise.all(list.map(async (m, i) => {
+    const got = await sdk().get(m.url, { access: 'private', useCache: false });
+    if (!got || got.statusCode !== 200) throw new Error('Missing reference');
+    if (got.blob.size > MAX_REF) throw new Error('Reference too large');
+    const data = Buffer.from(await new Response(got.stream).arrayBuffer());
+    return { name: m.name || got.blob.pathname.split('/').pop() || `reference-${i + 1}`, type: m.type || got.blob.contentType || 'application/octet-stream', data };
+  }));
+}
+// Files are deleted once they reach Telegram; leftovers older than a day are swept too.
+async function dropBlobs(list) {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) return;
+  try {
+    const urls = blobList(list).map(m => m.url);
+    if (urls.length) await sdk().del(urls);
+    const { blobs } = await sdk().list({ prefix: 'refs/', limit: 100 });
+    const old = blobs.filter(b => Date.now() - new Date(b.uploadedAt).getTime() > 864e5).map(b => b.url);
+    if (old.length) await sdk().del(old);
+  } catch {}
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ success: false, message: 'Method not allowed' }); }
 
@@ -108,11 +143,18 @@ module.exports = async (req, res) => {
     body = body || {};
   }
 
-  if (body.botcheck) return res.status(200).json({ success: true }); // honeypot: quietly drop bots
+  if (body.botcheck) { await dropBlobs(body.blobs); return res.status(200).json({ success: true }); } // honeypot: quietly drop bots
 
   const f = {};
   for (const key of Object.keys(LIMITS)) f[key] = clip(body[key], LIMITS[key]);
-  if (Object.keys(LIMITS).some(key => !f[key])) return res.status(400).json({ success: false, message: 'Please fill in every field' });
+  if (Object.keys(LIMITS).some(key => !f[key])) { await dropBlobs(body.blobs); return res.status(400).json({ success: false, message: 'Please fill in every field' }); }
+
+  // References uploaded by the browser straight to Vercel Blob (any size up to 50 MB each).
+  const blobs = blobList(body.blobs);
+  if (blobs.length) {
+    try { files = await fetchBlobs(blobs); }
+    catch (err) { await dropBlobs(blobs); return res.status(502).json({ success: false, message: 'Could not read the references' }); }
+  }
 
   // Where it came from (Vercel adds these headers on every request).
   const ip = (header(req, 'x-forwarded-for').split(',')[0] || header(req, 'x-real-ip') || '').trim() || 'unknown';
@@ -208,7 +250,8 @@ module.exports = async (req, res) => {
     }
     // One album: the brief is the caption, so the files and the text arrive as one message.
     // Telegram groups photos/videos together, and documents only with documents.
-    const visual = f => /^image\/(jpeg|png|webp)$/.test(f.type) ? 'photo' : /^video\/(mp4|quicktime)$/.test(f.type) ? 'video' : 'document';
+    // Telegram takes photos up to 10 MB; bigger images travel as documents.
+    const visual = f => /^image\/(jpeg|png|webp)$/.test(f.type) && f.data.length <= 10 * 1024 * 1024 ? 'photo' : /^video\/(mp4|quicktime)$/.test(f.type) ? 'video' : 'document';
     const mixed = files.some(f => visual(f) === 'document');
     const kind = f => (mixed ? 'document' : visual(f));
     const fits = text.replace(/<[^>]+>/g, '').length <= 1024; // caption limit
@@ -233,8 +276,10 @@ module.exports = async (req, res) => {
       files.forEach((f, i) => form.append(`f${i}`, new Blob([f.data], { type: f.type }), f.name));
       await call('sendMediaGroup', form);
     }
+    await dropBlobs(blobs);
     return res.status(200).json({ success: true, number, refs: files.length });
   } catch (err) {
+    await dropBlobs(blobs);
     return res.status(502).json({ success: false, message: err.message || 'Could not reach Telegram' });
   }
 };
