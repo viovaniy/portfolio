@@ -220,9 +220,45 @@
 .brief-preview.is-explored .im-video::after,.brief-preview.is-explored .im-plus::after,.im-video.is-locked::after,.im-plus.is-locked::after,.im-video.is-booked::after{animation:none;opacity:0}
 @media(prefers-reduced-motion:reduce){.im-video::after,.im-plus::after{animation:none}.im-video svg rect,.im-video svg path{transition:none}}
 
-/* Phones: a small title over the iMessage card, since the send button comes after it. */
-.brief-check{display:none}
+
+/* ---------- Phones: no iMessage card. Two buttons in the form open its sheets, which rise from the bottom. ---------- */
+.brief-tools{display:none}
 @media(max-width:900px){
- .brief.is-live:not(.is-done)>.brief-check{display:block;order:2;margin:26px 0 0;font-size:21px;font-weight:500;line-height:1.3;color:#9b9ba1}
- .brief.is-live:not(.is-done)>.brief-check+.brief-phone{margin-top:72px}
+ .brief-tools{display:flex;flex:1 0 100%;gap:8px;margin:0 0 -4px}
+ .brief-tool{position:relative;display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 15px 0 13px;border:0;border-radius:999px;background:#fff;color:#1f1f22;font:inherit;font-size:14.5px;font-weight:550;letter-spacing:-.01em;cursor:pointer;
+  box-shadow:0 0 0 1px rgba(28,25,40,.08),0 1px 2px rgba(28,25,40,.04),0 8px 18px -10px rgba(28,25,40,.18);transition:transform .15s cubic-bezier(.22,1,.36,1),box-shadow .25s ease;-webkit-tap-highlight-color:transparent}
+ .brief-tool:active{transform:scale(.96)}
+ .brief-tool svg{width:18px;height:18px;flex:none;fill:none;stroke:#007aff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+ .brief-tool[data-tool="call"] svg{width:21px;height:15px}
+ .brief-tool.is-on{box-shadow:0 0 0 1.5px rgba(0,122,255,.35),0 8px 18px -10px rgba(0,122,255,.35)}
+ .brief-tool-badge{display:grid;place-items:center;min-width:18px;height:18px;margin-right:-5px;padding:0 5px;border-radius:999px;background:#007aff;color:#fff;font-size:11px;font-weight:650;font-variant-numeric:tabular-nums}
+ .brief-tool-badge[hidden]{display:none}
+
+ /* The card itself is gone; the preview becomes an invisible full-screen layer for the sheets. */
+ .brief .brief-phone{position:static;margin:0!important;height:0}
+ .brief .brief-preview{position:fixed!important;inset:0;z-index:95;border-radius:0!important;background:rgba(20,18,28,0)!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  filter:none!important;transform:none!important;opacity:1!important;overflow:visible;pointer-events:none;visibility:hidden;transition:background-color .3s ease,visibility 0s .3s}
+ .brief .brief-preview::after,.brief .brief-preview::before{display:none}
+ .brief .brief-preview>:not(.refs-sheet):not(.call-sheet){display:none!important}
+ .brief .brief-preview:is(.is-call-open,.is-refs-open){visibility:visible;pointer-events:auto;background:rgba(20,18,28,.28)!important;transition:background-color .3s ease}
+ .brief .refs-hint,.brief .call-hint{display:none!important}
+ .brief .brief-preview .call-sheet,.brief .brief-preview .refs-sheet{left:10px;right:10px;top:auto;bottom:calc(10px + env(safe-area-inset-bottom));max-height:calc(100% - 40px);border-radius:28px;visibility:visible;margin:0 auto;max-width:440px}
+}
+
+/* ---------- Phones: the whole brief fits one screen ---------- */
+@media(max-width:650px){
+ .content-section.contact-section{padding-top:28px;padding-bottom:120px;min-height:0}
+ .content-section.contact-section h2{font-size:26px;margin-bottom:8px}
+ .contact-section .form-intro{font-size:14.5px;line-height:1.45;margin-bottom:18px}
+ .contact-section .brief-line{font-size:18px;line-height:1.5;margin-bottom:12px}
+ .contact-section .brief-chips{gap:6px;padding-top:4px}
+ #project-brief label.brief-chip{line-height:1;vertical-align:top}
+ .contact-section .brief-chip span{font-size:13.5px;padding:7px 12px}
+ .contact-section .brief-actions{margin-top:14px;gap:12px}
+ .contact-section .brief-send{height:46px}
+}
+@media(max-width:650px){#project-brief{gap:14px}#project-brief .brief-line{margin-bottom:0}}
+@media(max-width:900px){
+ .brief .brief-preview .call-sheet,.brief .brief-preview .refs-sheet{transform-origin:50% 100%;transform:translateY(40px)}
+ .brief .brief-preview .call-sheet.is-open,.brief .brief-preview .refs-sheet.is-open{transform:none;transition:opacity .2s ease,transform .42s cubic-bezier(.22,1,.36,1)}
 }

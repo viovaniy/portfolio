@@ -323,3 +323,13 @@
 .im-progress{position:absolute;left:0;right:0;bottom:-.5px;height:2.5px;opacity:0;transition:opacity .3s ease}
 .im-progress i{background:#0a84ff}
 .brief.is-uploading .im-progress{opacity:1}
+
+/* Touch: one clean, quick press for chips (no spring overshoot fighting the press). */
+@media(hover:none){
+ .brief-chip{-webkit-tap-highlight-color:transparent}
+ .brief-chip span{transition:background-color .18s ease,color .18s ease,box-shadow .18s ease,transform .18s cubic-bezier(.22,1,.36,1)}
+ .brief-chip:active span{transform:scale(.96);transition-duration:.1s}
+ .brief-chip input:checked+span{animation:brief-tap .26s cubic-bezier(.22,1,.36,1)}
+ .brief-chip span::before{display:none}
+}
+@keyframes brief-tap{from{transform:scale(.96)}to{transform:none}}

@@ -452,8 +452,8 @@
   const narrow = matchMedia('(max-width: 900px)');
   function placeActions() {
     if (!actions || !phone) return;
-    if (narrow.matches && actions.parentElement === form) phone.after(actions);
-    else if (!narrow.matches && actions.parentElement !== form) form.append(actions);
+    // The send row always stays in the form (phones no longer show the iMessage card).
+    if (actions.parentElement !== form) form.append(actions);
   }
   narrow.addEventListener('change', placeActions);
   placeActions();
