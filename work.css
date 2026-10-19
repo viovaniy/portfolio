@@ -160,3 +160,19 @@
 .cg-dim{z-index:2}
 .cg-slide .cg-bar,.cg-slide .cg-count{transition:opacity .35s ease}
 .cg-slide:not(.is-active) .cg-bar,.cg-slide:not(.is-active) .cg-count{opacity:0}
+/* Real films: a deeper scrim so white type reads on light footage too. */
+.cg-slide .cg-media:has(video)::after{height:62%;opacity:.9;background:linear-gradient(to top,rgba(26,14,10,.72) 0%,rgba(26,14,10,.35) 38%,transparent 75%)}
+
+/* Light footage (data-tone="light"): white fade and dark type, Apple-light. */
+.cg-slide[data-tone="light"] .cg-media::after{height:60%;opacity:1;background:linear-gradient(to top,rgba(255,255,255,.94) 0%,rgba(255,255,255,.72) 30%,rgba(255,255,255,0) 72%)}
+.cg-slide[data-tone="light"] .cg-hud{color:#1f1f22}
+.cg-slide[data-tone="light"] .cg-title{color:#1f1f22;text-shadow:none}
+.cg-slide[data-tone="light"] .cg-meta{color:#6e6e76}
+.cg-slide[data-tone="light"] .cg-desc{color:#55555e}
+.cg-slide[data-tone="light"] .cg-count{color:#8e8e93;text-shadow:none}
+.cg-slide[data-tone="light"] .cg-count b{color:#1f1f22}
+.cg-slide[data-tone="light"] .cg-seg i{background:rgba(28,25,40,.14)}
+.cg-slide[data-tone="light"] .cg-seg i::after{background:linear-gradient(90deg,#ff8db8,#ffb48f)}
+.cg-slide[data-tone="light"] .cg-seg.is-done i::after{background:rgba(28,25,40,.35)}
+.cg-slide[data-tone="light"] .cg-arrow{color:#1f1f22;background:rgba(255,255,255,.7);box-shadow:inset 0 1px 0 #fff,0 0 0 .5px rgba(28,25,40,.1),0 6px 16px -8px rgba(28,25,40,.3)}
+.cg-slide[data-tone="light"] .cg-frame::before{opacity:.5}
