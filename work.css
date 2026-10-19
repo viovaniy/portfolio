@@ -273,3 +273,43 @@
 .cg-frame{transition:box-shadow .9s cubic-bezier(.22,1,.36,1)}
 .cg-slide.is-active:is(.is-hover,:hover) .cg-frame{transition-duration:.45s}
 @media(prefers-reduced-motion:reduce){.cg-slide::before,.cg-slide::after{animation:none}}
+
+/* ---------- Heading: a two-tone sentence with a play tile in the line ---------- */
+.cg-head{display:block;margin-bottom:clamp(18px,3svh,30px)}
+.cg-headline{margin:0;font-size:clamp(32px,4.2vw,52px)!important;font-weight:600!important;letter-spacing:-.035em!important;line-height:1.12!important;text-wrap:balance}
+.cg-ink{color:#1f1f22}
+.cg-grey{color:#a1a1a8}
+.cg-tile{display:inline-grid;place-items:center;width:1.04em;height:1.04em;margin:0 .06em;vertical-align:-.17em;border-radius:.3em;transform:rotate(-7deg);
+ background:linear-gradient(160deg,#3a3a3e,#1c1c1e);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -2px 6px rgba(0,0,0,.35),0 2px 4px rgba(28,25,40,.15),0 14px 24px -10px rgba(28,25,40,.5),0 0 0 3px #fff;
+ transition:transform .55s cubic-bezier(.34,1.6,.5,1)}
+.cg-tile svg{width:52%;height:52%;margin-left:6%;fill:url(#cg-play-grad);fill:#ffb3cf}
+.cg-tile svg path{fill:#ffb3cf}
+@media(hover:hover){.cg-headline:hover .cg-tile{transform:rotate(5deg) scale(1.08)}}
+/* the play tile breathes a sunset glow now and then */
+.cg-tile{position:relative}
+.cg-tile::after{content:"";position:absolute;inset:-3px;border-radius:.33em;box-shadow:0 0 0 0 rgba(255,141,184,.55);animation:cg-tile-ping 4s cubic-bezier(.22,1,.36,1) 1.5s infinite}
+@keyframes cg-tile-ping{0%{box-shadow:0 0 0 0 rgba(255,141,184,.5)}35%,100%{box-shadow:0 0 0 14px rgba(255,141,184,0)}}
+@media(max-width:650px){.cg-headline{font-size:clamp(28px,8.4vw,36px)!important}}
+@media(prefers-reduced-motion:reduce){.cg-tile::after{animation:none}}
+/* the tile's shadow shouldn't be clipped by the word-reveal mask */
+.cg-headline .sr-clip:has(.cg-tile){overflow:visible}
+.cg-tile{box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -2px 6px rgba(0,0,0,.35),0 2px 4px rgba(28,25,40,.15),0 14px 24px -10px rgba(28,25,40,.5)}
+
+/* Seek bar: full width again, but it only opens from the playing segment. */
+.cg-scrub{left:0;width:100%;min-width:0;gap:12px;padding:0 14px}
+.cg-slide.has-film .cg-timeline:has(.cg-seg.is-active:hover) .cg-seg,.cg-slide.has-film .cg-timeline:has(.cg-scrub:hover) .cg-seg,.cg-slide.has-film .cg-timeline:has(.is-grab) .cg-seg{opacity:0}
+.cg-time,.cg-left{min-width:38px;font-size:12.5px}
+.cg-slide.has-film .cg-bar:hover .cg-scrub:is(:hover,.is-grab,:focus-visible),.cg-slide.has-film .cg-bar .cg-scrub:is(.is-grab,:focus-visible){opacity:1;transform:none;pointer-events:auto}
+
+/* Glow v4 — appear: the gradient edge draws itself around the card (a conic
+   sweep from the bottom), while the halo swells up with a spring; fade: the
+   edge winds back and the halo sinks and dissolves. */
+@property --rv{syntax:"<angle>";inherits:false;initial-value:0deg}
+.cg-slide::after{--rv:0deg;opacity:1;
+ background:conic-gradient(from 180deg,rgba(255,141,184,var(--gp)) 0deg,rgba(255,180,143,var(--gp)) calc(var(--rv) * .35),rgba(255,173,205,var(--gp)) calc(var(--rv) * .7),rgba(255,201,168,var(--gp)) var(--rv),transparent var(--rv));
+ transition:--rv .75s cubic-bezier(.55,0,.3,1)}
+.cg-slide.is-active:is(.is-hover,:hover)::after{--rv:360deg;opacity:1;transition:--rv 1.1s cubic-bezier(.22,1,.36,1)}
+.cg-slide::before{transform:scale(.9) translateY(18px);transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.55,0,.3,1)}
+.cg-slide.is-active:is(.is-hover,:hover)::before{transform:none;transition:opacity .7s cubic-bezier(.22,1,.36,1) .08s,transform .9s cubic-bezier(.34,1.45,.5,1) .08s}
+@media(prefers-reduced-motion:reduce){.cg-slide::after,.cg-slide.is-active:is(.is-hover,:hover)::after{transition:none}.cg-slide::before{transform:none}}

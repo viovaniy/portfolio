@@ -238,19 +238,29 @@
   addEventListener('pointercancel', release);
   track.addEventListener('click', e => { if (track.classList.contains('is-drag')) e.preventDefault(); });
 
-  // Trackpad: a horizontal two-finger swipe flips cases. One gesture moves one
-  // case; the momentum tail of the same swipe is ignored until it calms down.
-  let wheelAcc = 0, wheelLock = false, wheelTimer = 0;
+  // Trackpad: a horizontal two-finger swipe flips one case. macOS keeps sending
+  // inertia events after the fingers lift, so a swipe is "used up" until either
+  // the events stop, they fade out, or they speed up again (= a new swipe).
+  let wheelAcc = 0, wheelLock = false, wheelTimer = 0, lastAd = 0, lockedAt = 0;
   track.addEventListener('wheel', e => {
     if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) || e.ctrlKey) return;
     e.preventDefault();
+    const dx = e.deltaMode === 1 ? e.deltaX * 16 : e.deltaX;
+    const ad = Math.abs(dx), now = performance.now();
     clearTimeout(wheelTimer);
-    wheelTimer = setTimeout(() => { wheelAcc = 0; wheelLock = false; }, 300);
+    wheelTimer = setTimeout(() => { wheelAcc = 0; wheelLock = false; lastAd = 0; }, 160);
+    if (wheelLock) {
+      const newSwipe = now - lockedAt > 140 && ad > 6 && ad > lastAd * 1.6;
+      const faded = ad < 1.5;
+      if (newSwipe || faded) { wheelLock = false; wheelAcc = 0; }
+    }
+    lastAd = ad;
     if (wheelLock) return;
-    wheelAcc += e.deltaMode === 1 ? e.deltaX * 16 : e.deltaX;
-    if (Math.abs(wheelAcc) > 45) {
+    if (wheelAcc && Math.sign(wheelAcc) !== Math.sign(dx)) wheelAcc = 0;
+    wheelAcc += dx;
+    if (Math.abs(wheelAcc) > 40) {
       step(wheelAcc > 0 ? 1 : -1);
-      wheelLock = true; wheelAcc = 0;
+      wheelLock = true; wheelAcc = 0; lockedAt = now;
     }
   }, { passive: false });
 
