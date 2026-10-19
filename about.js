@@ -394,7 +394,7 @@
         if (app.getAttribute('aria-pressed') === 'true') { icon.innerHTML = tile.innerHTML; icon.classList.add('has-logo'); }
       };
       img.onerror = () => tryLoad(exts.slice(1));
-      img.src = `assets/tools/${key}.${exts[0]}`;
+      img.src = `assets/tools/${key}.${exts[0]}?v=3`;
     };
     tryLoad(['svg', 'png']);
   });
