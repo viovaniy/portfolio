@@ -62,3 +62,15 @@
 
 /* About tab: its cards cast soft shadows past the panel edge, so don't clip them. */
 .about-panels:has(#about-panel-0:not([hidden])){overflow:visible}
+
+/* Dock bar corners, as in macOS: concentric with the icons
+   (bar radius = icon corner radius + the padding around the icons),
+   with smoothed, continuous corners where the browser supports it. */
+.dock{--pad:8px}
+.dock::before{border-radius:calc(var(--base) * .2237 + var(--pad))}
+@supports (corner-shape:superellipse(1.5)){
+ .dock::before{border-radius:calc((var(--base) * .2237 + var(--pad)) * 1.3);corner-shape:superellipse(1.5)}
+}
+@media(max-width:650px){.dock{--pad:6px}}
+.dock{padding:var(--pad)}
+@media(max-width:380px){.dock{--pad:5px}}
