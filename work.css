@@ -354,4 +354,4 @@
 /* While glowing, the white glass rim steps aside so no white shows in the corners. */
 .cg-frame::before,.cg-frame::after{transition:opacity 1.3s cubic-bezier(.45,0,.25,1)}
 .cg-slide.is-active:is(.is-hover,:hover) .cg-frame::before{opacity:0;transition:opacity .6s cubic-bezier(.3,0,.2,1)}
-.cg-slide.is-active:is(.is-hover,:hover) .cg-frame::after{opacity:.25;transition:opacity .6s cubic-bezier(.3,0,.2,1)}
+.cg-slide.is-active:is(.is-hover,:hover) .cg-frame::after{opacity:0;transition:opacity .6s cubic-bezier(.3,0,.2,1)}
