@@ -228,6 +228,22 @@
   addEventListener('pointercancel', release);
   track.addEventListener('click', e => { if (track.classList.contains('is-drag')) e.preventDefault(); });
 
+  // Trackpad: a horizontal two-finger swipe flips cases. One gesture moves one
+  // case; the momentum tail of the same swipe is ignored until it calms down.
+  let wheelAcc = 0, wheelLock = false, wheelTimer = 0;
+  track.addEventListener('wheel', e => {
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) || e.ctrlKey) return;
+    e.preventDefault();
+    clearTimeout(wheelTimer);
+    wheelTimer = setTimeout(() => { wheelAcc = 0; wheelLock = false; }, 300);
+    if (wheelLock) return;
+    wheelAcc += e.deltaMode === 1 ? e.deltaX * 16 : e.deltaX;
+    if (Math.abs(wheelAcc) > 45) {
+      step(wheelAcc > 0 ? 1 : -1);
+      wheelLock = true; wheelAcc = 0;
+    }
+  }, { passive: false });
+
   root.addEventListener('click', e => {
     const arrow = e.target.closest('.cg-arrow');
     if (arrow) { step(Number(arrow.dataset.step)); return; }

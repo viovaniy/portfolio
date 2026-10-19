@@ -220,3 +220,13 @@
 .cg-slide.has-film:not([data-tone="light"]) .cg-fill{background:#fff}
 @media(hover:none){.cg-scrub{display:none}}
 @media(prefers-reduced-motion:reduce){.cg-scrub,.cg-knob,.cg-rail{transition:none}}
+
+/* Hovering the film in the centre wakes a soft pink-peach glow around its edge. */
+.cg-slide::before{content:"";position:absolute;inset:-14px;z-index:-1;border-radius:46px;pointer-events:none;
+ background:linear-gradient(120deg,#ff8db8,#ffb48f 45%,#ffadcd 75%,#ffc9a8);filter:blur(26px);opacity:0;transform:scale(.96);
+ transition:opacity .45s ease,transform .6s cubic-bezier(.34,1.45,.5,1)}
+@media(hover:hover){
+ .cg-slide.is-active:hover::before{opacity:.75;transform:scale(1);animation:cg-glow 2.6s ease-in-out .5s infinite}
+}
+@keyframes cg-glow{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:.45;transform:scale(1.025)}}
+@media(prefers-reduced-motion:reduce){.cg-slide.is-active:hover::before{animation:none}}
