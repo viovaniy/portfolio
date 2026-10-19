@@ -59,3 +59,6 @@
 .lang-pop{background:rgba(255,255,255,.92)}
 /* Contact windows sit on the white page, so they get a touch more depth. */
 .brief-done,.brief-preview{box-shadow:var(--glass-edge),0 1px 2px rgba(28,25,40,.05),0 6px 16px -6px rgba(28,25,40,.08),0 20px 44px -16px rgba(28,25,40,.14),0 48px 90px -44px rgba(28,25,40,.24)}
+
+/* About tab: its cards cast soft shadows past the panel edge, so don't clip them. */
+.about-panels:has(#about-panel-0:not([hidden])){overflow:visible}
