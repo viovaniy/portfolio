@@ -24,6 +24,59 @@
     s.querySelector('.cg-frame').append(hud);
   });
   const segRows = slides.map(s => [...s.querySelectorAll('.cg-seg')]);
+  // macOS-style scrubber: hovering the timeline of a film opens a Liquid Glass
+  // seek bar with the elapsed time; click or drag to rewind.
+  let scrubbing = null;
+  const mmss = t => `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+  slides.forEach(s => {
+    const v = s.querySelector('video');
+    if (!v) return;
+    s.classList.add('has-film');
+    const bar = s.querySelector('.cg-timeline');
+    const scrub = document.createElement('div');
+    scrub.className = 'cg-scrub';
+    scrub.innerHTML = '<span class="cg-time">00:00</span><span class="cg-rail"><i class="cg-fill"></i><b class="cg-knob"></b></span><span class="cg-left">-00:00</span>';
+    scrub.setAttribute('role', 'slider');
+    scrub.setAttribute('aria-label', tr0('Rewind'));
+    scrub.tabIndex = 0;
+    bar.append(scrub);
+    const rail = scrub.querySelector('.cg-rail');
+    const seek = x => {
+      const r = rail.getBoundingClientRect();
+      const k = Math.min(1, Math.max(0, (x - r.left) / r.width));
+      if (v.duration > 0) { v.currentTime = k * v.duration; v._last = v.currentTime; updateScrub(s, v); }
+    };
+    scrub.addEventListener('pointerdown', e => {
+      e.preventDefault(); e.stopPropagation();
+      scrubbing = s; scrub.classList.add('is-grab');
+      try { scrub.setPointerCapture(e.pointerId); } catch {}
+      seek(e.clientX);
+    });
+    scrub.addEventListener('pointermove', e => { if (scrubbing === s) seek(e.clientX); });
+    const end = () => { if (scrubbing === s) { scrubbing = null; scrub.classList.remove('is-grab'); } };
+    scrub.addEventListener('pointerup', end);
+    scrub.addEventListener('pointercancel', end);
+    scrub.addEventListener('keydown', e => {
+      if (!(v.duration > 0)) return;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault(); e.stopPropagation();
+        v.currentTime = Math.min(v.duration, Math.max(0, v.currentTime + (e.key === 'ArrowRight' ? 5 : -5)));
+        v._last = v.currentTime; updateScrub(s, v);
+      }
+    });
+  });
+  function updateScrub(s, v) {
+    const scrub = s.querySelector('.cg-scrub');
+    if (!scrub || !(v.duration > 0)) return;
+    const k = v.currentTime / v.duration;
+    scrub.style.setProperty('--k', k.toFixed(4));
+    scrub.querySelector('.cg-time').textContent = mmss(v.currentTime);
+    scrub.querySelector('.cg-left').textContent = '-' + mmss(Math.max(0, v.duration - v.currentTime));
+    scrub.setAttribute('aria-valuenow', Math.round(v.currentTime));
+    scrub.setAttribute('aria-valuemax', Math.round(v.duration));
+    scrub.setAttribute('aria-valuetext', mmss(v.currentTime));
+  }
+
   // Real films get a progressive blur under the text (stronger towards the bottom).
   slides.forEach(s => {
     const media = s.querySelector('.cg-media');
@@ -114,9 +167,19 @@
     const hold = paused || hovered || drag || !visible || document.hidden || reduced.matches;
     if (hold) { if (!playHeld) playHeld = now; }
     else if (playHeld) { playStart += now - playHeld; playHeld = 0; }
-    const p = Math.min(1, ((playHeld || now) - playStart) / duration());
+    const v = slides[active]?.querySelector('video');
+    let p;
+    if (v && v.duration > 0 && isFinite(v.duration)) {
+      // films drive the timeline themselves; when one wraps around, move on
+      p = v.currentTime / v.duration;
+      if (v._last != null && v.currentTime + .5 < v._last && !hold && !scrubbing) { v._last = null; step(1); }
+      else v._last = v.currentTime;
+      updateScrub(slides[active], v);
+    } else {
+      p = Math.min(1, ((playHeld || now) - playStart) / duration());
+      if (p >= 1 && !hold) step(1);
+    }
     segRows[active]?.[active]?.style.setProperty('--p', p.toFixed(4));
-    if (p >= 1 && !hold) step(1);
     const moving = drag || pos !== target || vel !== 0;
     raf = (moving || visible) ? requestAnimationFrame(tick) : 0;
     if (!raf) last = 0;
@@ -125,7 +188,7 @@
 
   // Drag / swipe with velocity: a quick flick moves one (or two) cases.
   track.addEventListener('pointerdown', e => {
-    if (e.button !== 0 || e.target.closest('.cg-arrow,.cg-seg')) return;
+    if (e.button !== 0 || e.target.closest('.cg-arrow,.cg-seg,.cg-scrub')) return;
     drag = { x: e.clientX, y: e.clientY, pos, t: performance.now(), vx: 0, lx: e.clientX, lt: performance.now(), moved: false, id: e.pointerId };
     kick();
   });

@@ -191,3 +191,32 @@
 /* Even line breaks: no lonely last word on titles and descriptions. */
 .cg-title,.cg-desc{text-wrap:balance}
 .cg-desc{max-width:46ch}
+
+/* ---------- scrubber (films only), macOS Liquid Glass style ----------
+   Hovering the timeline swaps the segments for a seek bar with time on both sides. */
+.cg-timeline{position:relative}
+.cg-scrub{position:absolute;left:0;right:0;top:50%;height:34px;margin-top:-17px;display:flex;align-items:center;gap:12px;padding:0 14px;border-radius:99px;outline:none;cursor:pointer;touch-action:none;
+ opacity:0;transform:scaleY(.4);pointer-events:none;transition:opacity .25s ease,transform .45s cubic-bezier(.34,1.5,.5,1);
+ background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(18px) saturate(1.8);backdrop-filter:blur(18px) saturate(1.8);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(255,255,255,.55),0 0 0 .5px rgba(28,25,40,.08),0 8px 22px -12px rgba(28,25,40,.35)}
+.cg-slide.has-film .cg-bar:hover .cg-scrub,.cg-scrub:focus-visible,.cg-scrub.is-grab{opacity:1;transform:none;pointer-events:auto}
+.cg-slide.has-film .cg-bar:hover .cg-seg,.cg-slide.has-film .cg-bar:has(.cg-scrub:focus-visible) .cg-seg,.cg-slide.has-film .cg-bar:has(.is-grab) .cg-seg{opacity:0;transition:opacity .2s}
+.cg-seg{transition:flex-grow .6s cubic-bezier(.34,1.45,.5,1),opacity .3s}
+.cg-time,.cg-left{flex:none;min-width:38px;font-size:12.5px;font-weight:500;font-variant-numeric:tabular-nums;color:#1f1f22}
+.cg-left{text-align:right;color:#6e6e76}
+.cg-rail{position:relative;flex:1;height:6px;border-radius:99px;background:rgba(28,25,40,.16);transition:height .3s cubic-bezier(.34,1.5,.5,1)}
+.cg-fill{position:absolute;left:0;top:0;bottom:0;width:calc(var(--k,0) * 100%);border-radius:inherit;background:#1f1f22}
+.cg-knob{position:absolute;top:50%;left:calc(var(--k,0) * 100%);width:24px;height:16px;margin:-8px 0 0 -12px;border-radius:99px;
+ background:linear-gradient(180deg,#fff,#f4f4f6);box-shadow:inset 0 1px 0 #fff,0 0 0 .5px rgba(28,25,40,.15),0 2px 6px rgba(28,25,40,.25);
+ transition:transform .35s cubic-bezier(.34,1.6,.5,1)}
+.cg-scrub:hover .cg-rail,.cg-scrub.is-grab .cg-rail{height:8px}
+.cg-scrub.is-grab .cg-knob{transform:scale(1.25,1.15)}
+.cg-scrub:focus-visible{box-shadow:inset 0 1px 0 #fff,0 0 0 2px #91baff}
+/* on dark footage the scrubber turns into dark glass */
+.cg-slide.has-film:not([data-tone="light"]) .cg-scrub{background:rgba(30,26,34,.35)}
+.cg-slide.has-film:not([data-tone="light"]) .cg-time{color:#fff}
+.cg-slide.has-film:not([data-tone="light"]) .cg-left{color:rgba(255,255,255,.7)}
+.cg-slide.has-film:not([data-tone="light"]) .cg-rail{background:rgba(255,255,255,.3)}
+.cg-slide.has-film:not([data-tone="light"]) .cg-fill{background:#fff}
+@media(hover:none){.cg-scrub{display:none}}
+@media(prefers-reduced-motion:reduce){.cg-scrub,.cg-knob,.cg-rail{transition:none}}
