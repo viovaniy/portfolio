@@ -8,8 +8,8 @@
   const tr = (text, vars) => (window.t ? window.t(text, vars) : text.replace(/\{(\w+)\}/g, (m, k) => (vars && k in vars ? vars[k] : m)));
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const MAX_FILES = 10;
-  const MAX_BYTES = 4 * 1024 * 1024;   // per request limit on the server side
-  const MAX_SIDE = 2560;               // photos are resized to this, still sharp
+  const BUDGET = 4.15 * 1024 * 1024;   // brief + all files travel in one request (Vercel: ~4.5 MB)
+  const PHOTO = /^image\/(jpeg|png|webp|heic|heif|avif)$/i;
 
   const sheet = document.getElementById('refs-sheet');
   const drop = sheet.querySelector('.refs-drop');
@@ -49,6 +49,7 @@
   sheet.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); setOpen(false, true); } });
 
   // ---------- adding files ----------
+  const otherBytes = () => items.reduce((n, x) => n + (PHOTO.test(x.file.type) ? 0 : x.file.size), 0);
   const kindOf = file => file.type.startsWith('image/') ? 'image' : file.type.startsWith('video/') ? 'video' : 'file';
   const extOf = file => (file.name.split('.').pop() || '').slice(0, 4).toUpperCase() || 'FILE';
   let noteTimer;
@@ -68,13 +69,13 @@
     for (const file of files) {
       if (items.length >= MAX_FILES) { skippedMax++; continue; }
       const kind = kindOf(file);
-      // Photos are shrunk before upload; everything else must fit one request.
-      if (file.size > MAX_BYTES && !(kind === 'image' && /jpe?g|png|webp|heic|heif|avif/i.test(file.type))) { skippedBig++; continue; }
+      // Photos are compressed before sending; other files must fit in what's left.
+      if (!PHOTO.test(file.type) && otherBytes() + file.size > BUDGET * .85) { skippedBig++; continue; }
       const item = { id: ++uid, file, kind, ext: extOf(file), url: kind === 'file' ? '' : URL.createObjectURL(file) };
       items.push(item); added.push(item);
     }
     if (skippedMax) say(tr('Only {max} files can be pinned.', { max: MAX_FILES }), true);
-    else if (skippedBig) say(tr('Files over 4 MB can’t be pinned (photos are resized automatically).'), true);
+    else if (skippedBig) say(tr('All files together must fit in 4 MB (photos are compressed automatically).'), true);
     const tiles = added.map((item, i) => { const li = tile(item, i); grid.append(li); return li; });
     update();
     morph(tiles);
@@ -186,7 +187,7 @@
   let depth = 0;
   const hasFiles = e => [...(e.dataTransfer?.types || [])].includes('Files');
   preview.addEventListener('dragenter', e => {
-    if (!hasFiles(e)) return;
+    if (!hasFiles(e) || locked) return;
     e.preventDefault(); depth++;
     setOpen(true);
     drop.classList.add('is-over');
@@ -203,7 +204,7 @@
   });
   preview.addEventListener('dragleave', () => { depth = Math.max(0, depth - 1); if (!depth) { drop.classList.remove('is-over'); stack.style.transform = ''; } });
   preview.addEventListener('drop', e => {
-    if (!hasFiles(e)) return;
+    if (!hasFiles(e) || locked) return;
     e.preventDefault(); depth = 0; drop.classList.remove('is-over'); stack.style.transform = '';
     add(e.dataTransfer.files);
   });
@@ -220,50 +221,62 @@
     io.observe(hint);
   } else hint?.classList.add('is-drawn');
 
-  // ---------- upload after the brief is sent ----------
-  async function shrink(file) {
-    if (!/^image\/(jpeg|png|webp|heic|heif|avif)$/i.test(file.type) || !window.createImageBitmap) return file;
+  // ---------- packing for sending ----------
+  // The brief and every file go in one request, so Telegram receives them as a
+  // single album. Photos are compressed just enough to fit; others go as they are.
+  async function compress(file, side, quality) {
+    if (!PHOTO.test(file.type) || !window.createImageBitmap) return file;
     try {
       const bmp = await createImageBitmap(file);
-      const scale = Math.min(1, MAX_SIDE / Math.max(bmp.width, bmp.height));
-      if (scale === 1 && file.size <= 1.5 * 1024 * 1024 && /jpeg|png|webp/i.test(file.type)) { bmp.close?.(); return file; }
+      const scale = Math.min(1, side / Math.max(bmp.width, bmp.height));
       const canvas = document.createElement('canvas');
       canvas.width = Math.round(bmp.width * scale); canvas.height = Math.round(bmp.height * scale);
       const ctx = canvas.getContext('2d');
       ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height); // transparent PNGs get a white backdrop
       ctx.drawImage(bmp, 0, 0, canvas.width, canvas.height);
       bmp.close?.();
-      let quality = .88, blob;
-      do { blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', quality)); quality -= .1; } while (blob && blob.size > MAX_BYTES && quality > .45);
+      const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', quality));
       if (!blob) return file;
-      return new File([blob], file.name.replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg' });
+      return blob.size < file.size || !/jpeg|png|webp/i.test(file.type) ? new File([blob], file.name.replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg' }) : file;
     } catch { return file; }
   }
-
-  async function upload(ticket, onProgress) {
-    let failed = 0;
-    const list = items.slice(0, ticket.refs);
-    for (let i = 0; i < list.length; i++) {
-      onProgress?.(i + 1, list.length);
-      try {
-        const file = await shrink(list[i].file);
-        if (file.size > MAX_BYTES) throw new Error('too large');
-        const r = await fetch('/api/brief-file', {
-          method: 'POST',
-          headers: {
-            'Content-Type': file.type || 'application/octet-stream',
-            'X-Brief-Message': String(ticket.messageId), 'X-Brief-Exp': String(ticket.exp), 'X-Brief-Refs': String(ticket.refs),
-            'X-Brief-Sig': ticket.sig, 'X-Brief-Number': ticket.number || '', 'X-File-Index': String(i + 1),
-            'X-File-Name': encodeURIComponent(file.name)
-          },
-          body: file
-        });
-        const out = await r.json().catch(() => ({}));
-        if (!r.ok || !out.success) throw new Error(out.message || r.status);
-      } catch (err) { failed++; console.warn('Reference not pinned:', list[i].file.name, err.message || err); }
+  async function pack(brief) {
+    const steps = [[2048, .86], [1600, .8], [1280, .74], [1024, .68], [800, .6]];
+    let files = items.map(x => x.file), json, size = 0;
+    for (const [side, quality] of steps) {
+      files = await Promise.all(items.map(x => compress(x.file, side, quality)));
+      json = new TextEncoder().encode(JSON.stringify({ ...brief, files: files.map(f => ({ name: f.name, type: f.type || 'application/octet-stream', size: f.size })) }));
+      size = 4 + json.length + files.reduce((n, f) => n + f.size, 0);
+      if (size <= BUDGET) break;
     }
-    return { sent: list.length - failed, failed };
+    if (size > BUDGET) throw new Error('Attachments are too large');
+    const head = new Uint8Array(4);
+    new DataView(head.buffer).setUint32(0, json.length);
+    return new Blob([head, json, ...files], { type: 'application/octet-stream' });
   }
+
+  // After a brief is sent, pinning is locked until "Send another brief".
+  let locked = false;
+  const tip = document.createElement('span');
+  tip.className = 'im-plus-tip'; tip.setAttribute('role', 'status');
+  plus.after(tip);
+  function lock(value) {
+    locked = value;
+    if (value) setOpen(false);
+    plus.classList.toggle('is-locked', value);
+    plus.setAttribute('aria-disabled', String(value));
+    plus.setAttribute('aria-label', value ? tr('Send another brief to pin new files') : tr('Add references'));
+    if (!value) tip.classList.remove('is-on');
+  }
+  let tipTimer;
+  plus.addEventListener('click', e => {
+    if (!locked) return;
+    e.stopImmediatePropagation();
+    tip.textContent = tr('Press “Send another brief” to pin new files');
+    tip.classList.add('is-on');
+    clearTimeout(tipTimer); tipTimer = setTimeout(() => tip.classList.remove('is-on'), 2600);
+    if (!reduced.matches) { plus.classList.remove('is-nope'); void plus.offsetWidth; plus.classList.add('is-nope'); }
+  }, true);
 
   function clear() {
     items.splice(0).forEach(item => item.url && URL.revokeObjectURL(item.url));
@@ -271,6 +284,6 @@
     update();
   }
 
-  window.briefRefs = { count: () => items.length, upload, clear, close: () => setOpen(false) };
+  window.briefRefs = { count: () => items.length, pack, clear, lock, close: () => setOpen(false) };
   update();
 })();

@@ -99,10 +99,12 @@
 .refs-foot{display:flex;align-items:center;justify-content:space-between;flex:none;margin-top:12px;padding:0 2px}
 .refs-note{margin:0 10px 0 0;min-width:0;font-size:12px;line-height:1.35;color:#d0477c;opacity:0;transform:translateY(3px);transition:opacity .25s ease,transform .35s var(--r-ease)}
 .refs-note.is-on{opacity:1;transform:none}
-.refs-done{flex:none;height:34px;padding:0 18px;border:0;border-radius:999px;background:linear-gradient(#3a3a3e,#1c1c1e);color:#fff;font:inherit;font-size:14px;font-weight:600;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 8px 18px -10px rgba(28,25,40,.6);transition:transform .15s var(--r-ease)}
+.refs-done{position:relative;isolation:isolate;flex:none;height:34px;padding:0 18px;border:1.5px solid transparent;border-radius:999px;color:#c2416f;font:inherit;font-size:14px;font-weight:600;cursor:pointer;
+ background:linear-gradient(#fff,#fff) padding-box,linear-gradient(100deg,#ffc4d8,#ffd9c6) border-box;transition:transform .15s var(--r-ease),color .25s ease,box-shadow .3s ease}
+.refs-done::before{content:"";position:absolute;inset:-1.5px;z-index:-1;border-radius:inherit;background:linear-gradient(100deg,#ff7eaa,#ff9f86 55%,#ffbf8a);opacity:0;transition:opacity .3s ease}
+@media(hover:hover){.refs-done:hover{color:#fff;box-shadow:0 10px 20px -10px rgba(255,110,150,.7)}.refs-done:hover::before{opacity:1}}
 .refs-done:active{transform:scale(.96)}
 .refs-done:focus-visible{outline:2px solid #91baff;outline-offset:2px}
-.refs-sheet.has-files .refs-done{background:linear-gradient(100deg,#ff7eaa,#ff9f86 55%,#ffbf8a);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 10px 20px -10px rgba(255,110,150,.7)}
 
 /* Pinned files ride along with the message, as a fanned iMessage stack */
 .im-attach{position:relative;align-self:flex-end;width:118px;height:92px;margin:0 2px 8px 0;animation:refs-pop .5s var(--r-spring)}
@@ -135,3 +137,16 @@
 }
 .refs-tile.is-file .refs-doc{padding-top:10px}
 @media(hover:none){.refs-remove{top:3px;right:3px;width:18px;height:18px}}
+
+/* Locked after sending: the + becomes a lock until "Send another brief". */
+.im-plus .im-lock{display:none;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linejoin:round;stroke-linecap:round}
+.im-plus.is-locked{cursor:not-allowed;background:#f2f2f6;color:#b4b4bb}
+.im-plus.is-locked svg:first-child{display:none}
+.im-plus.is-locked .im-lock{display:block}
+.im-plus.is-locked .im-plus-count{background:#c7c7cc;box-shadow:0 0 0 2px #fff}
+.im-plus.is-nope{animation:refs-shake .42s var(--r-ease)}
+.im-plus-tip{position:absolute;left:10px;bottom:56px;z-index:7;max-width:calc(100% - 20px);padding:7px 11px;border-radius:12px;background:rgba(40,40,44,.92);color:#fff;font-size:12.5px;line-height:1.3;
+ opacity:0;transform:translateY(4px);pointer-events:none;transition:opacity .2s ease,transform .3s var(--r-ease)}
+.im-plus-tip.is-on{opacity:1;transform:none}
+.im-plus-tip::after{content:"";position:absolute;left:18px;top:100%;border:5px solid transparent;border-top-color:rgba(40,40,44,.92)}
+.im-bar{position:relative}

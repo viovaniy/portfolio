@@ -298,12 +298,26 @@
 .brief-choice.is-invalid .brief-chips{animation:brief-shake .42s var(--b-ease)}
 .brief-choice.is-invalid .brief-chip span{box-shadow:0 0 0 1.5px #ffb3cd,0 1px 2px rgba(28,25,40,.04)}
 
-/* Finished answers snap into soft rose pills (with a puff of rose dust). */
-.brief-field{transition:background-color .3s ease,padding .35s cubic-bezier(.22,1,.36,1),box-shadow .3s ease}
-.brief-field.is-pill{padding:0 .36em;margin:0 .04em;border-radius:999px;background:linear-gradient(180deg,#fff3f7,#ffe6ef);
- box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 1px 2px rgba(255,110,150,.1),0 8px 18px -10px rgba(255,110,150,.45)}
-.brief-field.is-pill::before,.brief-field.is-pill::after,.brief-field.is-pill.is-filled:not(:focus-within)::after{opacity:0}
+/* Finished answers snap into soft rose pills (with a puff of rose dust).
+   The pill is drawn behind the text by the field's own underline, which
+   morphs into it, so the text itself never moves and lines don't collide. */
+.brief-field{isolation:isolate}
+.brief-field::before{transition:background-color .3s ease,top .45s cubic-bezier(.22,1,.36,1),bottom .45s cubic-bezier(.22,1,.36,1),left .45s cubic-bezier(.22,1,.36,1),right .45s cubic-bezier(.22,1,.36,1),height .45s cubic-bezier(.22,1,.36,1),border-radius .45s ease,box-shadow .3s ease}
+.brief-field.is-pill{margin:0 .3em}
+.brief-field.is-pill::before{z-index:-1;top:.2em;bottom:.1em;left:-.3em;right:-.3em;height:auto;border-radius:999px;background:linear-gradient(180deg,#fff3f7,#ffe7ef);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 1px 2px rgba(255,110,150,.1),0 6px 14px -9px rgba(255,110,150,.45)}
+.brief-field.is-pill::after,.brief-field.is-pill.is-filled:not(:focus-within)::after{opacity:0}
 .contact-section .brief-field.is-pill :is(input,textarea){color:#b8336a}
-.brief-field-area.is-pill{display:block;margin-top:6px;padding:.22em .62em .26em;border-radius:22px}
+.brief-field-area.is-pill{margin:6px .55em 0}
+.brief-field-area.is-pill::before{top:-.08em;bottom:-.06em;left:-.55em;right:-.55em;border-radius:22px}
 .brief-dust{position:absolute;z-index:2;border-radius:50%;pointer-events:none;box-shadow:0 0 6px rgba(255,150,190,.55)}
-@media(prefers-reduced-motion:reduce){.brief-field{transition:none}}
+@media(prefers-reduced-motion:reduce){.brief-field::before{transition:none}}
+
+/* Upload progress in the left card (matches the iOS line in the Messages header). */
+.brief-done-progress{display:none;position:relative;height:4px;margin:18px 0 0;max-width:320px;border-radius:2px;background:rgba(118,118,128,.14);overflow:hidden}
+.brief.is-uploading .brief-done-progress{display:block}
+.brief-done-progress i,.im-progress i{position:absolute;inset:0;border-radius:inherit;transform:scaleX(0);transform-origin:0 50%;transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.brief-done-progress i{background:linear-gradient(90deg,#ff7eaa,#ffa98a)}
+.im-progress{position:absolute;left:0;right:0;bottom:-.5px;height:2.5px;opacity:0;transition:opacity .3s ease}
+.im-progress i{background:#0a84ff}
+.brief.is-uploading .im-progress{opacity:1}

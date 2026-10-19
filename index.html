@@ -24,7 +24,7 @@
       } catch (e) {}
       if (ok.indexOf(l) > -1) {
         document.documentElement.lang = l;
-        document.write('<script src="i18n/' + l + '.js?v=2"><\/script>');
+        document.write('<script src="i18n/' + l + '.js?v=3"><\/script>');
       }
     })();
   </script>
@@ -36,10 +36,10 @@
   <link rel="stylesheet" href="text-reveal.css?v=3">
   <link rel="stylesheet" href="island.css?v=2">
   <link rel="stylesheet" href="scroll-reveal.css?v=2">
-  <link rel="stylesheet" href="contact.css?v=25">
+  <link rel="stylesheet" href="contact.css?v=26">
   <link rel="stylesheet" href="footer.css?v=5">
   <link rel="stylesheet" href="lang.css?v=2">
-  <link rel="stylesheet" href="refs.css?v=1">
+  <link rel="stylesheet" href="refs.css?v=2">
   <link rel="stylesheet" href="glass.css?v=4">
 </head>
 <body>
@@ -335,13 +335,14 @@
           <span class="brief-done-mark" aria-hidden="true"><svg viewBox="0 0 52 52"><circle class="mark-bg" cx="26" cy="26" r="23"/><circle class="mark-spin" cx="26" cy="26" r="12"/><path class="mark-check" d="m16 27 7 7 13-15"/><path class="mark-alert" d="M26 15v14M26 36.5v.5"/></svg></span>
           <h3 class="brief-done-title" tabindex="-1"><span class="t-sending">Sending your brief…</span><span class="t-sent">Your brief has been sent</span><span class="t-failed">The brief could not be sent</span></h3>
           <p class="brief-done-text"><span class="t-sending">This will only take a moment.</span><span class="t-sent" data-sent-text>Thank you. I’ll review the details and get back to you as soon as possible.</span><span class="t-failed">Something went wrong while sending. Please try again in a moment.</span></p>
+          <span class="brief-done-progress" aria-hidden="true"><i></i></span>
           <div class="brief-done-actions">
             <button class="brief-retry t-failed-inline" type="button">Try again</button>
             <button class="brief-edit t-after" type="button"><span class="t-sent">Send another brief</span><span class="t-failed">Edit brief</span></button>
           </div>
         </div>
         <aside class="brief-preview" aria-labelledby="brief-preview-title">
-          <header class="brief-chat-head">
+          <header class="brief-chat-head"><span class="im-progress" aria-hidden="true"><i></i></span>
             <span class="im-back" aria-hidden="true"><svg viewBox="0 0 12 20"><path d="M10 2 2 10l8 8"/></svg></span>
             <span class="brief-chat-avatar" aria-hidden="true"><img src="assets/avatar.png" width="56" height="56" alt=""></span>
             <span class="brief-chat-who"><strong id="brief-preview-title">viovaniy<svg viewBox="0 0 8 12" aria-hidden="true"><path d="m2 2 4 4-4 4"/></svg></strong></span>
@@ -384,7 +385,7 @@
             <div class="refs-foot"><p class="refs-note" role="status"></p><button class="refs-done" type="button">Done</button></div>
           </div>
                   <div class="im-bar">
-            <button class="im-plus" type="button" aria-label="Add references" aria-haspopup="dialog" aria-expanded="false" aria-controls="refs-sheet" data-pointer-shape="circle"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg><span class="im-plus-count" hidden>0</span></button>
+            <button class="im-plus" type="button" aria-label="Add references" aria-haspopup="dialog" aria-expanded="false" aria-controls="refs-sheet" data-pointer-shape="circle"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg><svg class="im-lock" viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="9" width="10" height="7.5" rx="2"/><path d="M7.2 9V7a2.8 2.8 0 0 1 5.6 0v2"/></svg><span class="im-plus-count" hidden>0</span></button>
             <span class="im-field" aria-hidden="true">iMessage</span>
             <button class="brief-progress im-send" type="submit" form="project-brief" aria-label="Send brief"><svg class="im-ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16"/><circle class="brief-progress-bar" cx="18" cy="18" r="16" pathLength="1"/></svg><span class="im-arrow" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M10 16V4M5 9l5-5 5 5"/></svg></span><b class="sr-only">0/5</b></button>
           </div>
@@ -429,8 +430,8 @@
   <script src="dock.js?v=20261018-1" defer></script>
   <script src="island.js?v=2" defer></script>
   <script src="insight.js?v=2" defer></script>
-  <script src="refs.js?v=1" defer></script>
-  <script src="contact.js?v=20" defer></script>
+  <script src="refs.js?v=2" defer></script>
+  <script src="contact.js?v=21" defer></script>
   <script src="footer.js?v=4" defer></script>
   <script src="scroll-reveal.js?v=5" defer></script>
   <script src="shimmer.js?v=3" defer></script>

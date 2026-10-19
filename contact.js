@@ -214,6 +214,7 @@
     setTimeout(reveal, 420);
   }
   function backToForm() {
+    window.briefRefs?.lock(false);
     root.classList.remove('is-done', 'is-folding', 'is-sending-chat', 'is-ready');
     setState(null);
     done.hidden = true;
@@ -237,11 +238,39 @@
     form.elements.namedItem('project').focus({ preventScroll: true });
   });
 
+  // Upload progress, shown in both windows: an iOS-style line under the
+  // Messages header, and a bar plus percentage in the left card.
+  const imBar = root.querySelector('.im-progress i');
+  const doneBar = done.querySelector('.brief-done-progress i');
+  const sendingText = done.querySelector('.brief-done-text .t-sending');
+  let shownProgress = 0;
+  function setProgress(value, refs) {
+    shownProgress = Math.max(shownProgress, Math.min(1, value));
+    const scale = `scaleX(${shownProgress.toFixed(3)})`;
+    imBar.style.transform = scale; doneBar.style.transform = scale;
+    const pct = Math.round(shownProgress * 100);
+    sendingText.textContent = refs
+      ? tr('Uploading {n} references · {p}%', { n: refs, p: pct })
+      : tr('This will only take a moment.');
+  }
+  // While waiting (between progress events, or while Telegram receives the
+  // files after the upload), the bar keeps easing forward instead of freezing.
+  let creep = 0, creepCap = .85, creepRefs = 0;
+  function startCreep(refs) {
+    creepRefs = refs; creepCap = .85; clearInterval(creep);
+    creep = setInterval(() => { if (shownProgress < creepCap) setProgress(shownProgress + (creepCap - shownProgress) * .035, creepRefs); }, 120);
+  }
+  const stopCreep = () => clearInterval(creep);
+  function resetProgress() {
+    stopCreep();
+    shownProgress = 0;
+    imBar.style.transform = doneBar.style.transform = 'scaleX(0)';
+    sendingText.textContent = tr('This will only take a moment.');
+  }
+
   async function deliver() {
-    const response = await fetch('/api/brief', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({
+    const refs = window.briefRefs?.count() || 0;
+    const brief = {
         name: value('name'),
         contact: value('contact'),
         project: value('project'),
@@ -250,14 +279,29 @@
         botcheck: form.elements.namedItem('botcheck').checked,
         device: deviceId(),
         sentBefore: sentBefore(),
-        insight: window.briefInsight ? window.briefInsight() : null,
-        refs: window.briefRefs ? window.briefRefs.count() : 0
-      })
+        insight: window.briefInsight ? window.briefInsight() : null
+    };
+    // With references, the brief and the files travel together in one request.
+    // XHR (not fetch) so the real upload progress can drive both windows.
+    const body = refs ? await window.briefRefs.pack(brief) : JSON.stringify(brief);
+    const result = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/brief');
+      xhr.setRequestHeader('Content-Type', refs ? 'application/octet-stream' : 'application/json');
+      xhr.setRequestHeader('Accept', 'application/json');
+      xhr.upload.onprogress = e => { if (e.lengthComputable) setProgress(e.loaded / e.total * .9, refs); };
+      xhr.upload.onload = () => { setProgress(.92, refs); creepCap = .985; }; // uploaded; Telegram is receiving it now
+      xhr.onload = () => {
+        let out = {};
+        try { out = JSON.parse(xhr.responseText); } catch {}
+        if (xhr.status >= 200 && xhr.status < 300 && out.success) resolve(out);
+        else reject(new Error(out.message || `HTTP ${xhr.status}`));
+      };
+      xhr.onerror = () => reject(new Error('Network error'));
+      xhr.send(body);
     });
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok || !result.success) throw new Error(result.message || `HTTP ${response.status}`);
     try { localStorage.setItem('brief-sent', String(sentBefore() + 1)); } catch {}
-    return { number: result.number || '', ticket: result.ticket || null };
+    return { number: result.number || '' };
   }
   // A random id kept by this browser, so repeat briefs from it can be recognised.
   function deviceId() {
@@ -285,28 +329,24 @@
       sentBubble.classList.add('is-sending');
       later(550, () => sentBubble.classList.remove('is-sending'));
     }
-    window.briefRefs?.close();
-    let ok = true, number = '', unpinned = 0;
-    try {
-      const sent = await deliver();
-      number = sent.number;
-      // References follow the brief, each pinned to it as a reply in Telegram.
-      if (sent.ticket && window.briefRefs?.count()) {
-        const status = done.querySelector('.brief-done-text .t-sending');
-        const result = await window.briefRefs.upload(sent.ticket, (n, total) => { status.textContent = tr('Pinning references {n} of {total}…', { n, total }); });
-        unpinned = result.failed;
-        status.textContent = tr('This will only take a moment.');
-      }
-    } catch (problem) { ok = false; console.warn('Brief not delivered:', problem.message); }
+    window.briefRefs?.lock(true); // pinning reopens with "Send another brief"
+    resetProgress();
+    root.classList.add('is-uploading');
+    setProgress(.04, window.briefRefs?.count() || 0);
+    startCreep(window.briefRefs?.count() || 0);
+    let ok = true, number = '';
+    try { number = (await deliver()).number; } catch (problem) { ok = false; console.warn('Brief not delivered:', problem.message); }
+    stopCreep();
+    if (ok) setProgress(1, window.briefRefs?.count() || 0);
     // Let the "sending" moment breathe a little even on a fast connection.
-    const wait = reduced.matches ? 0 : Math.max(0, 900 - (performance.now() - started));
+    const wait = reduced.matches ? 0 : Math.max(380, 900 - (performance.now() - started)); // let the full bar be seen
     setTimeout(() => {
       sending = false;
-      root.classList.remove('is-sending-chat');
+      root.classList.remove('is-sending-chat', 'is-uploading');
       if (ok) {
         setState('is-sent');
         const name = value('name');
-        sentText.textContent = tr('Thank you, {name}. I’ll review the details and get back to you as soon as possible.', { name }) + (number ? ` ${tr('Your brief number is {number}.', { number })}` : '') + (unpinned ? ` ${tr('{n} of the references couldn’t be attached.', { n: unpinned })}` : '');
+        sentText.textContent = tr('Thank you, {name}. I’ll review the details and get back to you as soon as possible.', { name }) + (number ? ` ${tr('Your brief number is {number}.', { number })}` : '');
         root.classList.add('is-ready');
         // iMessage: Sent → Read → a heart tapback on the message.
         readTime.textContent = new Date().toLocaleTimeString(window.siteLang || [], { hour: '2-digit', minute: '2-digit' });

@@ -9,7 +9,19 @@
 //   IPINFO_TOKEN (optional) raises the free limit of the provider lookup.
 
 const crypto = require('crypto');
-const sign = (text, secret) => crypto.createHmac('sha256', secret).update(text).digest('hex');
+const MAX_BODY = 4.4 * 1024 * 1024; // Vercel's request limit is ~4.5 MB
+function readRaw(req) {
+  return new Promise((resolve, reject) => {
+    const chunks = []; let size = 0;
+    req.on('data', chunk => {
+      size += chunk.length;
+      if (size > MAX_BODY) { reject(Object.assign(new Error('Attachments are too large'), { status: 413 })); req.destroy(); return; }
+      chunks.push(chunk);
+    });
+    req.on('end', () => resolve(Buffer.concat(chunks)));
+    req.on('error', reject);
+  });
+}
 
 const LIMITS = { name: 120, contact: 200, project: 4000, budget: 120, timeline: 120 };
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -72,9 +84,29 @@ module.exports = async (req, res) => {
   const token = process.env.TELEGRAM_BOT_TOKEN, chatId = process.env.TELEGRAM_CHAT_ID;
   if (!token || !chatId) return res.status(500).json({ success: false, message: 'Telegram is not configured' });
 
-  let body = req.body;
-  if (typeof body === 'string') { try { body = JSON.parse(body); } catch { body = {}; } }
-  body = body || {};
+  // Plain briefs arrive as JSON. Briefs with references arrive as one binary
+  // body: [4-byte JSON length][JSON][file 1][file 2]…, so everything reaches
+  // Telegram together (Vercel allows ~4.5 MB per request).
+  let body = {}, files = [];
+  if (/octet-stream/i.test(header(req, 'content-type'))) {
+    let buf;
+    try { buf = await readRaw(req); } catch (err) { return res.status(err.status || 400).json({ success: false, message: err.message }); }
+    try {
+      const len = buf.readUInt32BE(0);
+      body = JSON.parse(buf.subarray(4, 4 + len).toString('utf8'));
+      let at = 4 + len;
+      for (const m of (Array.isArray(body.files) ? body.files : []).slice(0, 10)) {
+        const size = Math.max(0, parseInt(m.size, 10) || 0);
+        if (!size || at + size > buf.length) break;
+        files.push({ name: plain(m.name, 120).replace(/[\\/]/g, ' ') || `reference-${files.length + 1}`, type: plain(m.type, 80).toLowerCase() || 'application/octet-stream', data: buf.subarray(at, at + size) });
+        at += size;
+      }
+    } catch { return res.status(400).json({ success: false, message: 'Malformed request' }); }
+  } else {
+    body = req.body;
+    if (typeof body === 'string') { try { body = JSON.parse(body); } catch { body = {}; } }
+    body = body || {};
+  }
 
   if (body.botcheck) return res.status(200).json({ success: true }); // honeypot: quietly drop bots
 
@@ -108,7 +140,7 @@ module.exports = async (req, res) => {
   const source = plain(v.source, 100) || 'direct';
   const firstSource = plain(v.firstSource, 100);
   const suspicious = filling > 0 && filling < 15;
-  const refs = Math.max(0, Math.min(parseInt(body.refs, 10) || 0, 10));
+  const refs = files.length;
   const now = new Date();
   // Without a store, the number is the date and time in Diana's time zone: #YYMMDD-HHMM.
   const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Yekaterinburg', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(now).map(x => [x.type, x.value]));
@@ -128,7 +160,7 @@ module.exports = async (req, res) => {
     `<b>Timeline:</b> ${esc(f.timeline || 'Flexible')}`,
     '',
     `<b>Project:</b>\n${esc(f.project)}`,
-    ...(refs ? ['', `📎 <b>${refs} reference${refs === 1 ? '' : 's'}</b> pinned below`] : []),
+    ...(refs ? ['', `📎 <b>${refs} reference${refs === 1 ? '' : 's'}</b> attached`] : []),
     '',
     '<b>About the sender</b>',
     `${flag(country) || '🌍'} ${esc(place)}`,
@@ -145,20 +177,48 @@ module.exports = async (req, res) => {
     `⏱ On site ${duration(v.onSite)} · filled the brief in ${filling ? duration(filling) : '—'}${suspicious ? '  ⚠️ <i>very fast, could be spam</i>' : ''}`
   ].join('\n');
 
+  const api = method => `https://api.telegram.org/bot${token}/${method}`;
+  const call = async (method, payload) => {
+    const r = await fetch(api(method), payload instanceof FormData ? { method: 'POST', body: payload } : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    const out = await r.json().catch(() => ({}));
+    if (!r.ok || !out.ok) throw new Error(out.description || `Telegram HTTP ${r.status}`);
+    return out.result;
+  };
+
   try {
-    const tg = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', disable_web_page_preview: true })
-    });
-    const out = await tg.json().catch(() => ({}));
-    if (!tg.ok || !out.ok) return res.status(502).json({ success: false, message: out.description || `Telegram HTTP ${tg.status}` });
-    // A short-lived, signed ticket lets the page pin up to `refs` files to this message.
-    const messageId = out.result && out.result.message_id;
-    const exp = Date.now() + 20 * 60 * 1000;
-    const ticket = refs && messageId ? { messageId, exp, refs, sig: sign(`${messageId}.${exp}.${refs}`, token), number } : null;
-    return res.status(200).json({ success: true, number, ticket });
+    if (!files.length) {
+      await call('sendMessage', { chat_id: chatId, text, parse_mode: 'HTML', disable_web_page_preview: true });
+      return res.status(200).json({ success: true, number });
+    }
+    // One album: the brief is the caption, so the files and the text arrive as one message.
+    // Telegram groups photos/videos together, and documents only with documents.
+    const visual = f => /^image\/(jpeg|png|webp)$/.test(f.type) ? 'photo' : /^video\/(mp4|quicktime)$/.test(f.type) ? 'video' : 'document';
+    const mixed = files.some(f => visual(f) === 'document');
+    const kind = f => (mixed ? 'document' : visual(f));
+    const fits = text.replace(/<[^>]+>/g, '').length <= 1024; // caption limit
+    let replyTo = null;
+    if (!fits) {
+      // Too long for a caption: the brief goes first and the album is attached to it as a reply.
+      const msg = await call('sendMessage', { chat_id: chatId, text, parse_mode: 'HTML', disable_web_page_preview: true });
+      replyTo = msg.message_id;
+    }
+    const caption = fits ? text : `📎 References for ${number}`;
+    const form = new FormData();
+    form.append('chat_id', chatId);
+    if (replyTo) form.append('reply_parameters', JSON.stringify({ message_id: replyTo, allow_sending_without_reply: true }));
+    if (files.length === 1) {
+      const f = files[0], k = kind(f);
+      form.append('caption', caption); form.append('parse_mode', 'HTML');
+      form.append(k, new Blob([f.data], { type: f.type }), f.name);
+      await call(k === 'photo' ? 'sendPhoto' : k === 'video' ? 'sendVideo' : 'sendDocument', form);
+    } else {
+      const media = files.map((f, i) => ({ type: kind(f), media: `attach://f${i}`, ...(i === 0 ? { caption, parse_mode: 'HTML' } : {}) }));
+      form.append('media', JSON.stringify(media));
+      files.forEach((f, i) => form.append(`f${i}`, new Blob([f.data], { type: f.type }), f.name));
+      await call('sendMediaGroup', form);
+    }
+    return res.status(200).json({ success: true, number, refs: files.length });
   } catch (err) {
-    return res.status(502).json({ success: false, message: 'Could not reach Telegram' });
+    return res.status(502).json({ success: false, message: err.message || 'Could not reach Telegram' });
   }
 };
