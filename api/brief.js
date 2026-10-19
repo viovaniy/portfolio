@@ -1,5 +1,5 @@
 // Vercel serverless function: receives a brief from the contact form and
-// forwards it to Diana's Telegram via her bot. Secrets live in
+// forwards it to the site owner's Telegram via his bot. Secrets live in
 // Vercel → Project → Settings → Environment Variables (never in the browser):
 //   TELEGRAM_BOT_TOKEN  (from @BotFather)
 //   TELEGRAM_CHAT_ID    (your numeric id, e.g. from @userinfobot)
@@ -183,7 +183,7 @@ module.exports = async (req, res) => {
   const firstSource = plain(v.firstSource, 100);
   const suspicious = filling > 0 && filling < 15;
   const refs = files.length;
-  // Video call request (times shown in Diana's zone, plus the client's own).
+  // Video call request (times shown in the owner's zone, plus the client's own).
   const callLines = [];
   const c = body.call && typeof body.call === 'object' ? body.call : null;
   const at = c && Date.parse(c.at);
@@ -199,7 +199,7 @@ module.exports = async (req, res) => {
       `💻 ${platformName} · invite via ${viaName}: ${viaName === 'email' ? esc(handle) : `<code>${esc(handle)}</code>`}`);
   }
   const now = new Date();
-  // Without a store, the number is the date and time in Diana's time zone: #YYMMDD-HHMM.
+  // Without a store, the number is the date and time in the owner's time zone: #YYMMDD-HHMM.
   const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Yekaterinburg', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(now).map(x => [x.type, x.value]));
   const number = counts ? `#${String(counts.seq).padStart(4, '0')}` : `#${p.year}${p.month}${p.day}-${p.hour}${p.minute}`;
 

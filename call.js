@@ -1,7 +1,7 @@
 // Video call booking inside the iMessage card: the camera button opens an
 // iOS-style sheet (pick a day and time → where to send the invite + Meet/Zoom).
 // The booking rides along with the brief and appears as a calendar event in
-// the chat. Slots are Diana's working hours, shown in the visitor's time zone.
+// the chat. Slots are the owner's working hours, shown in the visitor's time zone.
 (() => {
   const preview = document.querySelector('.brief-preview');
   const button = preview?.querySelector('.im-video');
@@ -11,10 +11,10 @@
   const lang = window.siteLang || document.documentElement.lang || 'en';
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 
-  // Diana's availability (her time zone is Yekaterinburg, UTC+5, no DST).
+  // The owner's availability (his time zone is Yekaterinburg, UTC+5, no DST).
   const HOST_OFFSET = 5;            // hours ahead of UTC
-  const HOURS = [10, 11, 12, 13, 14, 15, 16, 17, 18]; // call start times, her time
-  const WORKDAYS = [1, 2, 3, 4, 5]; // Mon–Fri, her time
+  const HOURS = [10, 11, 12, 13, 14, 15, 16, 17, 18]; // call start times, his time
+  const WORKDAYS = [1, 2, 3, 4, 5]; // Mon–Fri, his time
   const LEAD_HOURS = 12;            // earliest booking from now
   const DAYS_AHEAD = 35;
 
@@ -25,7 +25,7 @@
   function buildSlots() {
     const map = new Map();
     const now = Date.now(), earliest = now + LEAD_HOURS * 3600e3;
-    const hostToday = new Date(now + HOST_OFFSET * 3600e3); // shifted so getUTC* reads her wall clock
+    const hostToday = new Date(now + HOST_OFFSET * 3600e3); // shifted so getUTC* reads his wall clock
     for (let i = 0; i <= DAYS_AHEAD; i++) {
       const y = hostToday.getUTCFullYear(), m = hostToday.getUTCMonth(), d = hostToday.getUTCDate() + i;
       const dow = new Date(Date.UTC(y, m, d)).getUTCDay();
@@ -314,7 +314,7 @@
     io.observe(hint);
   } else hint?.classList.add('is-drawn');
 
-  // For the brief: what Diana gets in Telegram.
+  // For the brief: what the owner gets in Telegram.
   function get() {
     if (!booking) return null;
     return { at: new Date(booking.at).toISOString(), via: booking.via, handle: booking.handle, platform: booking.platform, clientTz };
