@@ -1,77 +1,79 @@
-/* ---------- Work: cinema gallery in Liquid Glass ----------
-   The active case sits large in the centre, its neighbours peek at the sides.
-   Every slide wears a white Liquid Glass frame; slides travel on a bouncy
-   spring (with a little liquid stretch while moving). The case name stays
-   fixed below, with a timeline strip that fills while a case plays. */
-.work-section{--ink:#1f1f22;--muted:#8e8e93;--ease:cubic-bezier(.22,1,.36,1);overflow:visible}
-.cg-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(18px,3svh,32px)}
+/* ---------- Work: cinema gallery ----------
+   Each case is a full-bleed poster card with a thin Liquid Glass rim. The
+   active one sits large in the centre, neighbours wait at the sides. Cards
+   travel on a bouncy spring with a little liquid stretch. The title block,
+   counter, arrows and the timeline line live on a fixed layer over the
+   active card, so the case name stays put while the films slide under it. */
+.work-section{--ease:cubic-bezier(.22,1,.36,1);overflow:visible}
+.cg-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(14px,2.6svh,26px)}
 .cg-head .section-label{margin-bottom:10px}
 .cg-head h2{margin:0}
 .cg-note{margin:0 0 6px;font-size:13.5px;line-height:1.45;color:#929296;text-align:right}
 
-.cg{position:relative;--w:min(72vw,860px,calc((100svh - 330px) * 16 / 9));--gap:calc(var(--w) * .66)}
-.cg-track{position:relative;list-style:none;margin:0 calc(50% - 50vw);padding:0;height:calc(var(--w) * 9 / 16 + 28px);touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.cg{position:relative;--w:min(84vw,1120px,calc((100svh - 340px) * 1.6));--h:calc(var(--w) / 1.6);--gap:calc(var(--w) * .93 + 30px)}
+.cg-track{position:relative;list-style:none;margin:0 calc(50% - 50vw);padding:0;height:calc(var(--h) + 30px);overflow-x:clip;overflow-y:visible;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
 .cg-track.is-drag{cursor:grabbing}
-.cg-slide{position:absolute;left:50%;top:14px;width:var(--w);aspect-ratio:16/9;margin-left:calc(var(--w) / -2);will-change:transform;transform-origin:50% 50%}
-/* the Liquid Glass frame: a thick white glass bezel with rim light */
-.cg-frame{position:relative;width:100%;height:100%;padding:9px;border-radius:30px;box-sizing:border-box;
- background:linear-gradient(160deg,rgba(255,255,255,.95),rgba(255,255,255,.62) 45%,rgba(255,255,255,.82));
- -webkit-backdrop-filter:blur(14px) saturate(1.8);backdrop-filter:blur(14px) saturate(1.8);
- box-shadow:inset 0 1.5px 0 #fff,inset 0 0 0 1px rgba(255,255,255,.9),inset 0 -2px 6px rgba(255,255,255,.7),inset 0 10px 18px -12px rgba(255,255,255,1),
-  0 0 0 .5px rgba(28,25,40,.08),0 2px 4px rgba(28,25,40,.05),0 22px 44px -20px rgba(28,25,40,.28),0 60px 100px -60px rgba(28,25,40,.35)}
-.cg-frame::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
- background:linear-gradient(115deg,rgba(255,255,255,.7) 0 8%,transparent 22% 78%,rgba(255,255,255,.45) 92%);
- -webkit-mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);padding:9px;box-sizing:border-box}
-.cg-media{position:relative;width:100%;height:100%;border-radius:21px;overflow:hidden;background:#fff;box-shadow:inset 0 0 0 .5px rgba(28,25,40,.08)}
+.cg-slide{position:absolute;left:50%;top:6px;width:var(--w);height:var(--h);margin-left:calc(var(--w) / -2);will-change:transform}
+.cg-frame{position:relative;width:100%;height:100%;border-radius:34px;padding:0;
+ box-shadow:0 0 0 .5px rgba(28,25,40,.1),0 2px 4px rgba(28,25,40,.06),0 24px 48px -22px rgba(28,25,40,.35),0 70px 110px -70px rgba(28,25,40,.45)}
+.cg-media{position:absolute;inset:0;border-radius:inherit;overflow:hidden;background:linear-gradient(150deg,var(--p2),var(--p1) 70%)}
 .cg-media>*{position:absolute;inset:0;width:100%;height:100%}
 .cg-media video{object-fit:cover}
-.cg-dim{position:absolute;inset:9px;border-radius:21px;background:#f6f6f8;opacity:var(--dim,0);pointer-events:none}
+/* thin Liquid Glass rim: bright top-left edge, softer elsewhere */
+.cg-frame::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;
+ box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),inset 0 1.5px 0 rgba(255,255,255,.9),inset 0 -1px 0 rgba(255,255,255,.25),inset 0 0 22px rgba(255,255,255,.18)}
+.cg-frame::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;padding:4px;
+ background:linear-gradient(135deg,rgba(255,255,255,.75),rgba(255,255,255,.12) 30% 70%,rgba(255,255,255,.4));
+ -webkit-mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);opacity:.85}
+.cg-dim{position:absolute;inset:0;border-radius:inherit;background:#f4f4f6;opacity:var(--dim,0);pointer-events:none;z-index:1}
+/* scrim so the title reads on any film */
+.cg-slide .cg-media::after{content:"";position:absolute;inset:auto 0 0 0;height:58%;background:linear-gradient(to top,color-mix(in srgb,var(--p1) 60%,#1a0f22) 0%,color-mix(in srgb,var(--p1) 30%,transparent) 45%,transparent);opacity:.75;pointer-events:none}
 .cg-slide.is-active .loop i{animation-play-state:running}
 
-/* fixed caption */
-.cg-caption{display:flex;flex-direction:column;align-items:center;text-align:center;margin:clamp(14px,2.4svh,24px) auto 0;max-width:520px;min-height:84px}
-.cg-kind{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:99px;font-size:12px;font-weight:500;
- background:color-mix(in srgb,var(--b,#dbe9ff) 28%,#fff);color:color-mix(in srgb,var(--b,#8fbcff) 48%,#1f1f22);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--b,#8fbcff) 35%,transparent);transition:background-color .4s,color .4s}
-.cg-title{margin:8px 0 0;font-size:24px;font-weight:600;letter-spacing:-.025em;line-height:1.2;color:var(--ink)}
-.cg-desc{margin:4px 0 0;font-size:15px;line-height:1.45;color:#77777e}
-.cg-caption.is-in>*{animation:cg-text .55s var(--ease) both}
-.cg-caption.is-in>:nth-child(2){animation-delay:45ms}.cg-caption.is-in>:nth-child(3){animation-delay:90ms}
-@keyframes cg-text{from{opacity:0;transform:translateY(10px);filter:blur(4px)}}
+/* fixed layer over the active card */
+.cg-hud{position:absolute;z-index:200;left:calc(50% - var(--w) / 2);top:6px;width:var(--w);height:var(--h);pointer-events:none;color:#fff}
+.cg-hud>*{pointer-events:auto}
+.cg-count{position:absolute;right:30px;top:26px;font-size:14px;font-weight:500;font-variant-numeric:tabular-nums;color:rgba(255,255,255,.9);text-shadow:0 1px 8px rgba(0,0,0,.15)}
+.cg-count b{font-weight:600;color:#fff}
+.cg-count span{margin-left:5px;opacity:.75}
+.cg-caption{position:absolute;left:clamp(26px,4.4%,52px);right:30%;bottom:clamp(76px,13%,104px);pointer-events:none}
+.cg-meta{margin:0 0 6px;font-size:14px;font-weight:500;color:rgba(255,255,255,.85);letter-spacing:-.005em}
+.cg-title{margin:0;font-size:clamp(34px,min(6.2vw,9.5svh),84px);font-weight:700;line-height:.98;letter-spacing:-.045em;color:#fff;text-shadow:0 2px 24px rgba(40,10,40,.18)}
+.cg-desc{margin:12px 0 0;font-size:clamp(14px,1.3vw,17px);line-height:1.45;color:rgba(255,255,255,.88);max-width:42ch}
+.cg-caption.is-in>*{animation:cg-text .7s var(--ease) both}
+.cg-caption.is-in>:nth-child(2){animation-delay:50ms}.cg-caption.is-in>:nth-child(3){animation-delay:100ms}
+@keyframes cg-text{from{opacity:0;transform:translateY(16px);filter:blur(6px)}}
 
-/* bottom bar: counter, timeline, arrows */
-.cg-bar{display:grid;grid-template-columns:1fr minmax(0,auto) 1fr;align-items:center;gap:20px;margin-top:clamp(12px,2svh,20px)}
-.cg-count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
-.cg-count b{display:inline-block;min-width:1.5em;font-weight:600;color:var(--ink)}
-.cg-count span{margin-left:3px}
-.cg-timeline{display:flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:99px;
- background:rgba(255,255,255,.75);-webkit-backdrop-filter:blur(16px) saturate(1.7);backdrop-filter:blur(16px) saturate(1.7);
- box-shadow:inset 0 1px 0 #fff,0 0 0 .5px rgba(28,25,40,.08),0 6px 16px -10px rgba(28,25,40,.3)}
-.cg-seg{position:relative;width:36px;height:22px;padding:0;border:0;background:none;cursor:pointer;transition:width .55s cubic-bezier(.34,1.45,.5,1)}
-.cg-seg i{position:absolute;left:0;right:0;top:50%;height:5px;margin-top:-2.5px;border-radius:99px;background:rgba(118,118,128,.18);overflow:hidden}
-.cg-seg i::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg,#ff8db8,#ffb48f);transform:scaleX(var(--p,0));transform-origin:0 50%}
-.cg-seg.is-active{width:92px}
-.cg-seg.is-done i::after{--p:1;background:rgba(118,118,128,.42)}
-@media(hover:hover){.cg-seg:not(.is-active):hover i{background:rgba(118,118,128,.3)}}
-.cg-seg:focus-visible{outline:2px solid #91baff;outline-offset:2px;border-radius:6px}
-.cg-arrows{justify-self:end;display:flex;gap:8px}
-.cg-arrow{display:grid;place-items:center;width:38px;height:38px;padding:0;border:0;border-radius:50%;color:#1f1f22;cursor:pointer;
- background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(16px) saturate(1.7);backdrop-filter:blur(16px) saturate(1.7);
- box-shadow:inset 0 1px 0 #fff,0 0 0 .5px rgba(28,25,40,.08),0 6px 14px -8px rgba(28,25,40,.3);transition:transform .2s cubic-bezier(.34,1.45,.5,1)}
-.cg-arrow svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cg-bar{position:absolute;left:clamp(18px,3%,30px);right:clamp(18px,3%,30px);bottom:clamp(16px,3%,26px);display:flex;align-items:center;gap:14px}
+.cg-timeline{flex:1;display:flex;gap:6px;height:22px;align-items:center}
+.cg-seg{position:relative;flex:1 1 0;height:22px;padding:0;border:0;background:none;cursor:pointer;transition:flex-grow .6s cubic-bezier(.34,1.45,.5,1)}
+.cg-seg.is-active{flex-grow:4}
+.cg-seg i{position:absolute;left:0;right:0;top:50%;height:3px;margin-top:-1.5px;border-radius:99px;background:rgba(255,255,255,.32);overflow:hidden}
+.cg-seg i::after{content:"";position:absolute;inset:0;border-radius:inherit;background:#fff;transform:scaleX(var(--p,0));transform-origin:0 50%}
+.cg-seg.is-done i::after{--p:1;background:rgba(255,255,255,.7)}
+@media(hover:hover){.cg-seg:not(.is-active):hover i{background:rgba(255,255,255,.55)}}
+.cg-seg:focus-visible{outline:2px solid #fff;outline-offset:2px;border-radius:6px}
+/* Liquid Glass buttons on the film */
+.cg-arrow{flex:none;display:grid;place-items:center;width:48px;height:48px;padding:0;border:0;border-radius:50%;color:#fff;cursor:pointer;
+ background:rgba(255,255,255,.18);-webkit-backdrop-filter:blur(14px) saturate(1.8);backdrop-filter:blur(14px) saturate(1.8);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.65),inset 0 0 0 1px rgba(255,255,255,.3),inset 0 -6px 12px -8px rgba(255,255,255,.5),0 8px 20px -10px rgba(30,10,40,.4);
+ transition:transform .3s cubic-bezier(.34,1.6,.5,1),background-color .25s}
+.cg-arrow svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media(hover:hover){.cg-arrow:hover{background:rgba(255,255,255,.28);transform:scale(1.06)}}
 .cg-arrow:active{transform:scale(.9)}
-.cg-arrow:focus-visible{outline:2px solid #91baff;outline-offset:2px}
+.cg-arrow:focus-visible{outline:2px solid #fff;outline-offset:2px}
 
 @media(max-width:650px){
  .cg-head{flex-direction:column;align-items:flex-start;gap:4px}
  .cg-note{text-align:left;font-size:13px;margin:0}
- .cg{--w:calc(100vw - 64px);--gap:calc(var(--w) * .9)}
- .cg-frame{padding:6px;border-radius:22px}.cg-frame::after{padding:6px}
- .cg-media{border-radius:16px}.cg-dim{inset:6px;border-radius:16px}
- .cg-title{font-size:20px}.cg-desc{font-size:14px}
- .cg-bar{grid-template-columns:auto 1fr;gap:12px}
- .cg-timeline{justify-self:end;padding:0 10px;gap:4px}
- .cg-seg{width:16px}.cg-seg.is-active{width:48px}
- .cg-arrows{display:none}
+ .cg{--w:calc(100vw - 40px);--h:min(calc(var(--w) * 1.22),calc(100svh - 300px));--gap:calc(var(--w) + 16px)}
+ .cg-frame{border-radius:26px}
+ .cg-caption{left:20px;right:20px;bottom:72px}
+ .cg-title{font-size:clamp(30px,10vw,44px)}
+ .cg-desc{font-size:14px;margin-top:8px}
+ .cg-count{right:20px;top:18px;font-size:13px}
+ .cg-bar{left:14px;right:14px;bottom:14px;gap:10px}
+ .cg-arrow{width:40px;height:40px}
 }
 @media(prefers-reduced-motion:reduce){
  .loop i{animation:none!important}
@@ -131,22 +133,18 @@
 @keyframes lp-ring{0%,44%{opacity:0;transform:scale(.6)}48%{opacity:.9}80%,100%{opacity:0;transform:scale(1.9)}}
 
 
-/* Fit + layout refinements: caption floats over the active frame as a glass card,
-   side slides are smaller and quieter, everything fits one laptop screen. */
-.cg{--w:min(70vw,880px,calc((100svh - 430px) * 16 / 9));--gap:calc(var(--w) * .74)}
-.cg-head{margin-bottom:clamp(10px,2svh,22px)}
-.cg-caption{position:absolute;z-index:200;left:calc(50% - var(--w) / 2 + 24px);top:calc(14px + var(--w) * 9 / 16 - 24px);transform:translateY(-100%);
- align-items:flex-start;text-align:left;margin:0;min-height:0;max-width:min(400px,calc(var(--w) - 48px));padding:12px 16px 13px;border-radius:20px;pointer-events:none;
- background:rgba(255,255,255,.66);-webkit-backdrop-filter:blur(18px) saturate(1.8);backdrop-filter:blur(18px) saturate(1.8);
- box-shadow:inset 0 1px 0 #fff,inset 0 0 0 1px rgba(255,255,255,.6),0 0 0 .5px rgba(28,25,40,.06),0 12px 28px -16px rgba(28,25,40,.35)}
-.cg-title{font-size:20px;margin-top:7px}
-.cg-desc{font-size:14px;margin-top:2px}
-.cg-bar{margin-top:6px}
-@media(max-width:650px){
- .cg{--w:calc(100vw - 56px);--gap:calc(var(--w) * .93)}
- .cg-caption{position:static;transform:none;max-width:none;margin:12px 0 0;padding:0;background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
- .cg-bar{margin-top:14px}
-}
-/* The track is full-bleed; clip it at the window edges so it never widens the page. */
-.cg-track{overflow-x:clip;overflow-y:visible}
-@media(max-width:650px){.cg{--w:calc(100vw - 44px)}}
+
+/* ---------- the studies as posters: white glossy shapes on the case colour ---------- */
+.cg-media .loop{background:none}
+.cg-media .loop .b,.cg-media .loop .g{background:radial-gradient(circle at 34% 28%,#fff 0 10%,rgba(255,255,255,.92) 35%,color-mix(in srgb,var(--p2) 55%,#fff) 100%);box-shadow:0 20px 50px -18px color-mix(in srgb,var(--p1) 70%,#000)}
+.cg-media .loop .g{opacity:.28;box-shadow:none}.cg-media .loop .g2{opacity:.16}.cg-media .loop .g3{opacity:.09}
+.cg-media .loop .line,.cg-media .loop .floor{background:rgba(255,255,255,.45)}
+.cg-media .loop .row{background:rgba(255,255,255,.35)}
+.cg-media .loop .shadow{background:rgba(40,10,40,.22)}
+.cg-media .loop-toggle .track{background:rgba(255,255,255,.3);animation-name:cg-track}
+@keyframes cg-track{0%,45%{background:rgba(255,255,255,.3)}55%,95%{background:rgba(255,255,255,.75)}100%{background:rgba(255,255,255,.3)}}
+.cg-media .loop-click .btn{background:rgba(255,255,255,.85)}
+.cg-media .loop-click .ring{border-color:#fff}
+.cg-media .loop-click .cursor{background:#1f1f22}
+/* shift the studies up a little so the title has room */
+.cg-media .loop{transform:translateY(-9%)}

@@ -22,7 +22,8 @@
   let playStart = performance.now(), playHeld = 0, paused = false, visible = true, hovered = false, drag = null;
 
   const mod = (a, b) => ((a % b) + b) % b;
-  const gap = () => parseFloat(getComputedStyle(root).getPropertyValue('--gap')) || track.clientWidth * .5;
+  // side cards (scaled to .86) sit 30px (16px on phones) away from the active one
+  const gap = () => { const w = slides[0].offsetWidth; const narrow = innerWidth <= 650; return narrow ? w + 14 : w * .93 + 30; };
   const pad = x => String(x).padStart(2, '0');
   root.querySelector('.cg-count span').textContent = `/ ${pad(n)}`;
 
@@ -32,13 +33,13 @@
     slides.forEach((s, i) => {
       let o = mod(i - pos + n / 2, n) - n / 2;          // offset from centre, wrapped for an endless loop
       const a = Math.abs(o);
-      const x = Math.sign(o) * (Math.min(a, 1) * g + Math.max(a - 1, 0) * g * .42);
-      const sc = 1 - Math.min(a, 1.6) * .26;
+      const x = Math.sign(o) * (Math.min(a, 1) * g + Math.max(a - 1, 0) * g * .8);
+      const sc = 1 - Math.min(a, 1.6) * .14;
       const near = Math.max(0, 1 - a);                  // 1 at the centre
       const sx = sc * (1 + stretch * near), sy = sc * (1 - stretch * .55 * near);
       s.style.transform = `translate3d(${x}px,0,0) scale(${sx},${sy})`;
-      s.style.opacity = a > 2.2 ? 0 : String(Math.min(1, 1.15 - a * .35));
-      s.style.setProperty('--dim', Math.min(a, 1) * .5);
+      s.style.opacity = a > 2.2 ? 0 : String(Math.min(1, 1.2 - a * .3));
+      s.style.setProperty('--dim', Math.min(a, 1) * .35);
       s.style.zIndex = String(100 - Math.round(a * 10));
       s.style.visibility = a > 2.4 ? 'hidden' : '';
       s.inert = Math.round(o) !== 0;
@@ -51,7 +52,7 @@
     const s = slides[index];
     slides.forEach((x, i) => { x.classList.toggle('is-active', i === index); x.setAttribute('aria-hidden', String(i !== index)); });
     ['--a', '--b', '--c'].forEach(v => root.style.setProperty(v, s.style.getPropertyValue(v)));
-    caption.querySelector('.cg-kind').textContent = tr(s.dataset.kind);
+    root.querySelector('.cg-kind').textContent = tr(s.dataset.kind);
     caption.querySelector('.cg-title').textContent = tr(s.dataset.title);
     caption.querySelector('.cg-desc').textContent = tr(s.dataset.desc);
     if (!reduced.matches) { caption.classList.remove('is-in'); void caption.offsetWidth; caption.classList.add('is-in'); }
