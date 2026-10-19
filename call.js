@@ -248,6 +248,7 @@
       renderMonth(); renderTimes();
       pages.dataset.page = 1;
       sheet.hidden = false;
+      fit();
       requestAnimationFrame(() => sheet.classList.add('is-open'));
       page(1);
     } else {
@@ -258,6 +259,16 @@
     preview.classList.toggle('is-call-open', value);
     button.setAttribute('aria-expanded', String(value));
   }
+  // The phone keeps its size: if the sheet doesn't fit, it switches to a tighter layout.
+  function fit() {
+    if (sheet.hidden) return;
+    sheet.classList.remove('is-tight');
+    if (sheet.scrollHeight > sheet.clientHeight + 1) sheet.classList.add('is-tight');
+  }
+  window.addEventListener('resize', fit);
+
+  // Once either button has been used, they stop pulsing.
+  [button, preview.querySelector('.im-plus')].forEach(b => b?.addEventListener('click', () => preview.classList.add('is-explored')));
   button.addEventListener('click', () => {
     if (locked) { nudge(); return; }
     setOpen(!open);

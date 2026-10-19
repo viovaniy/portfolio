@@ -256,6 +256,14 @@
   window.addEventListener('focus', resume);
   window.addEventListener('pageshow', resume);
   window.addEventListener('scroll', () => { if (active) { hitTarget(); setDestination(); } }, observe);
+  // Scrolling without moving the mouse (right after load, or after returning to
+  // the tab) fires no pointer events: switch the custom cursor on from the wheel
+  // itself, at the wheel's position, so the regular arrow never shows.
+  document.addEventListener('wheel', event => {
+    if (!allowed() || (active && Math.abs(event.clientX - position.x) < 1 && Math.abs(event.clientY - position.y) < 1)) return;
+    move({ pointerType: 'mouse', clientX: event.clientX, clientY: event.clientY });
+  }, observe);
+  document.addEventListener('mouseover', event => { if (!active && allowed()) move({ pointerType: 'mouse', clientX: event.clientX, clientY: event.clientY }); }, observe);
   window.addEventListener('resize', resume);
   finePointer.addEventListener('change', () => { if (allowed()) resume(); else { root.classList.remove('pointer-mouse'); hide(); } });
   reducedMotion.addEventListener('change', resume);

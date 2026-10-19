@@ -157,11 +157,18 @@
  .im-back{top:24px}
 }
 
-/* The phone grows while the booking sheet is open, so the whole sheet fits. */
-.brief-preview.is-call-open .brief-chat{min-height:452px}
+/* The phone keeps its size: the sheet may rise over the header, and gets tighter when space is short. */
+.call-sheet{max-height:calc(100% - 68px)}
+.call-sheet.is-tight .call-page{padding:10px 12px 8px}
+.call-sheet.is-tight .call-head{margin-bottom:6px}
+.call-sheet.is-tight .call-month-bar{margin-bottom:2px}
+.call-sheet.is-tight .call-dow span{padding:0 0 2px}
+.call-sheet.is-tight .call-days{row-gap:0}
+.call-sheet.is-tight .call-day{width:28px;height:28px;font-size:14px}
+.call-sheet.is-tight .call-times{margin-top:6px}
+.call-sheet.is-tight .call-foot{padding-top:6px}
 .call-sheet{overflow:clip}
 .call-day{width:30px;height:30px}
-@media(max-width:900px){.brief-preview.is-call-open .brief-chat{min-height:470px}}
 
 /* Phones: the video-call hint sits just above the card, pointing down at the camera. */
 @media(max-width:900px){
@@ -190,3 +197,28 @@
 .call-hint .refs-hint-arrow{top:22px;transform:scaleY(-1)}
 .call-hint-text{white-space:normal;max-width:min(260px,calc(100vw - 130px));text-align:right;line-height:1.05;margin:0 0 12px}
 .call-hint.is-crowded{opacity:1}
+
+/* Hint sits a little higher above the card. */
+.call-hint{bottom:calc(100% + 14px)}
+.call-hint .refs-hint-arrow{top:30px;height:56px}
+@media(max-width:900px){.brief-phone{margin-top:76px}}
+
+/* ---------- Little life for the camera and + ---------- */
+.im-video svg rect,.im-video svg path{transform-box:fill-box;transition:transform .45s cubic-bezier(.34,1.6,.5,1)}
+.im-video svg rect{transform-origin:100% 50%}
+.im-video svg path{transform-origin:0 50%}
+@media(hover:hover){
+ .im-video:not(.is-locked):hover svg rect{transform:translateX(-1.5px) scale(.96)}
+ .im-video:not(.is-locked):hover svg path{transform:translateX(1px) scaleX(1.35) scaleY(1.12)}
+ .brief-preview:not(.is-refs-open) .im-plus:not(.is-locked):hover svg:first-child{transform:rotate(90deg)}
+}
+.im-video:active svg{transform:scale(.88);transition:transform .12s}
+/* A soft ring pulses out every few seconds (camera and + take turns)
+   until the visitor has used them. */
+.im-video::after,.im-plus::after{content:"";position:absolute;inset:-2px;border-radius:50%;pointer-events:none;opacity:0;
+ box-shadow:0 0 0 1.5px rgba(0,122,255,.5);animation:im-ping 6s cubic-bezier(.16,1,.3,1) infinite}
+.im-plus::after{box-shadow:0 0 0 1.5px rgba(255,126,170,.55);animation-delay:3s}
+.im-video::after{animation-delay:1.2s}
+@keyframes im-ping{0%{opacity:0;transform:scale(1)}5%{opacity:1}32%,100%{opacity:0;transform:scale(1.65)}}
+.brief-preview.is-explored .im-video::after,.brief-preview.is-explored .im-plus::after,.im-video.is-locked::after,.im-plus.is-locked::after,.im-video.is-booked::after{animation:none;opacity:0}
+@media(prefers-reduced-motion:reduce){.im-video::after,.im-plus::after{animation:none}.im-video svg rect,.im-video svg path{transition:none}}

@@ -161,3 +161,5 @@ body:has(.bottom-nav:not([data-revealed])) .bottom-blur{visibility:hidden}
 /* The selection belongs inside the finished dock, never ahead of its entrance. */
 .bottom-nav.has-liquid-selection[data-revealed="true"]::after{opacity:1}
 @media(prefers-reduced-motion:reduce){.bottom-nav.has-liquid-selection::after{transition:none}}
+/* Parts the universal rule can't reach (UA shadow buttons): keep the arrow hidden there too. */
+html:is(.pointer-mouse,.pointer-enabled) ::file-selector-button,html:is(.pointer-mouse,.pointer-enabled) ::-webkit-file-upload-button{cursor:none!important}
