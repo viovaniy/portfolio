@@ -122,3 +122,21 @@
 }
 .home-section .avatar:active{transform:translateY(-1px) rotate(2deg) scale(1.02);transition-duration:.18s}
 @media(prefers-reduced-motion:reduce){.home-section .avatar,.home-section .avatar img{transition:none}}
+
+/* ---------- Client card: Apple light glass ---------- */
+.studio-client-card{width:min(292px,calc(100% - 24px));padding:16px 16px 18px;gap:14px;border-radius:28px;
+ background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.6));
+ -webkit-backdrop-filter:blur(26px) saturate(1.8);backdrop-filter:blur(26px) saturate(1.8);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(255,255,255,.65),0 0 0 .5px rgba(28,25,40,.06),0 1px 2px rgba(28,25,40,.05),0 14px 32px -12px rgba(28,25,40,.2),0 44px 80px -36px rgba(28,25,40,.3)}
+.studio-client-head{gap:11px;align-items:center}
+.studio-client-avatar{flex:none;width:42px;height:42px;border-radius:13px;overflow:hidden;background:linear-gradient(160deg,#ffe3ec,#f6bfcf);box-shadow:0 0 0 2px #fff,0 6px 14px -6px rgba(224,86,127,.45);transform:rotate(-4deg)}
+.studio-client-avatar img{display:block;width:100%;height:auto;transform:scale(1.9);transform-origin:50% 4%}
+.studio-client-head h2{font-size:17px;line-height:21px;font-weight:600;letter-spacing:-.02em;color:#1f1f22}
+.studio-client-role{margin:1px 0 0;font-size:12.5px;line-height:16px;color:#8e8e93}
+.studio-client-close{align-self:center;margin:0;width:28px;height:28px;background:rgba(118,118,128,.12);color:#6e6e73}
+.studio-client-close svg{width:12px;height:12px;stroke-width:2.6}
+@media(hover:hover){.studio-client-close:hover,.pointer-enabled .studio-client-close:hover{background:rgba(118,118,128,.2)}}
+.studio-client-details{gap:10px;padding:12px 12px 13px;border-radius:18px;background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 1px rgba(255,255,255,.7),0 1px 2px rgba(28,25,40,.04)}
+.studio-client-project{height:26px;padding:0 11px;font-size:12.5px;font-weight:550}
+.studio-client-details p{font-size:13.5px;line-height:1.45;color:#55555e;letter-spacing:-.005em}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.studio-client-card{background:#fff}}
