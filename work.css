@@ -255,3 +255,21 @@
 @media(max-width:650px){.cg-slide::before{border-radius:26px}.cg-slide::after{border-radius:28px}}
 @media(prefers-reduced-motion:reduce){.cg-slide.is-active:is(.is-hover,:hover)::before,.cg-slide.is-active:is(.is-hover,:hover)::after{animation:none}}
 .cg-slide::before{box-shadow:0 0 40px 10px rgba(255,141,184,.62),0 0 96px 32px rgba(255,180,143,.45)}
+/* While glowing, the card's grey drop shadow turns into a pink-tinted one,
+   so the halo doesn't mix into a muddy purple underneath. */
+.cg-frame{transition:box-shadow .45s ease}
+.cg-slide.is-active:is(.is-hover,:hover) .cg-frame{box-shadow:0 0 0 .5px rgba(255,141,184,.35),0 2px 4px rgba(255,141,184,.12),0 24px 48px -22px rgba(255,120,150,.35),0 60px 100px -60px rgba(255,150,130,.35)}
+
+/* Glow v3: the pulse runs on its own variable, so fading in and out stays smooth. */
+@property --gp{syntax:"<number>";inherits:false;initial-value:1}
+.cg-slide::before,.cg-slide::after{animation:cg-pulse 2.6s ease-in-out infinite paused;transition:opacity .9s cubic-bezier(.22,1,.36,1)}
+.cg-slide::before{box-shadow:0 0 40px 10px rgba(255,141,184,calc(.62 * var(--gp))),0 0 96px 32px rgba(255,180,143,calc(.45 * var(--gp)))}
+.cg-slide::after{opacity:0}
+.cg-slide.is-active:is(.is-hover,:hover)::before{opacity:1;animation:cg-pulse 2.6s ease-in-out infinite running;transition-duration:.45s}
+.cg-slide.is-active:is(.is-hover,:hover)::after{opacity:calc(.95 * 1);animation:cg-pulse 2.6s ease-in-out infinite running;transition-duration:.45s}
+.cg-slide::after{-webkit-mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+ background:linear-gradient(120deg,rgba(255,141,184,var(--gp)),rgba(255,180,143,var(--gp)) 40%,rgba(255,173,205,var(--gp)) 70%,rgba(255,201,168,var(--gp)))}
+@keyframes cg-pulse{0%,100%{--gp:1}50%{--gp:.5}}
+.cg-frame{transition:box-shadow .9s cubic-bezier(.22,1,.36,1)}
+.cg-slide.is-active:is(.is-hover,:hover) .cg-frame{transition-duration:.45s}
+@media(prefers-reduced-motion:reduce){.cg-slide::before,.cg-slide::after{animation:none}}
