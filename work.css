@@ -148,3 +148,10 @@
 .cg-media .loop-click .cursor{background:#1f1f22}
 /* shift the studies up a little so the title has room */
 .cg-media .loop{transform:translateY(-9%)}
+/* Keep the gallery's own z-order inside it, so cards never cover the cursor or the bottom menu. */
+.cg{isolation:isolate;z-index:0}
+/* Title scales with the card itself, so short laptop screens don't crowd it. */
+.cg-hud{container-type:size}
+.cg-title{font-size:clamp(28px,min(13cqh,8cqw),84px)}
+.cg-caption{bottom:max(72px,18cqh)}
+.cg-desc{font-size:clamp(13px,3.6cqh,17px)}
