@@ -339,6 +339,16 @@
     setTimeout(() => open(link.dataset.case), 260); // let the tag finish its little wobble
   });
 
+  // Progressive blur on both sides of the gallery: the neighbours sink back
+  // into depth, the film in the centre stays sharp.
+  ['l', 'r'].forEach(side => {
+    const edge = document.createElement('div');
+    edge.className = `cg-edge cg-edge-${side}`;
+    edge.setAttribute('aria-hidden', 'true');
+    edge.innerHTML = '<i></i><i></i><i></i><i></i>';
+    track.after(edge);
+  });
+
   setActive(0);
   place();
   kick();

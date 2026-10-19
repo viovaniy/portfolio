@@ -375,3 +375,25 @@
 /* neighbours read as clickable */
 .cg-slide:not(.is-active){cursor:pointer}
 @media(hover:hover){.cg-track:not(.is-drag) .cg-slide:not(.is-active):hover{--dim:.2}}
+
+/* ---------- side progressive blur (depth) ---------- */
+.cg-edge{position:absolute;top:0;height:calc(var(--h) + 30px);width:calc((100vw - var(--w)) / 2 + 40px);z-index:150;pointer-events:none}
+.cg-edge-l{left:calc(50% - 50vw)}
+.cg-edge-r{right:calc(50% - 50vw)}
+.cg-edge i{position:absolute;inset:0}
+.cg-edge-l i{--dir:to left}
+.cg-edge-r i{--dir:to right}
+.cg-edge i:nth-child(1){-webkit-backdrop-filter:blur(1.5px);backdrop-filter:blur(1.5px)}
+.cg-edge i:nth-child(2){-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.cg-edge i:nth-child(3){-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.cg-edge i:nth-child(4){-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+/* each layer starts a little further out, so the blur ramps up towards the window edge */
+.cg-edge-l i:nth-child(1){-webkit-mask:linear-gradient(to left,transparent 0%,#000 22%);mask:linear-gradient(to left,transparent 0%,#000 22%)}
+.cg-edge-l i:nth-child(2){-webkit-mask:linear-gradient(to left,transparent 18%,#000 45%);mask:linear-gradient(to left,transparent 18%,#000 45%)}
+.cg-edge-l i:nth-child(3){-webkit-mask:linear-gradient(to left,transparent 40%,#000 70%);mask:linear-gradient(to left,transparent 40%,#000 70%)}
+.cg-edge-l i:nth-child(4){-webkit-mask:linear-gradient(to left,transparent 62%,#000 95%);mask:linear-gradient(to left,transparent 62%,#000 95%)}
+.cg-edge-r i:nth-child(1){-webkit-mask:linear-gradient(to right,transparent 0%,#000 22%);mask:linear-gradient(to right,transparent 0%,#000 22%)}
+.cg-edge-r i:nth-child(2){-webkit-mask:linear-gradient(to right,transparent 18%,#000 45%);mask:linear-gradient(to right,transparent 18%,#000 45%)}
+.cg-edge-r i:nth-child(3){-webkit-mask:linear-gradient(to right,transparent 40%,#000 70%);mask:linear-gradient(to right,transparent 40%,#000 70%)}
+.cg-edge-r i:nth-child(4){-webkit-mask:linear-gradient(to right,transparent 62%,#000 95%);mask:linear-gradient(to right,transparent 62%,#000 95%)}
+@media(max-width:650px){.cg-edge{width:calc((100vw - var(--w)) / 2 + 14px)}}
