@@ -40,6 +40,16 @@
     scrub.setAttribute('aria-label', tr0('Rewind'));
     scrub.tabIndex = 0;
     bar.append(scrub);
+    // The seek bar sits exactly over the segment that is playing, and only
+    // opens when the pointer reaches that segment — the others stay clickable.
+    const fit = () => {
+      const seg = bar.querySelector('.cg-seg.is-active');
+      if (!seg) return;
+      scrub.style.setProperty('--sl', seg.offsetLeft + 'px');
+      scrub.style.setProperty('--sw', seg.offsetWidth + 'px');
+    };
+    bar.addEventListener('pointerover', e => { if (e.target.closest('.cg-seg.is-active')) fit(); });
+    scrub._fit = fit;
     const rail = scrub.querySelector('.cg-rail');
     const seek = x => {
       const r = rail.getBoundingClientRect();

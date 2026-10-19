@@ -230,3 +230,12 @@
 }
 @keyframes cg-glow{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:.45;transform:scale(1.025)}}
 @media(prefers-reduced-motion:reduce){.cg-slide.is-active:hover::before{animation:none}}
+
+/* Seek bar only over the playing segment. */
+.cg-scrub{left:calc(var(--sl,0px) - 8px);right:auto;width:calc(var(--sw,100%) + 16px);min-width:190px;gap:8px;padding:0 10px}
+.cg-slide.has-film .cg-bar:hover .cg-scrub{opacity:0;transform:scaleY(.4);pointer-events:none}
+.cg-slide.has-film .cg-timeline:has(.cg-seg.is-active:hover) .cg-scrub,.cg-slide.has-film .cg-scrub:hover,.cg-scrub:focus-visible,.cg-scrub.is-grab{opacity:1;transform:none;pointer-events:auto}
+.cg-slide.has-film .cg-bar:hover .cg-seg{opacity:1}
+.cg-slide.has-film .cg-timeline:has(.cg-seg.is-active:hover) .cg-seg.is-active,.cg-slide.has-film .cg-timeline:has(.cg-scrub:hover) .cg-seg.is-active,.cg-slide.has-film .cg-timeline:has(.is-grab) .cg-seg.is-active{opacity:0}
+.cg-time,.cg-left{min-width:34px;font-size:11.5px}
+.cg-scrub .cg-rail{margin:0 8px}
