@@ -316,6 +316,25 @@
   }
   addEventListener('resize', () => { place(); });
 
+  // Anything with data-case="<title>" (e.g. the Fliq tag on a client card)
+  // jumps down to Work and brings that case to the centre.
+  function open(title) {
+    const i = slides.findIndex(sl => sl.dataset.title === title);
+    if (i < 0) return;
+    let d = i - active; if (d > n / 2) d -= n; if (d < -n / 2) d += n;
+    const section = document.getElementById('work');
+    const bring = () => { if (d) go(Math.round(target) + d); };
+    if (window.siteScroll && section) window.siteScroll.to(section, () => setTimeout(bring, 120));
+    else { section?.scrollIntoView({ behavior: reduced.matches ? 'auto' : 'smooth' }); setTimeout(bring, 700); }
+  }
+  window.workGallery = { open };
+  document.addEventListener('click', e => {
+    const link = e.target.closest('[data-case]:not(.pj-sheet)');
+    if (!link || root.contains(link)) return;
+    e.preventDefault();
+    setTimeout(() => open(link.dataset.case), 260); // let the tag finish its little wobble
+  });
+
   setActive(0);
   place();
   kick();

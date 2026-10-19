@@ -331,3 +331,23 @@
 /* the play tile in the headline pops in with the words */
 .cg-headline.sr-in .cg-tile{animation:cg-tile-pop .9s cubic-bezier(.34,1.7,.5,1) .28s both}
 @keyframes cg-tile-pop{from{transform:rotate(-40deg) scale(.2);opacity:0}60%{opacity:1}to{transform:rotate(-7deg) scale(1)}}
+
+/* Glow v5 — smooth: no hard-edged sweep any more. The edge simply fades in
+   while its pink-peach colours slowly flow around the card. */
+@property --ga{syntax:"<angle>";inherits:false;initial-value:0deg}
+.cg-slide::after{--rv:360deg;opacity:0;inset:-1.5px;padding:1.5px;border-radius:35.5px;
+ background:conic-gradient(from var(--ga),rgba(255,141,184,var(--gp)),rgba(255,180,143,var(--gp)),rgba(255,173,205,var(--gp)),rgba(255,201,168,var(--gp)),rgba(255,141,184,var(--gp)));
+ animation:cg-pulse 2.6s ease-in-out infinite paused,cg-flow 7s linear infinite paused;
+ transition:opacity .9s cubic-bezier(.22,1,.36,1)}
+.cg-slide.is-active:is(.is-hover,:hover)::after{opacity:.9;animation:cg-pulse 2.6s ease-in-out infinite running,cg-flow 7s linear infinite running;transition:opacity .6s cubic-bezier(.22,1,.36,1)}
+@keyframes cg-flow{to{--ga:360deg}}
+@media(max-width:650px){.cg-slide::after{border-radius:27.5px}}
+@media(prefers-reduced-motion:reduce){.cg-slide::after,.cg-slide.is-active:is(.is-hover,:hover)::after{animation:none}}
+/* Fading out: slow and even (ease-in-out), never a sudden drop. */
+.cg-slide::before{transition:opacity 1.3s cubic-bezier(.45,0,.25,1),transform 1.3s cubic-bezier(.45,0,.25,1)}
+.cg-slide::after{transition:opacity 1.3s cubic-bezier(.45,0,.25,1)}
+.cg-frame{transition:box-shadow 1.3s cubic-bezier(.45,0,.25,1)}
+/* fading in stays quick but soft */
+.cg-slide.is-active:is(.is-hover,:hover)::before{transition:opacity .8s cubic-bezier(.3,0,.2,1),transform .9s cubic-bezier(.34,1.45,.5,1)}
+.cg-slide.is-active:is(.is-hover,:hover)::after{transition:opacity .8s cubic-bezier(.3,0,.2,1)}
+.cg-slide.is-active:is(.is-hover,:hover) .cg-frame{transition:box-shadow .8s cubic-bezier(.3,0,.2,1)}
