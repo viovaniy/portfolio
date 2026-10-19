@@ -34,7 +34,8 @@
     // overshoots a touch (wider first, then taller) and settles like liquid.
     const ox = dx / distance * travel, oy = dy / distance * travel;
     const at = (x, y, sx, sy) => `translateX(-50%) translate(${x}px, ${y}px) scale(${sx}, ${sy})`;
-    const pill = 'inset(38% 26% round 40px)', full = 'inset(0% 0% round 28px)';
+    // The open clip reaches well past the edges, so the soft shadow shows the whole time.
+    const pill = 'inset(38% 26% round 40px)', full = 'inset(-110px round 138px)';
     card.style.transformOrigin = 'center';
     const complete = () => {
       card.hidden = !opening;
