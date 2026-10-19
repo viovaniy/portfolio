@@ -129,18 +129,12 @@
   function shimmer(field) {
     const control = field.querySelector('input, textarea');
     if (!control || !control.value.trim() || reduced.matches) return;
-    field.querySelector('.brief-shimmer')?.remove();
-    const overlay = document.createElement('span');
-    overlay.className = 'brief-shimmer';
-    overlay.setAttribute('aria-hidden', 'true');
-    overlay.textContent = control.value;
-    if (control.tagName === 'TEXTAREA') overlay.scrollTop = control.scrollTop;
-    field.append(overlay);
+    // The sweep is painted onto the real text (gradient clipped to the glyphs),
+    // so it always sits exactly where the text is, pill or not.
+    field.classList.remove('is-shimmering');
+    void control.offsetWidth; // restart the sweep
     field.classList.add('is-shimmering');
-    overlay.addEventListener('animationend', () => {
-      field.classList.remove('is-shimmering');
-      overlay.remove();
-    }, { once: true });
+    control.addEventListener('animationend', () => field.classList.remove('is-shimmering'), { once: true });
   }
   form.addEventListener('change', event => {
     const field = event.target.closest('.brief-field');
@@ -149,7 +143,6 @@
   form.addEventListener('focusin', event => {
     const field = event.target.closest('.brief-field');
     if (!field) return;
-    field.querySelector('.brief-shimmer')?.remove();
     field.classList.remove('is-shimmering');
   });
 
@@ -346,7 +339,7 @@
       if (ok) {
         setState('is-sent');
         const name = value('name');
-        sentText.textContent = tr('Thank you, {name}. I’ll review the details and get back to you as soon as possible.', { name }) + (number ? ` ${tr('Your brief number is {number}.', { number })}` : '');
+        sentText.textContent = tr('Thank you, {name}. I’ll review the details and get back to you as soon as possible.', { name });
         root.classList.add('is-ready');
         // iMessage: Sent → Read → a heart tapback on the message.
         readTime.textContent = new Date().toLocaleTimeString(window.siteLang || [], { hour: '2-digit', minute: '2-digit' });

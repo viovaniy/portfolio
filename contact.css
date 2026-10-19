@@ -277,12 +277,14 @@
 .brief-bubble{overflow:visible}
 .brief.is-loved .brief-bubble{margin-top:14px;transition:margin-top .4s cubic-bezier(.22,1,.36,1)}
 
-/* Completed field: a quick sunset shimmer sweeps across the text. */
-.brief-shimmer{position:absolute;inset:0;pointer-events:none;overflow:hidden;font:inherit;letter-spacing:inherit;line-height:1.5;padding:0 .08em;white-space:pre;color:transparent;
- background:linear-gradient(100deg,var(--b-ink) 0%,var(--b-ink) 38%,#ff7eaa 46%,#ffb48f 52%,#ffd0a8 55%,var(--b-ink) 64%,var(--b-ink) 100%);background-size:280% 100%;background-position:100% 0;
- -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:brief-shimmer .95s cubic-bezier(.45,.05,.25,1) forwards}
-.brief-field-area .brief-shimmer{white-space:pre-wrap;overflow-wrap:break-word;padding:0 .08em .12em}
-.brief-field.is-shimmering :is(input,textarea){color:transparent!important;-webkit-text-fill-color:transparent}
+/* Completed field: a quick sunset shimmer sweeps across the text itself.
+   It starts and ends on the text's own colour (rose once it's a pill). */
+.brief-field{--shine-base:var(--b-ink)}
+.brief-field.is-pill{--shine-base:#b8336a}
+.contact-section .brief-field.is-shimmering :is(input,textarea){
+ background:linear-gradient(100deg,var(--shine-base) 0%,var(--shine-base) 36%,#ff8db8 44%,#ffc29c 50%,#ffe4cc 53%,#ffb48f 57%,var(--shine-base) 66%,var(--shine-base) 100%);
+ background-size:280% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+ animation:brief-shimmer .95s cubic-bezier(.45,.05,.25,1) forwards}
 @keyframes brief-shimmer{from{background-position:100% 0}to{background-position:0 0}}
 
 /* Both windows (sent card and iMessage) share one outline and corner radius.
