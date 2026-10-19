@@ -155,3 +155,8 @@
 .cg-title{font-size:clamp(28px,min(13cqh,8cqw),84px)}
 .cg-caption{bottom:max(72px,18cqh)}
 .cg-desc{font-size:clamp(13px,3.6cqh,17px)}
+/* The title, counter, arrows and timeline now live inside every card. */
+.cg-frame .cg-hud{left:0;top:0;width:100%;height:100%;z-index:1;border-radius:inherit}
+.cg-dim{z-index:2}
+.cg-slide .cg-bar,.cg-slide .cg-count{transition:opacity .35s ease}
+.cg-slide:not(.is-active) .cg-bar,.cg-slide:not(.is-active) .cg-count{opacity:0}

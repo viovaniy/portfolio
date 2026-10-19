@@ -9,9 +9,21 @@
   if (!root) return;
   const track = root.querySelector('.cg-track');
   const slides = [...root.querySelectorAll('.cg-slide')];
-  const segs = [...root.querySelectorAll('.cg-seg')];
-  const caption = root.querySelector('.cg-caption');
-  const count = root.querySelector('.cg-count b');
+  // Every card carries its own title, counter, arrows and timeline, so they
+  // travel with the film instead of staying fixed in the middle.
+  const template = root.querySelector('.cg-hud');
+  template.remove();
+  const tr0 = x => (window.t ? window.t(x) : x);
+  slides.forEach((s, i) => {
+    const hud = template.cloneNode(true);
+    hud.querySelector('.cg-kind').textContent = tr0(s.dataset.kind);
+    hud.querySelector('.cg-title').textContent = tr0(s.dataset.title);
+    hud.querySelector('.cg-desc').textContent = tr0(s.dataset.desc);
+    hud.querySelector('.cg-count b').textContent = String(i + 1).padStart(2, '0');
+    hud.querySelector('.cg-caption').removeAttribute('aria-live');
+    s.querySelector('.cg-frame').append(hud);
+  });
+  const segRows = slides.map(s => [...s.querySelectorAll('.cg-seg')]);
   const n = slides.length;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const tr = s => (window.t ? window.t(s) : s);
@@ -25,7 +37,7 @@
   // side cards (scaled to .86) sit 30px (16px on phones) away from the active one
   const gap = () => { const w = slides[0].offsetWidth; const narrow = innerWidth <= 650; return narrow ? w + 14 : w * .93 + 30; };
   const pad = x => String(x).padStart(2, '0');
-  root.querySelector('.cg-count span').textContent = `/ ${pad(n)}`;
+  slides.forEach(sl => { sl.querySelector('.cg-count span').textContent = `/ ${pad(n)}`; });
 
   function place() {
     const g = gap();
@@ -51,18 +63,14 @@
     active = index;
     const s = slides[index];
     slides.forEach((x, i) => { x.classList.toggle('is-active', i === index); x.setAttribute('aria-hidden', String(i !== index)); });
-    ['--a', '--b', '--c'].forEach(v => root.style.setProperty(v, s.style.getPropertyValue(v)));
-    root.querySelector('.cg-kind').textContent = tr(s.dataset.kind);
-    caption.querySelector('.cg-title').textContent = tr(s.dataset.title);
-    caption.querySelector('.cg-desc').textContent = tr(s.dataset.desc);
-    if (!reduced.matches) { caption.classList.remove('is-in'); void caption.offsetWidth; caption.classList.add('is-in'); }
-    count.textContent = pad(index + 1);
-    segs.forEach((g, i) => {
+    segRows.forEach(row => row.forEach((g, i) => {
       g.classList.toggle('is-active', i === index);
       g.classList.toggle('is-done', i < index);
       g.setAttribute('aria-current', i === index ? 'true' : 'false');
       g.style.setProperty('--p', 0);
-    });
+    }));
+    const cap = s.querySelector('.cg-caption');
+    if (!reduced.matches) { cap.classList.remove('is-in'); void cap.offsetWidth; cap.classList.add('is-in'); }
     slides.forEach((x, i) => x.querySelectorAll('video').forEach(v => { if (i === index) { v.currentTime = 0; v.play().catch(() => {}); } else v.pause(); }));
     playStart = performance.now(); playHeld = 0;
   }
@@ -98,7 +106,7 @@
     if (hold) { if (!playHeld) playHeld = now; }
     else if (playHeld) { playStart += now - playHeld; playHeld = 0; }
     const p = Math.min(1, ((playHeld || now) - playStart) / duration());
-    segs[active]?.style.setProperty('--p', p.toFixed(4));
+    segRows[active]?.[active]?.style.setProperty('--p', p.toFixed(4));
     if (p >= 1 && !hold) step(1);
     const moving = drag || pos !== target || vel !== 0;
     raf = (moving || visible) ? requestAnimationFrame(tick) : 0;
@@ -108,7 +116,7 @@
 
   // Drag / swipe with velocity: a quick flick moves one (or two) cases.
   track.addEventListener('pointerdown', e => {
-    if (e.button !== 0) return;
+    if (e.button !== 0 || e.target.closest('.cg-arrow,.cg-seg')) return;
     drag = { x: e.clientX, y: e.clientY, pos, t: performance.now(), vx: 0, lx: e.clientX, lt: performance.now(), moved: false, id: e.pointerId };
     kick();
   });
@@ -148,11 +156,15 @@
   addEventListener('pointercancel', release);
   track.addEventListener('click', e => { if (track.classList.contains('is-drag')) e.preventDefault(); });
 
-  root.querySelectorAll('.cg-arrow').forEach(b => b.addEventListener('click', () => step(Number(b.dataset.step))));
-  segs.forEach((g, i) => g.addEventListener('click', () => {
-    let d = i - active; if (d > n / 2) d -= n; if (d < -n / 2) d += n;
-    go(Math.round(target) + d);
-  }));
+  root.addEventListener('click', e => {
+    const arrow = e.target.closest('.cg-arrow');
+    if (arrow) { step(Number(arrow.dataset.step)); return; }
+    const seg = e.target.closest('.cg-seg');
+    if (seg) {
+      let d = Number(seg.dataset.go) - active; if (d > n / 2) d -= n; if (d < -n / 2) d += n;
+      go(Math.round(target) + d);
+    }
+  });
   track.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') hovered = true; });
   track.addEventListener('pointerleave', () => { hovered = false; });
 
