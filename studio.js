@@ -27,9 +27,9 @@
     const person = trigger.getBoundingClientRect();
     const stage = scene.getBoundingClientRect();
     const dx = person.left + person.width / 2 - stage.left - card.offsetLeft;
-    const dy = person.top + person.height * .6 - stage.top - card.offsetTop - card.offsetHeight / 2;
+    const dy = person.top + person.height * .32 - stage.top - card.offsetTop - card.offsetHeight / 2;
     const distance = Math.hypot(dx, dy) || 1;
-    const travel = Math.min(24, distance);
+    const travel = distance; // the pill starts right at the character and flies out of them
     // Dynamic Island: the card grows out of a small pill near the character,
     // overshoots a touch (wider first, then taller) and settles like liquid.
     const ox = dx / distance * travel, oy = dy / distance * travel;
