@@ -397,3 +397,7 @@
 .cg-edge-r i:nth-child(3){-webkit-mask:linear-gradient(to right,transparent 40%,#000 70%);mask:linear-gradient(to right,transparent 40%,#000 70%)}
 .cg-edge-r i:nth-child(4){-webkit-mask:linear-gradient(to right,transparent 62%,#000 95%);mask:linear-gradient(to right,transparent 62%,#000 95%)}
 @media(max-width:650px){.cg-edge{width:calc((100vw - var(--w)) / 2 + 14px)}}
+/* Shorter side blur: it starts a bit away from the centre card and stays softer. */
+.cg-edge{width:calc((100vw - var(--w)) / 2 - 30px)}
+.cg-edge i:nth-child(4){-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+@media(max-width:650px){.cg-edge{width:calc((100vw - var(--w)) / 2 + 4px)}}
