@@ -1,139 +1,94 @@
-// Work: glass folders on a Finder-like desk. Click (or Space/Enter) opens a
-// Quick Look window that springs out of the folder; arrows flip between
-// projects, Space or Esc closes it, like macOS.
+// Work, Finder "Gallery view": one large screen shows the current case;
+// the folders underneath switch between cases (click, arrows, or swipe).
+// A folder can carry a real film later: data-video="assets/work/x.mp4"
+// (optional data-poster) — otherwise its code-drawn motion study is shown.
 (() => {
+  const section = document.getElementById('work');
   const folders = [...document.querySelectorAll('.wf')];
-  const ql = document.getElementById('work-quicklook');
-  if (!folders.length || !ql) return;
-  const win = ql.querySelector('.ql-window');
-  const scrim = ql.querySelector('.ql-scrim');
-  const paper = ql.querySelector('.ql-paper');
-  const title = ql.querySelector('#ql-title');
-  const desc = ql.querySelector('.ql-desc');
-  const field = key => ql.querySelector(`[data-ql="${key}"]`);
+  const viewer = document.querySelector('.wv');
+  if (!section || !folders.length || !viewer) return;
+  const stage = viewer.querySelector('.wv-stage');
+  const meta = viewer.querySelector('.wv-meta');
+  const title = viewer.querySelector('.wv-title');
+  const desc = viewer.querySelector('.wv-desc');
+  const field = key => viewer.querySelector(`[data-wv="${key}"]`);
+  const desk = document.querySelector('.work-desk');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let current = -1, opened = false, motion = null;
+  let current = -1;
 
-  function select(index) {
-    folders.forEach((f, i) => f.classList.toggle('is-selected', i === index));
+  function content(folder) {
+    if (folder.dataset.video) {
+      const video = document.createElement('video');
+      Object.assign(video, { src: folder.dataset.video, muted: true, loop: true, autoplay: true, playsInline: true });
+      if (folder.dataset.poster) video.poster = folder.dataset.poster;
+      video.setAttribute('playsinline', '');
+      return video;
+    }
+    return folder.querySelector('.loop').cloneNode(true);
   }
 
-  function fill(index) {
-    const f = folders[index], item = f.closest('.wf-item');
-    const data = k => f.querySelector(`[data-k="${k}"]`)?.textContent || '';
-    title.textContent = f.querySelector('.wf-name').textContent;
+  function show(index, dir = 1, focus = false) {
+    index = (index + folders.length) % folders.length;
+    if (index === current) return;
+    const folder = folders[index], item = folder.closest('.wf-item');
+    const data = k => folder.querySelector(`[data-k="${k}"]`)?.textContent || '';
+    folders.forEach((f, i) => {
+      f.setAttribute('aria-selected', String(i === index));
+      f.tabIndex = i === index ? 0 : -1;
+    });
+    ['--a', '--b', '--c'].forEach(v => viewer.style.setProperty(v, item.style.getPropertyValue(v)));
+    title.textContent = folder.querySelector('.wf-name').textContent;
     desc.textContent = data('desc');
     field('kind').textContent = data('kind');
     field('tools').textContent = data('tools');
-    ['--a', '--b', '--c'].forEach(v => win.style.setProperty(v, item.style.getPropertyValue(v)));
-    paper.replaceChildren(f.querySelector('.loop').cloneNode(true));
-  }
 
-  // FLIP from the folder to the window, with a little liquid overshoot.
-  function fromFolder(index) {
-    const a = folders[index].querySelector('.wf-art').getBoundingClientRect();
-    const b = win.getBoundingClientRect();
-    const dx = a.left + a.width / 2 - (b.left + b.width / 2);
-    const dy = a.top + a.height / 2 - (b.top + b.height / 2);
-    return `translate(${dx}px, ${dy}px) scale(${a.width / b.width}, ${a.height / b.height})`;
-  }
-
-  function open(index) {
+    const next = content(folder);
+    const old = [...stage.children];
+    stage.style.setProperty('--dir', dir);
+    if (current < 0 || reduced.matches) old.forEach(n => n.remove());
+    else {
+      old.forEach(n => { n.classList.add('is-out'); setTimeout(() => n.remove(), 360); });
+      next.classList.add('is-in');
+      meta.classList.remove('is-in'); void meta.offsetWidth; meta.classList.add('is-in');
+    }
+    stage.append(next);
     current = index;
-    select(index);
-    fill(index);
-    folders.forEach((f, i) => f.classList.toggle('is-open', i === index));
-    ql.hidden = false;
-    opened = true;
-    document.documentElement.classList.add('ql-open');
-    motion?.forEach(m => m.cancel());
-    if (!reduced.matches) {
-      const start = fromFolder(index);
-      motion = [
-        win.animate([
-          { transform: start, opacity: .4, borderRadius: '14px' },
-          { transform: 'scale(1.025, .985)', opacity: 1, offset: .55, borderRadius: '24px', easing: 'cubic-bezier(.45,0,.55,1)' },
-          { transform: 'scale(.995, 1.008)', offset: .8, easing: 'cubic-bezier(.45,0,.55,1)' },
-          { transform: 'none', opacity: 1, borderRadius: '24px' }
-        ], { duration: 620, easing: 'cubic-bezier(.22,.9,.3,1)' }),
-        scrim.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, easing: 'ease' })
-      ];
+    if (focus) folder.focus({ preventScroll: true });
+    // keep the chosen folder in view on the phone strip
+    if (desk && desk.scrollWidth > desk.clientWidth) {
+      const r = folder.getBoundingClientRect(), d = desk.getBoundingClientRect();
+      desk.scrollBy({ left: r.left + r.width / 2 - (d.left + d.width / 2), behavior: reduced.matches ? 'auto' : 'smooth' });
     }
-    win.focus({ preventScroll: true });
   }
 
-  function close() {
-    if (!opened) return;
-    opened = false;
-    const index = current;
-    const done = () => {
-      ql.hidden = true;
-      folders[index].classList.remove('is-open');
-      document.documentElement.classList.remove('ql-open');
-    };
-    folders[index].focus({ preventScroll: true });
-    motion?.forEach(m => m.cancel());
-    if (reduced.matches) { done(); return; }
-    const end = fromFolder(index);
-    motion = [
-      win.animate([{ transform: 'none', opacity: 1 }, { transform: end, opacity: 0 }], { duration: 280, easing: 'cubic-bezier(.4,0,.7,.2)', fill: 'forwards' }),
-      scrim.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, easing: 'ease', fill: 'forwards' })
-    ];
-    motion[0].onfinish = () => { motion.forEach(m => m.cancel()); done(); };
-  }
+  folders.forEach((f, i) => f.addEventListener('click', () => show(i, i > current ? 1 : -1)));
+  viewer.querySelectorAll('.wv-arrow').forEach(b => b.addEventListener('click', () => {
+    const d = Number(b.dataset.step); show(current + d, d);
+  }));
 
-  function step(dir) {
-    const next = (current + dir + folders.length) % folders.length;
-    folders[current].classList.remove('is-open');
-    current = next;
-    folders[next].classList.add('is-open');
-    select(next);
-    fill(next);
-    win.style.setProperty('--dir', dir);
-    win.classList.remove('is-swap'); void win.offsetWidth; win.classList.add('is-swap');
-  }
-
-  folders.forEach((f, i) => {
-    f.addEventListener('click', () => (opened && current === i ? close() : open(i)));
-    f.addEventListener('focus', () => { if (!opened) select(i); });
-  });
-  ql.querySelectorAll('[data-ql-close]').forEach(el => el.addEventListener('click', close));
-  ql.querySelectorAll('.ql-step').forEach(b => b.addEventListener('click', () => step(Number(b.dataset.step))));
-
+  // Arrow keys: on the folder strip (tabs), or anywhere while the page is on screen.
+  let onScreen = false;
+  if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { onScreen = e.intersectionRatio > .5; }, { threshold: [0, .5, 1] }).observe(viewer);
   document.addEventListener('keydown', e => {
-    if (opened) {
-      if (e.key === 'Escape' || e.key === ' ') { e.preventDefault(); close(); }
-      else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); step(1); }
-      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); step(-1); }
-      else if (e.key === 'Tab') {
-        // keep focus inside the window
-        const items = [...win.querySelectorAll('button')];
-        const first = items[0], last = items[items.length - 1];
-        if (e.shiftKey && (document.activeElement === first || document.activeElement === win)) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-      }
-      return;
-    }
-    // On the desk: arrows move the selection between folders, like Finder.
-    const at = folders.indexOf(document.activeElement);
-    if (at < 0) return;
-    const cols = getComputedStyle(folders[0].closest('.wf-grid')).gridTemplateColumns.split(' ').length;
-    const move = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: cols, ArrowUp: -cols }[e.key];
-    if (move) {
-      const next = at + move;
-      if (next >= 0 && next < folders.length) { e.preventDefault(); folders[next].focus(); }
-    }
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const inStrip = folders.includes(document.activeElement);
+    const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName) || document.activeElement?.isContentEditable;
+    if (!inStrip && (typing || !onScreen || section.contains(document.activeElement) === false && document.activeElement !== document.body)) return;
+    e.preventDefault();
+    const d = e.key === 'ArrowRight' ? 1 : -1;
+    show(current + d, d, inStrip);
   });
 
-  // Clicking empty desk space clears the selection.
-  document.addEventListener('pointerdown', e => {
-    if (!opened && !e.target.closest('.wf')) select(-1);
+  // Swipe on the screen.
+  let start = null;
+  stage.addEventListener('pointerdown', e => { start = { x: e.clientX, y: e.clientY }; });
+  stage.addEventListener('pointerup', e => {
+    if (!start) return;
+    const dx = e.clientX - start.x, dy = e.clientY - start.y;
+    start = null;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) show(current + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
   });
-})();
+  stage.addEventListener('pointercancel', () => { start = null; });
 
-// Phones have no hover: folders on screen play their studies on their own.
-(() => {
-  if (matchMedia('(hover: hover)').matches || !('IntersectionObserver' in window)) return;
-  const io = new IntersectionObserver(entries => entries.forEach(e => e.target.classList.toggle('is-live', e.isIntersecting)), { threshold: .6 });
-  document.querySelectorAll('.wf').forEach(f => io.observe(f));
+  show(0);
 })();

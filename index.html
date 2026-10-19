@@ -30,7 +30,7 @@
   </script>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="structure.css?v=20261019-3">
-  <link rel="stylesheet" href="work.css?v=17">
+  <link rel="stylesheet" href="work.css?v=20">
   <link rel="stylesheet" href="studio.css?v=28">
   <link rel="stylesheet" href="about.css?v=20261019-11">
   <link rel="stylesheet" href="text-reveal.css?v=3">
@@ -252,10 +252,28 @@
         <span class="work-count">6 items</span>
       </div>
       <p class="work-note">A preview collection. Real projects coming soon.</p>
+      <div class="wv" aria-roledescription="carousel" aria-label="Project viewer">
+        <div class="wv-screen" aria-live="polite">
+          <div class="wv-stage"></div>
+          <button type="button" class="wv-arrow wv-prev" data-step="-1" aria-label="Previous project" data-pointer-shape="circle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+          <button type="button" class="wv-arrow wv-next" data-step="1" aria-label="Next project" data-pointer-shape="circle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button>
+        </div>
+        <div class="wv-meta">
+          <div class="wv-text">
+            <h3 class="wv-title"></h3>
+            <p class="wv-desc"></p>
+          </div>
+          <div class="wv-facts">
+            <span class="wv-tag" data-wv="kind"></span>
+            <span class="wv-tools" data-wv="tools"></span>
+            <span class="wv-status">Coming soon</span>
+          </div>
+        </div>
+      </div>
       <div class="work-desk">
-        <ul class="wf-grid" aria-label="Projects">
+        <ul class="wf-grid" aria-label="Projects" role="tablist">
           <li class="wf-item" style="--a:#ffd6e5;--b:#ff9fbf;--c:#fff4f8">
-            <button class="wf" type="button" data-work="0" aria-haspopup="dialog" data-pointer-passive>
+            <button class="wf" type="button" data-work="0" role="tab" aria-selected="false" data-pointer-passive>
               <span class="wf-art" aria-hidden="true">
                 <svg class="wf-back" viewBox="0 0 200 150" preserveAspectRatio="none"><path d="M0 26a14 14 0 0 1 14-14h50c9 0 11-12 22-12h100a14 14 0 0 1 14 14v122a14 14 0 0 1-14 14H14A14 14 0 0 1 0 136Z"/></svg>
                 <span class="wf-paper"><span class="loop loop-ease"><i class="g g1"></i><i class="g g2"></i><i class="g g3"></i><i class="b"></i><i class="line"></i></span></span>
@@ -267,7 +285,7 @@
             </button>
           </li>
           <li class="wf-item" style="--a:#dbe9ff;--b:#8fbcff;--c:#f4f8ff">
-            <button class="wf" type="button" data-work="1" aria-haspopup="dialog" data-pointer-passive>
+            <button class="wf" type="button" data-work="1" role="tab" aria-selected="false" data-pointer-passive>
               <span class="wf-art" aria-hidden="true">
                 <svg class="wf-back" viewBox="0 0 200 150" preserveAspectRatio="none"><path d="M0 26a14 14 0 0 1 14-14h50c9 0 11-12 22-12h100a14 14 0 0 1 14 14v122a14 14 0 0 1-14 14H14A14 14 0 0 1 0 136Z"/></svg>
                 <span class="wf-paper"><span class="loop loop-toggle"><i class="track"><i class="knob"></i></i><i class="row r1"></i><i class="row r2"></i></span></span>
@@ -279,7 +297,7 @@
             </button>
           </li>
           <li class="wf-item" style="--a:#ece0ff;--b:#bf9cf5;--c:#faf6ff">
-            <button class="wf" type="button" data-work="2" aria-haspopup="dialog" data-pointer-passive>
+            <button class="wf" type="button" data-work="2" role="tab" aria-selected="false" data-pointer-passive>
               <span class="wf-art" aria-hidden="true">
                 <svg class="wf-back" viewBox="0 0 200 150" preserveAspectRatio="none"><path d="M0 26a14 14 0 0 1 14-14h50c9 0 11-12 22-12h100a14 14 0 0 1 14 14v122a14 14 0 0 1-14 14H14A14 14 0 0 1 0 136Z"/></svg>
                 <span class="wf-paper"><span class="loop loop-morph"><i class="g g1"></i><i class="g g2"></i><i class="b"></i></span></span>
@@ -291,7 +309,7 @@
             </button>
           </li>
           <li class="wf-item" style="--a:#ffe5d2;--b:#ffb184;--c:#fff7f1">
-            <button class="wf" type="button" data-work="3" aria-haspopup="dialog" data-pointer-passive>
+            <button class="wf" type="button" data-work="3" role="tab" aria-selected="false" data-pointer-passive>
               <span class="wf-art" aria-hidden="true">
                 <svg class="wf-back" viewBox="0 0 200 150" preserveAspectRatio="none"><path d="M0 26a14 14 0 0 1 14-14h50c9 0 11-12 22-12h100a14 14 0 0 1 14 14v122a14 14 0 0 1-14 14H14A14 14 0 0 1 0 136Z"/></svg>
                 <span class="wf-paper"><span class="loop loop-arc"><i class="g g1"></i><i class="g g2"></i><i class="g g3"></i><i class="b"></i><i class="floor"></i></span></span>
@@ -303,7 +321,7 @@
             </button>
           </li>
           <li class="wf-item" style="--a:#d8f4e8;--b:#8fd9b9;--c:#f2fbf7">
-            <button class="wf" type="button" data-work="4" aria-haspopup="dialog" data-pointer-passive>
+            <button class="wf" type="button" data-work="4" role="tab" aria-selected="false" data-pointer-passive>
               <span class="wf-art" aria-hidden="true">
                 <svg class="wf-back" viewBox="0 0 200 150" preserveAspectRatio="none"><path d="M0 26a14 14 0 0 1 14-14h50c9 0 11-12 22-12h100a14 14 0 0 1 14 14v122a14 14 0 0 1-14 14H14A14 14 0 0 1 0 136Z"/></svg>
                 <span class="wf-paper"><span class="loop loop-bounce"><i class="shadow"></i><i class="g g1"></i><i class="g g2"></i><i class="b"></i><i class="floor"></i></span></span>
@@ -315,7 +333,7 @@
             </button>
           </li>
           <li class="wf-item" style="--a:#fff1c4;--b:#ffd36a;--c:#fffbea">
-            <button class="wf" type="button" data-work="5" aria-haspopup="dialog" data-pointer-passive>
+            <button class="wf" type="button" data-work="5" role="tab" aria-selected="false" data-pointer-passive>
               <span class="wf-art" aria-hidden="true">
                 <svg class="wf-back" viewBox="0 0 200 150" preserveAspectRatio="none"><path d="M0 26a14 14 0 0 1 14-14h50c9 0 11-12 22-12h100a14 14 0 0 1 14 14v122a14 14 0 0 1-14 14H14A14 14 0 0 1 0 136Z"/></svg>
                 <span class="wf-paper"><span class="loop loop-click"><i class="btn"></i><i class="ring"></i><i class="cursor"></i><i class="row r1"></i></span></span>
@@ -327,25 +345,6 @@
             </button>
           </li>
         </ul>
-      </div>
-      <div class="ql" id="work-quicklook" role="dialog" aria-modal="true" aria-labelledby="ql-title" hidden>
-        <div class="ql-scrim" data-ql-close></div>
-        <div class="ql-window" tabindex="-1">
-          <div class="ql-bar">
-            <span class="ql-lights"><button type="button" class="ql-light ql-close" data-ql-close aria-label="Close preview" data-pointer-shape="circle"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 3.5l5 5M8.5 3.5l-5 5"/></svg></button><span class="ql-light"></span><span class="ql-light"></span></span>
-            <h3 id="ql-title"></h3>
-            <span class="ql-nav"><button type="button" class="ql-step" data-step="-1" aria-label="Previous project" data-pointer-shape="circle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button><button type="button" class="ql-step" data-step="1" aria-label="Next project" data-pointer-shape="circle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button></span>
-          </div>
-          <div class="ql-stage"><div class="ql-paper"></div></div>
-          <div class="ql-info">
-            <p class="ql-desc"></p>
-            <dl class="ql-rows">
-              <div><dt>Kind</dt><dd data-ql="kind"></dd></div>
-              <div><dt>Tools</dt><dd data-ql="tools"></dd></div>
-              <div><dt>Status</dt><dd><span class="ql-status">Coming soon</span></dd></div>
-            </dl>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -515,7 +514,7 @@
   <script src="footer.js?v=4" defer></script>
   <script src="scroll-reveal.js?v=5" defer></script>
   <script src="shimmer.js?v=3" defer></script>
-  <script src="work.js?v=10" defer></script>
+  <script src="work.js?v=11" defer></script>
   <script src="about.js?v=20261019-5" defer></script>
   <script src="studio.js?v=12" defer></script>
   <script src="text-reveal.js?v=3" defer></script>
