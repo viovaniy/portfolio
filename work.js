@@ -238,29 +238,31 @@
   addEventListener('pointercancel', release);
   track.addEventListener('click', e => { if (track.classList.contains('is-drag')) e.preventDefault(); });
 
-  // Trackpad: a horizontal two-finger swipe flips one case. macOS keeps sending
-  // inertia events after the fingers lift, so a swipe is "used up" until either
-  // the events stop, they fade out, or they speed up again (= a new swipe).
-  let wheelAcc = 0, wheelLock = false, wheelTimer = 0, lastAd = 0, lockedAt = 0;
+  // Trackpad: one horizontal two-finger swipe = one case. After a flip the
+  // gesture is "used up" until the trackpad goes quiet, or its inertia has
+  // clearly died down (below 35% of its peak) and then clearly rises again
+  // (a real new swipe) — and never sooner than 380ms after the last flip.
+  let wheelAcc = 0, locked = false, quiet = 0, lockedAt = 0, peak = 0, low = Infinity, decayed = false;
   track.addEventListener('wheel', e => {
     if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) || e.ctrlKey) return;
     e.preventDefault();
     const dx = e.deltaMode === 1 ? e.deltaX * 16 : e.deltaX;
     const ad = Math.abs(dx), now = performance.now();
-    clearTimeout(wheelTimer);
-    wheelTimer = setTimeout(() => { wheelAcc = 0; wheelLock = false; lastAd = 0; }, 160);
-    if (wheelLock) {
-      const newSwipe = now - lockedAt > 140 && ad > 6 && ad > lastAd * 1.6;
-      const faded = ad < 1.5;
-      if (newSwipe || faded) { wheelLock = false; wheelAcc = 0; }
+    clearTimeout(quiet);
+    quiet = setTimeout(() => { wheelAcc = 0; locked = false; }, 180);
+    if (locked) {
+      peak = Math.max(peak, ad);
+      if (ad < peak * .35) decayed = true;
+      if (decayed) low = Math.min(low, ad);
+      const fresh = decayed && ad > Math.max(12, low * 3) && now - lockedAt > 380;
+      if (!fresh) return;
+      locked = false; wheelAcc = 0;
     }
-    lastAd = ad;
-    if (wheelLock) return;
     if (wheelAcc && Math.sign(wheelAcc) !== Math.sign(dx)) wheelAcc = 0;
     wheelAcc += dx;
-    if (Math.abs(wheelAcc) > 40) {
+    if (Math.abs(wheelAcc) > 70) {
       step(wheelAcc > 0 ? 1 : -1);
-      wheelLock = true; wheelAcc = 0; lockedAt = now;
+      locked = true; wheelAcc = 0; lockedAt = now; peak = ad; low = Infinity; decayed = false;
     }
   }, { passive: false });
 
