@@ -52,7 +52,7 @@
       const f = document.createElement('span');
       f.className = `pd-float d${depth}`;
       f.style.cssText = `left:${x}%;top:${y}%;--s:${size}px;--rz:${rz}deg;--ry:${ry}deg;--dur:${7 + (i % 4) * 1.6}s;--delay:${-i * 1.3}s`;
-      f.innerHTML = logo ? `<i><img src="${logo}" alt="" draggable="false"></i>` : '<i><svg viewBox="0 0 24 24"><path d="M5 9.5h14l-1.2 9a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M8.5 9.5V8a3.5 3.5 0 0 1 7 0v1.5"/></svg></i>';
+      f.innerHTML = logo ? `<i><img src="${logo}" alt="" draggable="false"><span class="t-tilt-glare"></span></i>` : '<i><svg viewBox="0 0 24 24"><path d="M5 9.5h14l-1.2 9a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M8.5 9.5V8a3.5 3.5 0 0 1 7 0v1.5"/></svg></i>';
       floaters.append(f);
     });
   }
@@ -70,7 +70,7 @@
         b.vx += (-K * b.x - D * b.vx) * dt; b.vy += (-K * b.y - D * b.vy) * dt; b.vr += (-KR * b.r - DR * b.vr) * dt;
         b.x += b.vx * dt; b.y += b.vy * dt; b.r += b.vr * dt;
         if (Math.abs(b.x) + Math.abs(b.y) + Math.abs(b.r) + Math.abs(b.vx) + Math.abs(b.vy) + Math.abs(b.vr) > .05) moving = true;
-        else { b.x = b.y = b.r = b.vx = b.vy = b.vr = 0; }
+        else { b.x = b.y = b.r = b.vx = b.vy = b.vr = 0; b.el.classList.remove('is-knock'); }
         b.el.style.setProperty('--kx', b.x.toFixed(2) + 'px');
         b.el.style.setProperty('--ky', b.y.toFixed(2) + 'px');
         b.el.style.setProperty('--kr', b.r.toFixed(2) + 'deg');
@@ -78,6 +78,29 @@
       raf = moving ? requestAnimationFrame(tick) : 0;
       if (!raf) last = 0;
     }
+    // transitions.dev "card hover tilt": the icon leans toward the pointer
+    // with a glare that follows it, then eases back flat (pointer tracked
+    // on the flat .pd-float wrapper, the inner tile does the tilting).
+    const MAX = 22;
+    bodies.forEach(b => {
+      const tile = b.el.querySelector('i');
+      const reset = () => {
+        b.el.classList.remove('is-hover'); tile.classList.remove('is-tilting');
+        tile.style.setProperty('--tilt-rx', '0deg'); tile.style.setProperty('--tilt-ry', '0deg');
+      };
+      b.el.addEventListener('pointermove', e => {
+        if (e.pointerType !== 'mouse' || reduced.matches) return;
+        const r = b.el.getBoundingClientRect();
+        const px = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+        const py = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
+        b.el.classList.add('is-hover'); tile.classList.add('is-tilting');
+        tile.style.setProperty('--tilt-ry', ((px - .5) * MAX).toFixed(2) + 'deg');
+        tile.style.setProperty('--tilt-rx', ((.5 - py) * MAX).toFixed(2) + 'deg');
+        tile.style.setProperty('--tilt-gx', (px * 100).toFixed(1) + '%');
+        tile.style.setProperty('--tilt-gy', (py * 100).toFixed(1) + '%');
+      });
+      b.el.addEventListener('pointerleave', reset);
+    });
     bodies.forEach(b => {
       b.el.addEventListener('pointerdown', e => {
         e.preventDefault();
@@ -87,7 +110,7 @@
         const power = reduced.matches ? 0 : 900 + Math.random() * 300;
         b.vx += dx * power; b.vy += dy * power - 200;
         b.vr += (dx >= 0 ? 1 : -1) * (520 + Math.random() * 380);
-        b.el.classList.remove('is-hit'); void b.el.offsetWidth; b.el.classList.add('is-hit');
+        b.el.classList.remove('is-hit'); void b.el.offsetWidth; b.el.classList.add('is-hit', 'is-knock');
         if (!raf) raf = requestAnimationFrame(tick);
       });
     });

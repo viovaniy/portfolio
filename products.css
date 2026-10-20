@@ -176,3 +176,16 @@
 .pd-text{max-width:600px}
 .pd-headline .sr-clip:has(.pd-tile){vertical-align:top;padding-top:.13em}
 .pd-headline .pd-tile{vertical-align:top;top:0}
+
+/* ---------- transitions.dev — Card hover tilt (tokens as shipped) ---------- */
+.pd-floaters{--tilt-perspective:1000px;--tilt-return:1000ms;--tilt-return-ease:cubic-bezier(.22,1,.36,1);--tilt-follow:400ms;--tilt-follow-ease:cubic-bezier(.22,1,.36,1);--tilt-glare-opacity:.32;--tilt-glare-fade:300ms;--tilt-glare-ease:cubic-bezier(.22,1,.36,1)}
+.pd-float i{transform:translate3d(var(--kx,0px),var(--ky,0px),0) perspective(var(--tilt-perspective)) rotateX(calc(14deg + var(--tilt-rx,0deg))) rotateY(calc(var(--ry) + var(--tilt-ry,0deg))) rotate(calc(var(--rz) + var(--kr,0deg)));
+ transition:transform var(--tilt-return) var(--tilt-return-ease),scale .3s cubic-bezier(.34,1.6,.5,1)}
+.pd-float i.is-tilting{transition:transform var(--tilt-follow) var(--tilt-follow-ease),scale .3s cubic-bezier(.34,1.6,.5,1)}
+.pd-float.is-knock i{transition:scale .3s cubic-bezier(.34,1.6,.5,1)}
+.pd-float .t-tilt-glare{position:absolute;inset:0;z-index:2;border-radius:inherit;pointer-events:none;opacity:0;mix-blend-mode:screen;
+ background:radial-gradient(circle 95px at var(--tilt-gx,50%) var(--tilt-gy,50%),rgba(255,255,255,.48),rgba(255,255,255,.06) 52%,rgba(255,255,255,0) 84%),
+  radial-gradient(circle 200px at var(--tilt-gx,50%) var(--tilt-gy,50%),rgba(255,255,255,.22),rgba(255,255,255,.04) 58%,rgba(255,255,255,0) 78%);
+ transition:opacity var(--tilt-glare-fade) var(--tilt-glare-ease)}
+.pd-float.is-hover .t-tilt-glare{opacity:calc(var(--tilt-glare-opacity) * 2.2)}
+@media(prefers-reduced-motion:reduce){.pd-float i{transition:none!important}}
