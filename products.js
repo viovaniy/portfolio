@@ -79,6 +79,25 @@
     }, { threshold: .2 }).observe(section);
   } else visible = true;
 
+  // Floating 3D marks in the sky: big and sharp near the edges, smaller,
+  // blurrier and fainter towards the middle; each levitates on its own rhythm.
+  // To show a real logo, set data-logo="assets/whop-logo.svg" on .pd-floaters.
+  const floaters = section.querySelector('.pd-floaters');
+  if (floaters) {
+    const logo = floaters.dataset.logo;
+    const spots = [
+      [4, 16, 150, -14, 22, 0], [9, 90, 96, 10, -18, 1], [2, 74, 120, -6, 30, 0], [22, 28, 64, 18, 12, 2],
+      [92, 20, 140, 12, -24, 0], [82, 62, 104, -10, 20, 1], [96, 78, 118, 8, -28, 0], [75, 32, 60, -16, -14, 2]
+    ];
+    spots.forEach(([x, y, size, rz, ry, depth], i) => {
+      const f = document.createElement('span');
+      f.className = `pd-float d${depth}`;
+      f.style.cssText = `left:${x}%;top:${y}%;--s:${size}px;--rz:${rz}deg;--ry:${ry}deg;--dur:${7 + (i % 4) * 1.6}s;--delay:${-i * 1.3}s`;
+      f.innerHTML = logo ? `<i><img src="${logo}" alt="" draggable="false"></i>` : '<i><svg viewBox="0 0 24 24"><path d="M5 9.5h14l-1.2 9a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M8.5 9.5V8a3.5 3.5 0 0 1 7 0v1.5"/></svg></i>';
+      floaters.append(f);
+    });
+  }
+
   layout();
   start();
 })();

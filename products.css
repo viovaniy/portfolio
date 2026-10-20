@@ -80,3 +80,32 @@
 .pd-backdrop{-webkit-mask:linear-gradient(to bottom,#000 82%,transparent);mask:linear-gradient(to bottom,#000 82%,transparent)}
 .pd-card{transform-origin:50% 55%}
 .pd-backdrop::before{background:linear-gradient(to bottom,#fefffe 0,rgba(254,255,254,.85) 50px,rgba(254,255,254,.45) 120px,rgba(254,255,254,.12) 190px,rgba(254,255,254,0) 250px)}
+
+/* ---------- floating 3D marks instead of clouds ---------- */
+.pd-sky::before,.pd-sky::after{display:none}
+.pd-floaters{position:absolute;inset:0;perspective:900px;
+ -webkit-mask:linear-gradient(to right,#000 0%,#000 14%,rgba(0,0,0,.35) 30%,transparent 42%,transparent 58%,rgba(0,0,0,.35) 70%,#000 86%,#000 100%);
+ mask:linear-gradient(to right,#000 0%,#000 14%,rgba(0,0,0,.35) 30%,transparent 42%,transparent 58%,rgba(0,0,0,.35) 70%,#000 86%,#000 100%)}
+.pd-float{position:absolute;width:var(--s);height:var(--s);margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);transform-style:preserve-3d;
+ animation:pd-levitate var(--dur) ease-in-out var(--delay) infinite alternate}
+.products-section:not([data-in-view]) .pd-float{animation-play-state:paused}
+/* the tile: glossy, extruded (stacked shadows give it thickness), lit from the top-left */
+.pd-float i{position:absolute;inset:0;display:grid;place-items:center;border-radius:28%;
+ transform:rotateX(14deg) rotateY(var(--ry)) rotate(var(--rz));
+ background:radial-gradient(120% 90% at 28% 18%,#fff 0%,#fff3ea 38%,#ffd2b3 100%);
+ box-shadow:inset 0 2px 1px rgba(255,255,255,.95),inset 0 -6px 14px rgba(255,120,40,.25),
+  1px 2px 0 #ffb98f,2px 4px 0 #ffac7c,3px 6px 0 #ff9e6a,4px 8px 0 #ff9158,
+  10px 22px 30px -8px rgba(160,50,0,.45),0 40px 60px -30px rgba(160,50,0,.4)}
+.pd-float i::after{content:"";position:absolute;inset:6% 10% 55% 10%;border-radius:50% 50% 40% 40%;background:linear-gradient(rgba(255,255,255,.75),rgba(255,255,255,0));pointer-events:none}
+.pd-float svg{width:46%;height:46%;fill:none;stroke:#ff6a1a;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
+.pd-float img{width:58%;height:58%;object-fit:contain;filter:drop-shadow(0 1px 0 rgba(255,255,255,.6))}
+/* depth: the further back, the smaller-looking, softer and fainter */
+.pd-float.d1{filter:blur(1.5px);opacity:.85}
+.pd-float.d2{filter:blur(3.5px);opacity:.6}
+@keyframes pd-levitate{
+ 0%{transform:translate3d(0,-10px,0) rotateX(0) rotateY(0)}
+ 50%{transform:translate3d(4px,6px,20px) rotateX(-6deg) rotateY(8deg)}
+ 100%{transform:translate3d(-3px,14px,0) rotateX(5deg) rotateY(-6deg)}}
+@media(max-width:900px){.pd-float{width:calc(var(--s) * .55);height:calc(var(--s) * .55);margin:calc(var(--s) * -.275) 0 0 calc(var(--s) * -.275)}.pd-float.d2{display:none}}
+@media(prefers-reduced-motion:reduce){.pd-float{animation:none}}
+@media(max-width:650px){.pd-floaters{opacity:.45}}
