@@ -133,3 +133,22 @@
 .pd-bar>*{white-space:nowrap}
 .pd-bar .pd-name{overflow:hidden;text-overflow:ellipsis;min-width:0}
 @media(max-width:650px){.pd-bar .pd-kind{display:none}.pd-bar{height:46px;font-size:13px}.pd-stack{margin-top:0}.pd-layout{gap:20px}}
+
+/* ---------- floating Whop app icons: macOS Liquid Glass ---------- */
+.pd-float i{border-radius:23%;
+ background:linear-gradient(160deg,rgba(255,255,255,.96) 0%,rgba(255,247,241,.82) 45%,rgba(255,226,206,.7) 100%);
+ -webkit-backdrop-filter:blur(10px) saturate(1.6);backdrop-filter:blur(10px) saturate(1.6);
+ box-shadow:inset 0 1.5px 0 rgba(255,255,255,1),inset 0 0 0 1px rgba(255,255,255,.75),inset 0 -3px 6px rgba(255,255,255,.55),
+  inset 0 -14px 24px -14px rgba(255,140,80,.35),inset 0 14px 22px -14px rgba(255,255,255,.9),
+  0 1px 2px rgba(150,40,0,.12),0 22px 40px -16px rgba(150,40,0,.5),0 50px 70px -40px rgba(150,40,0,.35)}
+/* specular sheen across the top, like a glass icon catching light */
+.pd-float i::after{inset:4% 7% 52% 7%;border-radius:48% 48% 40% 40% / 60% 60% 40% 40%;background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.08));opacity:.75}
+/* a thin bright rim along the lower edge (light passing through the glass) */
+.pd-float i::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;padding:1.5px;
+ background:linear-gradient(200deg,rgba(255,255,255,.9),rgba(255,255,255,0) 40%,rgba(255,255,255,0) 70%,rgba(255,255,255,.8));
+ -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude}
+.pd-float img{position:relative;z-index:1;width:62%;height:62%;
+ filter:drop-shadow(0 1px 0 rgba(255,255,255,.55)) drop-shadow(0 3px 3px rgba(150,40,0,.35)) drop-shadow(0 8px 10px rgba(150,40,0,.18))}
+/* depth: icons further back sink into blur */
+.pd-float.d1{filter:blur(2.5px);opacity:.8}
+.pd-float.d2{filter:blur(6px);opacity:.55}
