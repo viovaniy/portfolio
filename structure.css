@@ -163,3 +163,5 @@ body:has(.bottom-nav:not([data-revealed])) .bottom-blur{visibility:hidden}
 @media(prefers-reduced-motion:reduce){.bottom-nav.has-liquid-selection::after{transition:none}}
 /* Parts the universal rule can't reach (UA shadow buttons): keep the arrow hidden there too. */
 html:is(.pointer-mouse,.pointer-enabled) ::file-selector-button,html:is(.pointer-mouse,.pointer-enabled) ::-webkit-file-upload-button{cursor:none!important}
+/* no grey divider lines between sections */
+.content-section{border-top:0!important}
