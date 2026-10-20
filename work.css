@@ -25,7 +25,7 @@
 .cg-frame::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;padding:4px;
  background:linear-gradient(135deg,rgba(255,255,255,.75),rgba(255,255,255,.12) 30% 70%,rgba(255,255,255,.4));
  -webkit-mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);opacity:.85}
-.cg-dim{position:absolute;inset:0;border-radius:inherit;background:#f4f4f6;opacity:var(--dim,0);pointer-events:none;z-index:1}
+.cg-dim{position:absolute;inset:0;border-radius:inherit;background:#f4f4f6;opacity:var(--dim,0);pointer-events:none;z-index:1;will-change:opacity}
 /* scrim so the title reads on any film */
 .cg-slide .cg-media::after{content:"";position:absolute;inset:auto 0 0 0;height:58%;background:linear-gradient(to top,color-mix(in srgb,var(--p1) 60%,#1a0f22) 0%,color-mix(in srgb,var(--p1) 30%,transparent) 45%,transparent);opacity:.75;pointer-events:none}
 .cg-slide.is-active .loop i{animation-play-state:running}
@@ -40,7 +40,7 @@
 .cg-meta{margin:0 0 6px;font-size:14px;font-weight:500;color:rgba(255,255,255,.85);letter-spacing:-.005em}
 .cg-title{margin:0;font-size:clamp(34px,min(6.2vw,9.5svh),84px);font-weight:700;line-height:.98;letter-spacing:-.045em;color:#fff;text-shadow:0 2px 24px rgba(40,10,40,.18)}
 .cg-desc{margin:12px 0 0;font-size:clamp(14px,1.3vw,17px);line-height:1.45;color:rgba(255,255,255,.88);max-width:42ch}
-.cg-caption.is-in>*{animation:cg-text .7s var(--ease) both}
+.cg-caption.is-in>*{animation:cg-text .7s var(--ease) backwards}
 .cg-caption.is-in>:nth-child(2){animation-delay:50ms}.cg-caption.is-in>:nth-child(3){animation-delay:100ms}
 @keyframes cg-text{from{opacity:0;transform:translateY(16px);filter:blur(6px)}}
 
@@ -404,3 +404,34 @@
 /* centred headline, no play tile */
 .cg-head{text-align:center}
 .cg-headline{margin-left:auto;margin-right:auto;max-width:900px}
+
+/* ---------- Phones / touch ----------
+   Touch has no real hover, but iOS keeps :hover "stuck" on the last tapped
+   card — which left the pulsing halo (big blurred shadows repainted every
+   frame) running under your finger while swiping. The halo is a pointer
+   effect, so touch screens skip it. */
+@media(hover:none){
+ .cg-slide::before,.cg-slide::after{animation:none!important;opacity:0!important;transition:none!important}
+ .cg-slide.is-active .cg-frame{transition:none}
+ .cg-slide.is-active:hover .cg-frame{box-shadow:none}
+}
+/* the side blur strips only cover a ~20px gutter on a phone, where the
+   neighbours are off-screen anyway — eight moving backdrop blurs for nothing */
+@media(max-width:650px) and (hover:none){.cg-edge{display:none}}
+
+/* Seek bar on touch: tap the playing segment to open it, drag to rewind;
+   it tucks away again a few seconds after the last touch. */
+@media(hover:none){
+ .cg .cg-slide.has-film .cg-scrub{display:flex!important;opacity:0!important;transform:scaleY(.4)!important;pointer-events:none!important}
+ .cg .cg-slide.has-film .cg-scrub:is(.is-open,.is-grab){opacity:1!important;transform:none!important;pointer-events:auto!important}
+ .cg .cg-slide.has-film .cg-timeline .cg-seg{opacity:1!important}
+ .cg .cg-slide.has-film .cg-timeline:has(.cg-scrub.is-open,.cg-scrub.is-grab) .cg-seg{opacity:0!important}
+ .cg-slide.has-film .cg-seg.is-active::after{content:"";position:absolute;inset:-14px -4px}
+ /* on a phone the open seek bar spans the arrows too, so the rail is long
+    enough for a thumb; the arrows fade out underneath it meanwhile */
+ .cg .cg-slide.has-film .cg-scrub{left:-50px!important;right:-50px!important;width:auto!important;min-width:0!important;height:42px;margin-top:-21px;padding:0 16px;gap:10px}
+ .cg-slide.has-film .cg-bar .cg-arrow{transition:transform .3s cubic-bezier(.34,1.6,.5,1),background-color .25s,opacity .25s ease}
+ .cg-slide.has-film .cg-bar:has(.cg-scrub.is-open,.cg-scrub.is-grab) .cg-arrow{opacity:0;pointer-events:none}
+}
+
+.cg-timeline.no-trans .cg-seg{transition:none!important}

@@ -47,6 +47,7 @@
       if (!seg) return;
       scrub.style.setProperty('--sl', seg.offsetLeft + 'px');
       scrub.style.setProperty('--sw', seg.offsetWidth + 'px');
+      updateScrub(s, v);
     };
     bar.addEventListener('pointerover', e => { if (e.target.closest('.cg-seg.is-active')) fit(); });
     scrub._fit = fit;
@@ -75,6 +76,31 @@
       }
     });
   });
+  // Touch screens have no hover: the seek bar opens on a tap and closes itself
+  // a few seconds after the last touch (or on a tap anywhere else).
+  const touchUI = matchMedia('(hover: none)');
+  let scrubTimer = 0, openSlide = null;
+  function closeScrub() {
+    clearTimeout(scrubTimer);
+    openSlide?.querySelector('.cg-scrub')?.classList.remove('is-open');
+    openSlide = null;
+  }
+  function openScrub(sl) {
+    if (openSlide && openSlide !== sl) closeScrub();
+    const sc = sl.querySelector('.cg-scrub');
+    if (!sc) return;
+    const v = sl.querySelector('video');
+    if (v) updateScrub(sl, v);
+    sc.classList.add('is-open'); openSlide = sl;
+    clearTimeout(scrubTimer);
+    scrubTimer = setTimeout(() => { if (!sc.classList.contains('is-grab')) closeScrub(); else openScrub(sl); }, 3200);
+  }
+  document.addEventListener('pointerdown', e => {
+    if (!openSlide) return;
+    const sc = openSlide.querySelector('.cg-scrub');
+    if (sc && sc.contains(e.target)) openScrub(openSlide);   // keep it open while rewinding
+    else closeScrub();
+  }, { capture: true, passive: true });
   function updateScrub(s, v) {
     const scrub = s.querySelector('.cg-scrub');
     if (!scrub || !(v.duration > 0)) return;
@@ -117,30 +143,55 @@
   const pad = x => String(x).padStart(2, '0');
   slides.forEach(sl => { sl.querySelector('.cg-count span').textContent = `/ ${pad(n)}`; });
 
+  // Per-slide cache: only write a style when its value really changes. The dim
+  // goes straight onto the small .cg-dim layer (not as an inherited custom
+  // property on the whole card), so a moving card no longer restyles every
+  // element of its HUD on each frame — that was the swipe lag on phones.
+  let gapW = 0;
+  const cache = slides.map(s => ({ dim: s.querySelector('.cg-dim') }));
+  const put = (c, el, key, prop, v) => { if (c[key] !== v) { c[key] = v; el.style[prop] = v; } };
   function place() {
-    const g = gap();
+    const g = gapW || (gapW = gap());
     const stretch = reduced.matches ? 0 : Math.min(.07, Math.abs(vel) * .028);
+    // stacking order only matters relative to the neighbours, so rank the cards
+    // by distance instead of writing a new z-index on every frame (each change
+    // made the browser rebuild its layer tree while a card was moving)
+    const dist = slides.map((_, i) => Math.abs(mod(i - pos + n / 2, n) - n / 2));
+    const rank = dist.map((d, i) => dist.filter((e, j) => e < d || (e === d && j < i)).length);
     slides.forEach((s, i) => {
+      const c = cache[i];
       let o = mod(i - pos + n / 2, n) - n / 2;          // offset from centre, wrapped for an endless loop
       const a = Math.abs(o);
+      const hide = a > 2.4;
+      put(c, s, 'vis', 'visibility', hide ? 'hidden' : '');
+      const inert = Math.round(o) !== 0;
+      if (c.inert !== inert) { c.inert = inert; s.inert = inert; }
+      if (hide && c.parked) return;                     // far away and hidden: nothing visible to update
+      c.parked = hide;
       const x = Math.sign(o) * (Math.min(a, 1) * g + Math.max(a - 1, 0) * g * .8);
       const sc = 1 - Math.min(a, 1.6) * .14;
       const near = Math.max(0, 1 - a);                  // 1 at the centre
       const sx = sc * (1 + stretch * near), sy = sc * (1 - stretch * .55 * near);
-      s.style.transform = `translate3d(${x}px,0,0) scale(${sx},${sy})`;
-      s.style.opacity = a > 2.2 ? 0 : String(Math.min(1, 1.2 - a * .3));
-      s.style.setProperty('--dim', Math.min(a, 1) * .35);
-      s.style.zIndex = String(100 - Math.round(a * 10));
-      s.style.visibility = a > 2.4 ? 'hidden' : '';
-      s.inert = Math.round(o) !== 0;
+      put(c, s, 'tf', 'transform', `translate3d(${x.toFixed(2)}px,0,0) scale(${sx.toFixed(4)},${sy.toFixed(4)})`);
+      put(c, s, 'op', 'opacity', a > 2.2 ? '0' : String(+Math.min(1, 1.2 - a * .3).toFixed(3)));
+      const dim = String(+(Math.min(a, 1) * .35).toFixed(3));
+      if (c.d !== dim) { c.d = dim; (c.dim || s).style.setProperty('--dim', dim); }
+      put(c, s, 'z', 'zIndex', String(100 - rank[i]));
     });
   }
 
   function setActive(index) {
     if (index === active) return;
+    if (openSlide) closeScrub();
+    const prev = active;
     active = index;
     const s = slides[index];
     slides.forEach((x, i) => { x.classList.toggle('is-active', i === index); x.setAttribute('aria-hidden', String(i !== index)); });
+    // only the incoming and outgoing cards show their timeline; the hidden ones
+    // jump straight to the new state instead of animating segments nobody sees
+    const quiet = segRows.map((row, k) => k !== index && k !== prev && row[0]?.parentElement);
+    quiet.forEach(t => t && t.classList.add('no-trans'));
+    requestAnimationFrame(() => requestAnimationFrame(() => quiet.forEach(t => t && t.classList.remove('no-trans'))));
     segRows.forEach(row => row.forEach((g, i) => {
       g.classList.toggle('is-active', i === index);
       g.classList.toggle('is-done', i < index);
@@ -193,7 +244,9 @@
       p = v.currentTime / v.duration;
       if (v._last != null && v.currentTime + .5 < v._last && !hold && !scrubbing) { v._last = null; step(1); }
       else v._last = v.currentTime;
-      updateScrub(slides[active], v);
+      // the seek bar is hidden most of the time — refresh it only while it shows
+      const sc = slides[active].querySelector('.cg-scrub');
+      if (sc && (sc.matches('.is-open,.is-grab,:focus-visible,:hover') || sc.parentElement.matches(':hover'))) updateScrub(slides[active], v);
     } else {
       p = Math.min(1, ((playHeld || now) - playStart) / duration());
       if (p >= 1 && !hold) step(1);
@@ -290,6 +343,11 @@
     const arrow = e.target.closest('.cg-arrow');
     if (arrow) { step(Number(arrow.dataset.step)); return; }
     const seg = e.target.closest('.cg-seg');
+    // touch: tapping the segment that is playing opens the seek bar for this film
+    if (seg && touchUI.matches && seg.classList.contains('is-active')) {
+      const sl = seg.closest('.cg-slide');
+      if (sl?.classList.contains('has-film')) { openScrub(sl); return; }
+    }
     if (seg) {
       let d = Number(seg.dataset.go) - active; if (d > n / 2) d -= n; if (d < -n / 2) d += n;
       go(Math.round(target) + d);
@@ -336,7 +394,7 @@
     }, { threshold: .3 });
     io.observe(root);
   }
-  addEventListener('resize', () => { place(); placedPos = pos; placedVel = vel; });
+  addEventListener('resize', () => { gapW = 0; cache.forEach(c => { c.parked = false; }); place(); placedPos = pos; placedVel = vel; });
 
   // Anything with data-case="<title>" (e.g. the Fliq tag on a client card)
   // jumps down to Work and brings that case to the centre.

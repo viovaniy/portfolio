@@ -282,3 +282,6 @@
 /* The sheet can rise over the header: the camera steps aside while it's open. */
 .im-video{transition:transform .15s cubic-bezier(.22,1,.36,1),background-color .2s ease,opacity .2s ease}
 .brief-preview.is-call-open .im-video{opacity:0;pointer-events:none}
+/* Phones: give "Send brief" its own breathing room below the two helper pills,
+   so it reads as the final step rather than a third pill. */
+@media(max-width:900px){.contact-section .brief-tools{margin:0 0 12px}}

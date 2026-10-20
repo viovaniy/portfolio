@@ -531,3 +531,8 @@
  background:var(--squircle-rim) center/100% 100% no-repeat}
 .dock-app.has-logo:active .dock-icon{filter:drop-shadow(0 0 .3px rgba(28,25,40,.2)) drop-shadow(0 1px 1.5px rgba(28,25,40,.12)) drop-shadow(0 6px 9px rgba(28,25,40,.17)) brightness(.82)}
 .dock-app.has-logo:focus-visible .dock-icon{outline:2px solid #087bff;outline-offset:3px;border-radius:26%}
+
+/* The photo never decides the card's size: the square is reserved up front,
+   so nothing below it can shift (or spill into Work) when the image arrives. */
+.me-photo{aspect-ratio:1/1;min-height:0;contain:layout paint}
+.me-photo>img{position:absolute;inset:0}
