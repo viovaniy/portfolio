@@ -3,7 +3,7 @@
 // and fans out like a hand of cards when the pointer arrives. Every card and
 // the button lead to the Whop store (set WHOP_URL below once the store is live).
 (() => {
-  const WHOP_URL = 'https://whop.com/';
+  const WHOP_URL = 'https://whop.com/viovaniy/';
   const section = document.getElementById('products');
   const stack = section?.querySelector('.pd-stack');
   if (!stack) return;
