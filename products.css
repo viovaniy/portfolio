@@ -231,3 +231,6 @@
    animations or hover scale on the tile itself. */
 .pd-float i,.pd-float i.is-tilting,.pd-float.is-knock i{transition:none!important;animation:none!important;scale:none!important}
 .pd-float.is-flash .t-tilt-glare{animation:pd-flash .6s ease-out}
+/* Hovered Whop button: a white rim outside and a soft white inner glow,
+   so the orange pill stands clear of the orange sky. */
+@media(hover:hover){.pd-cta:hover{box-shadow:0 0 0 2px rgba(255,255,255,.95),0 0 0 6px rgba(255,255,255,.18),inset 0 0 0 1px rgba(255,255,255,.55),inset 0 1.5px 0 rgba(255,255,255,.85),inset 0 0 16px rgba(255,255,255,.4),0 4px 8px rgba(150,40,0,.18),0 22px 40px -14px rgba(180,50,0,.8)}}
