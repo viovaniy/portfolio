@@ -152,3 +152,27 @@
 /* depth: icons further back sink into blur */
 .pd-float.d1{filter:blur(2.5px);opacity:.8}
 .pd-float.d2{filter:blur(6px);opacity:.55}
+
+/* floating icons react to taps: knocked away, spinning, springing back */
+.pd-floaters .pd-float{pointer-events:auto;cursor:pointer;touch-action:manipulation}
+.pd-float i{transform:translate3d(var(--kx,0px),var(--ky,0px),0) rotateX(14deg) rotateY(var(--ry)) rotate(calc(var(--rz) + var(--kr,0deg)))}
+.pd-float.is-hit i{animation:pd-squash .45s cubic-bezier(.34,1.6,.5,1)}
+@keyframes pd-squash{0%{scale:1}25%{scale:.86 .92}60%{scale:1.06}100%{scale:1}}
+@media(hover:hover){.pd-float:hover i{scale:1.05;transition:scale .3s cubic-bezier(.34,1.6,.5,1)}}
+
+/* ---------- text block, tidied (soft-ui rhythm) ---------- */
+.pd-text{max-width:520px}
+.pd-tag{margin-bottom:22px}
+.pd-headline{margin:0!important;font-size:clamp(34px,3.9vw,50px)!important;line-height:1.06!important;letter-spacing:-.04em!important}
+/* the tile no longer stretches its line: it hangs inside the line height */
+.pd-tile{width:.86em;height:.86em;margin:0 .08em;vertical-align:-.08em;border-radius:.26em}
+.pd-headline .sr-word{line-height:inherit}
+.pd-copy{margin-top:18px;font-size:16.5px;line-height:1.5;max-width:400px}
+.pd-cta{margin-top:26px}
+.pd-note{margin-top:12px;font-size:12.5px}
+@media(max-width:650px){.pd-headline{font-size:clamp(30px,8.6vw,38px)!important}.pd-tag{margin-bottom:16px}}
+.pd-headline .sr-clip:has(.pd-tile){vertical-align:middle}
+.pd-headline .pd-tile{vertical-align:middle;position:relative;top:-.04em}
+.pd-text{max-width:600px}
+.pd-headline .sr-clip:has(.pd-tile){vertical-align:top;padding-top:.13em}
+.pd-headline .pd-tile{vertical-align:top;top:0}
