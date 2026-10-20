@@ -534,5 +534,7 @@
 
 /* The photo never decides the card's size: the square is reserved up front,
    so nothing below it can shift (or spill into Work) when the image arrives. */
-.me-photo{aspect-ratio:1/1;min-height:0;contain:layout paint}
+/* Same picture underneath as a background: if Safari ever drops the <img>
+   layer (it can, next to the blurred glass plate), the photo still shows. */
+.me-photo{aspect-ratio:1/1;min-height:0;background:#d9d7d4 url("assets/about-photo.jpg") center/cover no-repeat}
 .me-photo>img{position:absolute;inset:0}
