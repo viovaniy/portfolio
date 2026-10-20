@@ -62,7 +62,7 @@
   if (floaters) {
     const bodies = [...floaters.querySelectorAll('.pd-float')].map(el => ({ el, x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0 }));
     let raf = 0, last = 0;
-    const K = 120, D = 9, KR = 90, DR = 7;
+    const K = 170, D = 17, KR = 150, DR = 15;   // calmer: a soft overshoot, no long wobble
     function tick(now) {
       const dt = Math.min(.033, last ? (now - last) / 1000 : 1 / 60); last = now;
       let moving = false;
@@ -107,9 +107,18 @@
         const r = b.el.getBoundingClientRect();
         let dx = r.left + r.width / 2 - e.clientX, dy = r.top + r.height / 2 - e.clientY;
         const len = Math.hypot(dx, dy) || 1; dx /= len; dy /= len;
-        const power = reduced.matches ? 0 : 900 + Math.random() * 300;
-        b.vx += dx * power; b.vy += dy * power - 200;
-        b.vr += (dx >= 0 ? 1 : -1) * (520 + Math.random() * 380);
+        // a gentle nudge, not a kick
+        const power = reduced.matches ? 0 : 380 + Math.random() * 80;
+        b.vx += dx * power; b.vy += dy * power;
+        b.vr += (dx >= 0 ? 1 : -1) * (90 + Math.random() * 50);
+        // the glass presses in where it was touched and a ring of light spreads out
+        const tile = b.el.querySelector('i'), tr = tile.getBoundingClientRect();
+        const gx = ((e.clientX - tr.left) / tr.width) * 100, gy = ((e.clientY - tr.top) / tr.height) * 100;
+        const ring = document.createElement('span');
+        ring.className = 'pd-ripple';
+        ring.style.left = gx + '%'; ring.style.top = gy + '%';
+        tile.append(ring);
+        setTimeout(() => ring.remove(), 900);
         b.el.classList.remove('is-hit'); void b.el.offsetWidth; b.el.classList.add('is-hit', 'is-knock');
         if (!raf) raf = requestAnimationFrame(tick);
       });
