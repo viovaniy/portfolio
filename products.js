@@ -9,68 +9,26 @@
   if (!stack) return;
   section.querySelectorAll('[data-whop]').forEach(a => { a.href = WHOP_URL; });
   const cards = [...stack.querySelectorAll('.pd-card')];
-  const n = cards.length;
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let order = cards.map((_, i) => i);   // order[0] is the front card
-  let fanned = false, lifted = -1, timer = 0, visible = false, busy = false;
-
-  const stackPose = d => `translate3d(0,${-d * 16}px,0) scale(${1 - d * .055}) rotate(${d ? (d % 2 ? 1 : -1) * d * 1.6 : 0}deg)`;
-  const fanSlots = [[0, 0, 0], [-1, 1, 1], [1, 1, 1], [-2, 2, 2], [2, 2, 2]];
-  function fanPose(d, isLift) {
-    const [side, ring] = fanSlots[d] || [0, 3];
-    const w = stack.offsetWidth;
-    const x = side * w * (ring === 1 ? .22 : .4), rot = side * (ring === 1 ? 5 : 9), y = ring * 12 - (isLift ? 22 : 0);
-    return `translate3d(${x}px,${y}px,0) rotate(${rot}deg) scale(${isLift ? 1.03 : 1 - ring * .07})`;
-  }
-
-  function layout() {
-    order.forEach((ci, d) => {
-      const c = cards[ci];
-      const isLift = fanned && ci === lifted;
-      c.style.transform = fanned ? fanPose(d, isLift) : stackPose(d);
-      c.style.zIndex = String(isLift ? 50 : n - d);
-      c.style.opacity = !fanned && d > 3 ? '0' : '1';
-      c.querySelector('.pd-link').tabIndex = fanned || d === 0 ? 0 : -1;
+  // A stack seen in perspective: each card behind is smaller and sits higher.
+  // Hovering eases the stack apart a little and lifts the front card; there is
+  // no switching — every card simply opens the Whop store.
+  const STEP = 30, SCALE = .08;
+  let visible = false;
+  function layout(open) {
+    cards.forEach((c, d) => {
+      const y = -d * (open ? STEP * 1.55 : STEP);
+      const sc = 1 - d * (open ? SCALE * .9 : SCALE) + (open && d === 0 ? .02 : 0);
+      c.style.transform = `translate3d(-50%,calc(-50% + ${y}px),0) scale(${sc})`;
+      c.style.zIndex = String(cards.length - d);
+      c.style.setProperty('--depth', d);
     });
-    stack.classList.toggle('is-fanned', fanned);
+    stack.classList.toggle('is-open', open);
   }
-
-  // the front card flicks out to the side and tucks in at the back
-  function cycle() {
-    if (fanned || busy || reduced.matches || !visible || document.hidden) return;
-    busy = true;
-    const front = cards[order[0]];
-    const from = front.style.transform;
-    order = [...order.slice(1), order[0]];
-    front.style.transition = 'none';
-    front.style.zIndex = String(n + 1);
-    const to = stackPose(n - 1);
-    const anim = front.animate([
-      { transform: from },
-      { transform: 'translate3d(112%,-18px,0) rotate(13deg) scale(.97)', offset: .42, easing: 'cubic-bezier(.4,0,.2,1)' },
-      { transform: to }
-    ], { duration: 950, easing: 'cubic-bezier(.22,1,.36,1)' });
-    // the others move up one step on their own spring transitions
-    order.forEach((ci, d) => { if (ci !== order[n - 1]) { cards[ci].style.transform = stackPose(d); cards[ci].style.zIndex = String(n - d); } });
-    setTimeout(() => { front.style.zIndex = '0'; }, 420);
-    anim.onfinish = () => {
-      front.style.transform = to;
-      front.style.opacity = '0';
-      void front.offsetWidth;
-      front.style.transition = '';
-      layout();
-      busy = false;
-    };
-  }
-  const start = () => { clearInterval(timer); timer = setInterval(cycle, 3200); };
-
-  stack.addEventListener('pointerenter', e => { if (e.pointerType !== 'mouse') return; fanned = true; layout(); });
-  stack.addEventListener('pointerleave', () => { fanned = false; lifted = -1; layout(); });
-  cards.forEach((c, i) => {
-    c.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse' && fanned) { lifted = i; layout(); } });
-    c.addEventListener('focusin', () => { if (!fanned) { fanned = true; } lifted = i; layout(); });
-  });
-  stack.addEventListener('focusout', e => { if (!stack.contains(e.relatedTarget)) { fanned = false; lifted = -1; layout(); } });
+  stack.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') layout(true); });
+  stack.addEventListener('pointerleave', () => layout(false));
+  stack.addEventListener('focusin', () => layout(true));
+  stack.addEventListener('focusout', e => { if (!stack.contains(e.relatedTarget)) layout(false); });
+  layout(false);
 
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(([en]) => {
@@ -98,6 +56,4 @@
     });
   }
 
-  layout();
-  start();
 })();

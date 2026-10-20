@@ -109,3 +109,27 @@
 @media(max-width:900px){.pd-float{width:calc(var(--s) * .55);height:calc(var(--s) * .55);margin:calc(var(--s) * -.275) 0 0 calc(var(--s) * -.275)}.pd-float.d2{display:none}}
 @media(prefers-reduced-motion:reduce){.pd-float{animation:none}}
 @media(max-width:650px){.pd-floaters{opacity:.45}}
+
+/* ---------- Card stack v2 (from the scrollable-card-stack reference, no switching) ---------- */
+.pd-stack{width:min(420px,80vw);aspect-ratio:auto;height:calc(min(420px,80vw) * 10 / 16 + 70px + 120px);perspective:1000px;perspective-origin:50% 60%;margin-top:40px}
+.pd-card{position:absolute;left:50%;top:58%;width:100%;height:calc(min(420px,80vw) * 10 / 16 + 70px);transform-origin:50% 50%;
+ transition:transform .55s cubic-bezier(.34,1.32,.5,1),filter .3s ease,opacity .3s ease}
+.pd-card:not(:first-child){filter:blur(calc(var(--depth,0) * .6px))}
+.pd-stack.is-open .pd-card{filter:none}
+.pd-link{flex-direction:column;padding:0;border-radius:18px;overflow:hidden;background:#fff;
+ box-shadow:0 0 0 2px rgba(255,255,255,.95),0 0 0 2.5px rgba(150,50,0,.12),0 2px 4px rgba(150,50,0,.08),0 18px 36px -16px rgba(150,50,0,.45);transition:box-shadow .35s ease}
+.pd-stack.is-open .pd-card:first-child .pd-link{box-shadow:0 0 0 2px #fff,0 0 0 2.5px rgba(150,50,0,.14),0 4px 8px rgba(150,50,0,.1),0 28px 50px -18px rgba(150,50,0,.55)}
+.pd-art{flex:1;border-radius:0}
+.pd-info{display:none}
+.pd-bar{display:flex;align-items:center;justify-content:center;gap:6px;height:52px;flex:none;padding:0 14px;background:rgba(255,255,255,.96);font-size:14px;color:#1f1f22;border-top:1px solid rgba(28,25,40,.05)}
+.pd-icon{position:relative;width:20px;height:20px;flex:none;border-radius:50%;overflow:hidden;background:linear-gradient(150deg,var(--a),var(--b));box-shadow:0 0 0 1px #e0e0e0}
+.pd-icon i{display:none}
+.pd-bar .pd-name{font-size:14px;font-weight:600}
+.pd-bar .pd-kind{font-size:14px;color:rgba(31,31,34,.6)}
+.pd-bar .pd-on{margin-left:auto;grid-column:auto;grid-row:auto}
+.pd-hint{margin-top:6px}
+.pd-stack.is-open~.pd-hint{opacity:1}
+@media(max-width:900px){.pd-stack{margin-top:30px}}
+.pd-bar>*{white-space:nowrap}
+.pd-bar .pd-name{overflow:hidden;text-overflow:ellipsis;min-width:0}
+@media(max-width:650px){.pd-bar .pd-kind{display:none}.pd-bar{height:46px;font-size:13px}.pd-stack{margin-top:0}.pd-layout{gap:20px}}
