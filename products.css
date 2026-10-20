@@ -1,0 +1,82 @@
+/* ---------- Resources (Whop shop): an orange sky like About's blue one ----------
+   Left: a "for designers" tag, a two-tone headline with an inline tile, and the
+   Whop button. Right: a stack of product cards that fans out on hover. */
+.products-section{position:relative;isolation:isolate;border-top:0;padding:clamp(70px,10svh,110px) 0 clamp(110px,14svh,140px);min-height:0;color:#fff}
+.pd-backdrop{position:absolute;z-index:-1;top:0;left:50%;width:100vw;height:100%;transform:translateX(-50%);overflow:hidden;pointer-events:none;background:#ff7a1f}
+.pd-sky{position:absolute;inset:0;background:radial-gradient(ellipse at 80% 12%,#ffe3b866,transparent 52%),linear-gradient(165deg,#ff5a1a 0%,#ff7f2a 42%,#ffb067 78%,#ffd3a1 100%)}
+.pd-sky::before,.pd-sky::after{content:"";position:absolute;inset:-100px -220px;background-repeat:no-repeat;background-position:center;background-size:100% 100%;pointer-events:none;will-change:transform}
+.pd-sky::before{background-image:url("assets/about-clouds-far.svg?v=3");opacity:.55;animation:about-clouds-far 32s ease-in-out infinite alternate;animation-delay:-20s}
+.pd-sky::after{background-image:url("assets/about-clouds-near.svg?v=3");opacity:.85;animation:about-clouds-near 24s ease-in-out infinite alternate;animation-delay:-9s}
+.products-section:not([data-in-view]) .pd-sky::before,.products-section:not([data-in-view]) .pd-sky::after{animation-play-state:paused}
+/* the page's white melts into the sky at the top, like About */
+.pd-backdrop::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(to bottom,#fefffe 0%,rgba(254,255,254,.9) 9%,rgba(254,255,254,.55) 24%,rgba(254,255,254,.18) 42%,rgba(254,255,254,0) 58%)}
+.pd-backdrop::after{content:"";position:absolute;inset:0;z-index:1;opacity:.06;background:url("assets/about-grain.svg");mix-blend-mode:soft-light}
+
+.pd-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.95fr);align-items:center;gap:clamp(30px,5vw,70px);padding-top:clamp(40px,8svh,90px)}
+.pd-tag{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px 0 10px;border-radius:99px;font-size:13px;font-weight:600;color:#c4470f;
+ background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(14px) saturate(1.6);backdrop-filter:blur(14px) saturate(1.6);
+ box-shadow:inset 0 1px 0 #fff,0 0 0 .5px rgba(150,50,0,.12),0 6px 14px -8px rgba(150,50,0,.4)}
+.pd-tag svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+.pd-headline{margin:18px 0 0;font-size:clamp(32px,4.2vw,52px)!important;font-weight:600!important;letter-spacing:-.035em!important;line-height:1.1!important;text-wrap:balance;color:#fff}
+.pd-ink{color:#fff;text-shadow:0 2px 20px rgba(160,50,0,.18)}
+.pd-soft{color:rgba(255,255,255,.72)}
+.pd-tile{display:inline-grid;place-items:center;width:1.04em;height:1.04em;margin:0 .06em;vertical-align:-.17em;border-radius:.3em;transform:rotate(-7deg);
+ background:linear-gradient(160deg,#ffffff,#ffe9d8);box-shadow:inset 0 1px 0 #fff,0 2px 4px rgba(150,50,0,.15),0 14px 24px -10px rgba(150,50,0,.55);transition:transform .55s cubic-bezier(.34,1.6,.5,1)}
+.pd-tile svg{width:56%;height:56%;fill:none;stroke:#ff6a1a;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
+@media(hover:hover){.pd-headline:hover .pd-tile{transform:rotate(6deg) scale(1.08)}}
+.pd-headline .sr-clip:has(.pd-tile){overflow:visible}
+.pd-copy{margin:16px 0 0;max-width:420px;font-size:17px;line-height:1.5;color:rgba(255,255,255,.88)}
+.pd-cta{display:inline-flex;align-items:center;gap:8px;margin-top:24px;height:48px;padding:0 22px;border-radius:999px;font-size:16px;font-weight:600;letter-spacing:-.01em;color:#e2550f;background:#fff;
+ box-shadow:inset 0 1px 0 #fff,0 2px 4px rgba(150,50,0,.12),0 16px 30px -14px rgba(150,50,0,.6);transition:transform .45s cubic-bezier(.34,1.45,.5,1),box-shadow .3s}
+@media(hover:hover){.pd-cta:hover{transform:translateY(-2px);box-shadow:inset 0 1px 0 #fff,0 2px 4px rgba(150,50,0,.12),0 20px 36px -14px rgba(150,50,0,.7)}}
+.pd-cta:active{transform:scale(.96)}
+.pd-cta:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.pd-note{margin:14px 0 0;font-size:13px;color:rgba(255,255,255,.72)}
+
+/* ---------- the card stack ---------- */
+.pd-stack-wrap{position:relative;display:flex;flex-direction:column;align-items:center}
+.pd-stack{position:relative;list-style:none;margin:0;padding:0;width:min(300px,62vw);aspect-ratio:3/3.9;perspective:1200px}
+.pd-card{position:absolute;inset:0;transform-origin:50% 100%;will-change:transform;
+ transition:transform .75s cubic-bezier(.34,1.32,.5,1),opacity .4s ease,filter .4s ease}
+.pd-link{position:absolute;inset:0;display:flex;flex-direction:column;padding:10px;border-radius:30px;color:#1f1f22;text-decoration:none;
+ background:linear-gradient(170deg,rgba(255,255,255,.96),rgba(255,255,255,.86));
+ box-shadow:inset 0 1px 0 #fff,0 0 0 .5px rgba(150,50,0,.12),0 2px 4px rgba(150,50,0,.08),0 22px 40px -18px rgba(150,50,0,.5);transition:box-shadow .4s}
+.pd-art{position:relative;flex:1;border-radius:22px;overflow:hidden;background:linear-gradient(150deg,var(--a),var(--b))}
+.pd-art i{position:absolute;display:block}
+.pd-info{display:grid;grid-template-columns:1fr auto;align-items:end;gap:2px 8px;padding:12px 8px 4px}
+.pd-name{grid-column:1;font-size:16px;font-weight:600;letter-spacing:-.02em}
+.pd-kind{grid-column:1;font-size:12.5px;color:#8e8e93}
+.pd-on{grid-column:2;grid-row:1/3;align-self:center;display:inline-flex;align-items:center;gap:3px;height:26px;padding:0 10px;border-radius:99px;font-size:12px;font-weight:600;color:#e2550f;background:#fff0e6;box-shadow:inset 0 0 0 1px rgba(226,85,15,.15)}
+.pd-link:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.pd-hint{margin:22px 0 0;font-size:12.5px;color:rgba(255,255,255,.8);transition:opacity .3s}
+.pd-stack.is-fanned~.pd-hint{opacity:0}
+
+/* placeholder mockup art: simple soft shapes per product */
+.pd-art-ring i:nth-child(1){left:22%;top:22%;width:56%;aspect-ratio:1;border-radius:50%;border:10px solid rgba(255,255,255,.85)}
+.pd-art-ring i:nth-child(2){left:60%;top:56%;width:18%;aspect-ratio:1;border-radius:50%;background:#fff;box-shadow:0 8px 18px -6px rgba(0,0,0,.2)}
+.pd-art-phone i:nth-child(1){left:30%;top:12%;width:40%;height:80%;border-radius:18px;background:rgba(255,255,255,.9);box-shadow:0 14px 30px -12px rgba(0,0,0,.3)}
+.pd-art-phone i:nth-child(2){left:36%;top:24%;width:28%;height:12%;border-radius:8px;background:var(--b)}
+.pd-art-phone i:nth-child(3){left:36%;top:42%;width:20%;height:6%;border-radius:99px;background:color-mix(in srgb,var(--b) 50%,#fff)}
+.pd-art-squircle i{width:26%;aspect-ratio:1;border-radius:28%;background:rgba(255,255,255,.85);box-shadow:inset 0 1px 0 #fff,0 10px 20px -8px rgba(0,0,0,.25)}
+.pd-art-squircle i:nth-child(1){left:16%;top:22%;transform:rotate(-8deg)}
+.pd-art-squircle i:nth-child(2){left:44%;top:38%;background:#fff}
+.pd-art-squircle i:nth-child(3){left:58%;top:16%;transform:rotate(10deg);opacity:.7}
+.pd-art-frames i{left:14%;width:72%;height:20%;border-radius:12px;background:rgba(255,255,255,.85)}
+.pd-art-frames i:nth-child(1){top:16%}.pd-art-frames i:nth-child(2){top:40%;opacity:.75}.pd-art-frames i:nth-child(3){top:64%;opacity:.5}
+.pd-art-curve i:nth-child(1){left:14%;top:16%;width:72%;height:68%;border-left:3px solid rgba(255,255,255,.7);border-bottom:3px solid rgba(255,255,255,.7)}
+.pd-art-curve i:nth-child(2){left:16%;top:18%;width:68%;height:64%;border-radius:0 0 0 100%;border-top:6px solid #fff;border-right:6px solid transparent;transform:scaleX(-1)}
+.pd-art-curve i:nth-child(3){left:76%;top:14%;width:9%;aspect-ratio:1;border-radius:50%;background:#fff;box-shadow:0 6px 14px -4px rgba(0,0,0,.25)}
+
+@media(max-width:900px){
+ .pd-layout{grid-template-columns:1fr;gap:44px;padding-top:30px}
+ .pd-stack{width:min(270px,70vw)}
+}
+@media(prefers-reduced-motion:reduce){
+ .pd-sky::before,.pd-sky::after{animation:none}
+ .pd-card,.pd-tile,.pd-cta{transition:none}
+}
+/* refinements: opaque cards, a tighter fan, a soft melt into the next section */
+.pd-link{background:linear-gradient(170deg,#fff,#fdf8f4)}
+.pd-backdrop{-webkit-mask:linear-gradient(to bottom,#000 82%,transparent);mask:linear-gradient(to bottom,#000 82%,transparent)}
+.pd-card{transform-origin:50% 55%}
+.pd-backdrop::before{background:linear-gradient(to bottom,#fefffe 0,rgba(254,255,254,.85) 50px,rgba(254,255,254,.45) 120px,rgba(254,255,254,.12) 190px,rgba(254,255,254,0) 250px)}
