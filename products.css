@@ -224,3 +224,5 @@
 .pointer-enabled .pd-cta:hover{background:#fff}
 @media(prefers-reduced-motion:reduce){.pd-cta:hover::before,.pd-cta:hover::after{animation:none}}
 @media(hover:hover){.pd-cta:hover{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.7),inset 0 1px 0 rgba(255,255,255,.6),0 2px 4px rgba(150,50,0,.15),0 20px 36px -14px rgba(200,60,0,.75)}}
+.pd-stack.no-anim .pd-card{transition:none!important}
+.pd-stack.is-waiting .pd-link{opacity:0}

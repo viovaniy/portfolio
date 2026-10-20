@@ -29,7 +29,29 @@
   stack.addEventListener('pointerleave', () => layout(false));
   stack.addEventListener('focusin', () => layout(true));
   stack.addEventListener('focusout', e => { if (!stack.contains(e.relatedTarget)) layout(false); });
+  // place the stack without any slide-in, then let the cards drop in from
+  // above one onto another when the section first comes into view
+  stack.classList.add('no-anim');
   layout(false);
+  void stack.offsetWidth;
+  requestAnimationFrame(() => stack.classList.remove('no-anim'));
+  if (!reduced.matches && 'IntersectionObserver' in window) {
+    stack.classList.add('is-waiting');
+    const io = new IntersectionObserver(([en]) => {
+      if (!en.isIntersecting) return;
+      io.disconnect();
+      stack.classList.remove('is-waiting');
+      [...cards].reverse().forEach((c, k) => {
+        c.querySelector('.pd-link').animate([
+          { transform: 'translateY(-90px)', opacity: 0 },
+          { transform: 'translateY(0)', opacity: 1, offset: .55 },
+          { transform: 'translateY(-6px)', offset: .78 },
+          { transform: 'translateY(0)', opacity: 1 }
+        ], { duration: 720, delay: k * 110, easing: 'cubic-bezier(.33,0,.2,1)', fill: 'backwards' });
+      });
+    }, { threshold: .35 });
+    io.observe(stack);
+  }
 
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(([en]) => {
