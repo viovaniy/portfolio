@@ -79,70 +79,81 @@
     });
   }
 
-  // Tap a floating icon: it gets knocked away from the pointer and spins,
-  // then springs back home (bouncy, a little underdamped).
+  // Floating icons — all motion in one spring loop (no CSS transitions on the
+  // tile), so hover tilt, tap knock, spin and squash can never fight:
+  //  · hover: the tile leans toward the pointer (transitions.dev card-tilt feel)
+  //    with a glare that follows it; leaving eases it back flat
+  //  · tap: a gentle nudge away from the touch, a little spin, the glass
+  //    squashes and a ring of light ripples out; everything springs home
   if (floaters) {
-    const bodies = [...floaters.querySelectorAll('.pd-float')].map(el => ({ el, x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0 }));
+    const MAX = 22;
+    const spring = (v, x, target, k, d, dt) => v + (k * (target - x) - d * v) * dt;
+    const bodies = [...floaters.querySelectorAll('.pd-float')].map(el => ({
+      el, tile: el.querySelector('i'),
+      ry0: parseFloat(el.style.getPropertyValue('--ry')) || 0, rz0: parseFloat(el.style.getPropertyValue('--rz')) || 0,
+      x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0,
+      tx: 0, ty: 0, vtx: 0, vty: 0, gtx: 0, gty: 0,
+      s: 1, vs: 0, hover: false
+    }));
     let raf = 0, last = 0;
-    const K = 170, D = 17, KR = 150, DR = 15;   // calmer: a soft overshoot, no long wobble
+    const draw = b => {
+      b.tile.style.transform = `translate3d(${b.x.toFixed(2)}px,${b.y.toFixed(2)}px,0) perspective(1000px) rotateX(${(14 + b.tx).toFixed(2)}deg) rotateY(${(b.ry0 + b.ty).toFixed(2)}deg) rotate(${(b.rz0 + b.r).toFixed(2)}deg) scale(${b.s.toFixed(4)})`;
+    };
     function tick(now) {
-      const dt = Math.min(.033, last ? (now - last) / 1000 : 1 / 60); last = now;
-      let moving = false;
+      const dt = Math.min(.032, last ? (now - last) / 1000 : 1 / 60); last = now;
+      let busy = false;
       bodies.forEach(b => {
-        b.vx += (-K * b.x - D * b.vx) * dt; b.vy += (-K * b.y - D * b.vy) * dt; b.vr += (-KR * b.r - DR * b.vr) * dt;
-        b.x += b.vx * dt; b.y += b.vy * dt; b.r += b.vr * dt;
-        if (Math.abs(b.x) + Math.abs(b.y) + Math.abs(b.r) + Math.abs(b.vx) + Math.abs(b.vy) + Math.abs(b.vr) > .05) moving = true;
-        else { b.x = b.y = b.r = b.vx = b.vy = b.vr = 0; b.el.classList.remove('is-knock'); }
-        b.el.style.setProperty('--kx', b.x.toFixed(2) + 'px');
-        b.el.style.setProperty('--ky', b.y.toFixed(2) + 'px');
-        b.el.style.setProperty('--kr', b.r.toFixed(2) + 'deg');
+        for (let k = 0; k < 2; k++) {
+          const h = dt / 2;
+          b.vx = spring(b.vx, b.x, 0, 170, 17, h); b.vy = spring(b.vy, b.y, 0, 170, 17, h); b.vr = spring(b.vr, b.r, 0, 150, 15, h);
+          const tk = b.hover ? 70 : 26, td = b.hover ? 15 : 10;   // quick follow, slow return
+          b.vtx = spring(b.vtx, b.tx, b.gtx, tk, td, h); b.vty = spring(b.vty, b.ty, b.gty, tk, td, h);
+          b.vs = spring(b.vs, b.s, b.hover ? 1.05 : 1, 320, 20, h);
+          b.x += b.vx * h; b.y += b.vy * h; b.r += b.vr * h; b.tx += b.vtx * h; b.ty += b.vty * h; b.s += b.vs * h;
+        }
+        const rest = Math.abs(b.x) + Math.abs(b.y) + Math.abs(b.r) + Math.abs(b.vx) + Math.abs(b.vy) + Math.abs(b.vr)
+          + Math.abs(b.tx - b.gtx) + Math.abs(b.ty - b.gty) + Math.abs(b.vtx) + Math.abs(b.vty)
+          + Math.abs(b.s - (b.hover ? 1.05 : 1)) + Math.abs(b.vs);
+        if (rest > .01) busy = true;
+        draw(b);
       });
-      raf = moving ? requestAnimationFrame(tick) : 0;
+      raf = busy ? requestAnimationFrame(tick) : 0;
       if (!raf) last = 0;
     }
-    // transitions.dev "card hover tilt": the icon leans toward the pointer
-    // with a glare that follows it, then eases back flat (pointer tracked
-    // on the flat .pd-float wrapper, the inner tile does the tilting).
-    const MAX = 22;
+    const wake = () => { if (!raf) raf = requestAnimationFrame(tick); };
     bodies.forEach(b => {
-      const tile = b.el.querySelector('i');
-      const reset = () => {
-        b.el.classList.remove('is-hover'); tile.classList.remove('is-tilting');
-        tile.style.setProperty('--tilt-rx', '0deg'); tile.style.setProperty('--tilt-ry', '0deg');
-      };
+      draw(b);
       b.el.addEventListener('pointermove', e => {
         if (e.pointerType !== 'mouse' || reduced.matches) return;
         const r = b.el.getBoundingClientRect();
         const px = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
         const py = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
-        b.el.classList.add('is-hover'); tile.classList.add('is-tilting');
-        tile.style.setProperty('--tilt-ry', ((px - .5) * MAX).toFixed(2) + 'deg');
-        tile.style.setProperty('--tilt-rx', ((.5 - py) * MAX).toFixed(2) + 'deg');
-        tile.style.setProperty('--tilt-gx', (px * 100).toFixed(1) + '%');
-        tile.style.setProperty('--tilt-gy', (py * 100).toFixed(1) + '%');
+        b.hover = true; b.el.classList.add('is-hover');
+        b.gty = (px - .5) * MAX; b.gtx = (.5 - py) * MAX;
+        b.tile.style.setProperty('--tilt-gx', (px * 100).toFixed(1) + '%');
+        b.tile.style.setProperty('--tilt-gy', (py * 100).toFixed(1) + '%');
+        wake();
       });
-      b.el.addEventListener('pointerleave', reset);
-    });
-    bodies.forEach(b => {
+      b.el.addEventListener('pointerleave', () => { b.hover = false; b.gtx = b.gty = 0; b.el.classList.remove('is-hover'); wake(); });
       b.el.addEventListener('pointerdown', e => {
         e.preventDefault();
+        if (reduced.matches) return;
         const r = b.el.getBoundingClientRect();
         let dx = r.left + r.width / 2 - e.clientX, dy = r.top + r.height / 2 - e.clientY;
         const len = Math.hypot(dx, dy) || 1; dx /= len; dy /= len;
-        // a gentle nudge, not a kick
-        const power = reduced.matches ? 0 : 380 + Math.random() * 80;
+        const power = 380 + Math.random() * 80;
         b.vx += dx * power; b.vy += dy * power;
         b.vr += (dx >= 0 ? 1 : -1) * (90 + Math.random() * 50);
-        // the glass presses in where it was touched and a ring of light spreads out
-        const tile = b.el.querySelector('i'), tr = tile.getBoundingClientRect();
-        const gx = ((e.clientX - tr.left) / tr.width) * 100, gy = ((e.clientY - tr.top) / tr.height) * 100;
+        b.vs -= 2.6;
+        const tr = b.tile.getBoundingClientRect();
         const ring = document.createElement('span');
         ring.className = 'pd-ripple';
-        ring.style.left = gx + '%'; ring.style.top = gy + '%';
-        tile.append(ring);
+        ring.style.left = ((e.clientX - tr.left) / tr.width * 100) + '%';
+        ring.style.top = ((e.clientY - tr.top) / tr.height * 100) + '%';
+        b.tile.append(ring);
         setTimeout(() => ring.remove(), 900);
-        b.el.classList.remove('is-hit'); void b.el.offsetWidth; b.el.classList.add('is-hit', 'is-knock');
-        if (!raf) raf = requestAnimationFrame(tick);
+        b.el.classList.remove('is-flash'); void b.el.offsetWidth; b.el.classList.add('is-flash');
+        wake();
       });
     });
   }
