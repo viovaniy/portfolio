@@ -1,10 +1,10 @@
 .hero-reveal{--reveal-duration:.7s;--reveal-blur:5px;--reveal-ease:cubic-bezier(.16,1,.3,1)}
 .greeting-stage{display:block;position:relative;height:1.3em;margin-bottom:12px;overflow:visible;font-weight:600;letter-spacing:-.04em}
-.greeting-word{display:inline-block;white-space:nowrap;animation:word-reveal .7s var(--reveal-ease) both,greeting-gradient 7s ease-in-out infinite;background:linear-gradient(110deg,#1685ed 0%,#7773e9 25%,#b557c2 45%,#e57597 65%,#9472df 80%,#1685ed 100%);background-size:250% 100%;background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.greeting-word{display:inline-block;white-space:nowrap;animation:word-reveal .7s var(--reveal-ease) backwards,greeting-gradient 7s ease-in-out infinite;background:linear-gradient(110deg,#1685ed 0%,#7773e9 25%,#b557c2 45%,#e57597 65%,#9472df 80%,#1685ed 100%);background-size:250% 100%;background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 .reveal-line{display:block}
 .reveal-secondary{text-wrap:balance;color:#929292;font-size:.76em;line-height:1.4;letter-spacing:-.025em;margin-top:15px}
 .reveal-clip{display:inline-block;vertical-align:top;overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
-.reveal-word{display:inline-block;animation:word-reveal var(--reveal-duration) var(--reveal-ease) both;animation-delay:var(--reveal-delay,0s)}
+.reveal-word{display:inline-block;animation:word-reveal var(--reveal-duration) var(--reveal-ease) backwards;animation-delay:var(--reveal-delay,0s)}
 @keyframes word-reveal{from{transform:translateY(105%);filter:blur(var(--reveal-blur,5px));opacity:0}to{transform:translateY(0);filter:blur(0);opacity:1}}
 @keyframes greeting-gradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 @media(max-width:650px){.greeting-stage{margin-bottom:8px}.reveal-secondary{margin-top:10px}}

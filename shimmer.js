@@ -19,20 +19,31 @@
     label.style.backgroundImage = `linear-gradient(90deg, var(--ts-base), ${stops.join(',')}, var(--ts-base))`;
     label.style.setProperty('--shimmer-glow', `linear-gradient(90deg, transparent, ${glow.join(',')}, transparent)`);
   }
+  // Paint only while the band is sweeping. During the 3 s pause the label sits
+  // still at t = 0, so instead of repainting the same frame 180 times we paint
+  // it once and sleep until the next sweep (identical look, ~60% fewer frames).
+  let sleep = 0;
   function tick(now) {
     const dt = previous ? Math.min(64, now - previous) : 0;
     previous = now;
     phase += dt;
     if (phase > duration) phase -= duration + pause;
-    paint(Math.max(0, phase / duration));
+    if (phase < 0) {
+      paint(0);
+      const wait = -phase;
+      frame = 0; previous = 0;
+      sleep = setTimeout(() => { sleep = 0; phase = 0; if (!frame && label.dataset.shimmer === 'running') frame = requestAnimationFrame(tick); }, wait);
+      return;
+    }
+    paint(phase / duration);
     frame = requestAnimationFrame(tick);
   }
   function update() {
     const allowed = !reduced.matches && !forced.matches && inView && !document.hidden;
     label.dataset.shimmer = allowed ? 'running' : 'paused';
-    if (allowed && !frame) frame = requestAnimationFrame(tick);
+    if (allowed && !frame && !sleep) frame = requestAnimationFrame(tick);
     else if (!allowed) {
-      cancelAnimationFrame(frame);
+      cancelAnimationFrame(frame); clearTimeout(sleep); sleep = 0;
       frame = previous = 0;
       if (reduced.matches || forced.matches) {
         label.style.removeProperty('background-image');
@@ -47,6 +58,6 @@
   document.addEventListener('visibilitychange', update);
   reduced.addEventListener('change', update);
   forced.addEventListener('change', update);
-  window.addEventListener('pagehide', () => { cancelAnimationFrame(frame); frame = previous = 0; });
+  window.addEventListener('pagehide', () => { cancelAnimationFrame(frame); clearTimeout(sleep); sleep = 0; frame = previous = 0; });
   window.addEventListener('pageshow', update);
 })();

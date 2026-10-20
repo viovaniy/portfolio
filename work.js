@@ -78,13 +78,19 @@
   function updateScrub(s, v) {
     const scrub = s.querySelector('.cg-scrub');
     if (!scrub || !(v.duration > 0)) return;
-    const k = v.currentTime / v.duration;
-    scrub.style.setProperty('--k', k.toFixed(4));
-    scrub.querySelector('.cg-time').textContent = mmss(v.currentTime);
-    scrub.querySelector('.cg-left').textContent = '-' + mmss(Math.max(0, v.duration - v.currentTime));
-    scrub.setAttribute('aria-valuenow', Math.round(v.currentTime));
-    scrub.setAttribute('aria-valuemax', Math.round(v.duration));
-    scrub.setAttribute('aria-valuetext', mmss(v.currentTime));
+    const k = (v.currentTime / v.duration).toFixed(4);
+    const st = scrub._st || (scrub._st = { time: scrub.querySelector('.cg-time'), left: scrub.querySelector('.cg-left') });
+    if (st.k !== k) { scrub.style.setProperty('--k', k); st.k = k; }
+    // the clock and ARIA values change once a second — touch the DOM only then
+    const now = mmss(v.currentTime), left = '-' + mmss(Math.max(0, v.duration - v.currentTime));
+    if (st.now !== now || st.left2 !== left) {
+      st.now = now; st.left2 = left;
+      st.time.textContent = now;
+      st.left.textContent = left;
+      scrub.setAttribute('aria-valuenow', Math.round(v.currentTime));
+      scrub.setAttribute('aria-valuemax', Math.round(v.duration));
+      scrub.setAttribute('aria-valuetext', now);
+    }
   }
 
   // Real films get a progressive blur under the text (stronger towards the bottom).
@@ -102,7 +108,7 @@
   const STIFF = 190, DAMP = 17;           // spring: ~0.62 damping ratio → a soft bounce
   const PLAY = 6500;                      // ms per case when it has no video
   let pos = 0, target = 0, vel = 0, active = -1;
-  let raf = 0, last = 0;
+  let raf = 0, last = 0, placedPos = NaN, placedVel = NaN, lastP = '';
   let playStart = performance.now(), playHeld = 0, paused = false, visible = true, hovered = false, drag = null;
 
   const mod = (a, b) => ((a % b) + b) % b;
@@ -141,6 +147,7 @@
       g.setAttribute('aria-current', i === index ? 'true' : 'false');
       g.style.setProperty('--p', 0);
     }));
+    lastP = '';
     const cap = s.querySelector('.cg-caption');
     if (!reduced.matches) { cap.classList.remove('is-in'); void cap.offsetWidth; cap.classList.add('is-in'); }
     slides.forEach((x, i) => x.querySelectorAll('video').forEach(v => { if (i === index) { v.currentTime = 0; v.play().catch(() => {}); } else v.pause(); }));
@@ -172,7 +179,9 @@
       }
       if (Math.abs(target - pos) < .0005 && Math.abs(vel) < .0005) { pos = target; vel = 0; }
     }
-    place();
+    // only re-place the cards while they actually move (or after a stop),
+    // instead of rewriting every slide's style on every idle frame
+    if (pos !== placedPos || vel !== placedVel) { place(); placedPos = pos; placedVel = vel; }
     // autoplay progress on the active timeline segment
     const hold = paused || hovered || drag || !visible || document.hidden || reduced.matches;
     if (hold) { if (!playHeld) playHeld = now; }
@@ -189,9 +198,16 @@
       p = Math.min(1, ((playHeld || now) - playStart) / duration());
       if (p >= 1 && !hold) step(1);
     }
-    segRows[active]?.[active]?.style.setProperty('--p', p.toFixed(4));
+    const pv = p.toFixed(4);
+    if (pv !== lastP) { segRows[active]?.[active]?.style.setProperty('--p', pv); lastP = pv; }
     const moving = drag || pos !== target || vel !== 0;
-    raf = (moving || visible) ? requestAnimationFrame(tick) : 0;
+    // keep ticking only while something can change: the cards move, a film
+    // plays, or a still case's timeline fills. Held still → sleep until
+    // hover ends, the film plays or the gallery comes back into view.
+    const film = v && v.duration > 0 && isFinite(v.duration);
+    const filmRuns = film && !v.paused;
+    const fills = !film && !hold;
+    raf = (moving || (visible && (filmRuns || fills))) ? requestAnimationFrame(tick) : 0;
     if (!raf) last = 0;
   }
   function kick() { if (!raf) { last = 0; raf = requestAnimationFrame(tick); } }
@@ -285,7 +301,9 @@
     sl.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') sl.classList.add('is-hover'); });
     sl.addEventListener('pointerleave', () => sl.classList.remove('is-hover'));
   });
-  track.addEventListener('pointerleave', () => { hovered = false; });
+  track.addEventListener('pointerleave', () => { hovered = false; kick(); });
+  slides.forEach(sl => sl.querySelectorAll('video').forEach(v => v.addEventListener('play', kick)));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) kick(); });
 
   document.addEventListener('keydown', e => {
     if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
@@ -313,12 +331,12 @@
       });
       root.classList.remove('is-waiting');
       root.classList.add('is-entering');
-      playStart = performance.now();
+      playStart = performance.now(); playHeld = 0; kick();
       setTimeout(() => root.classList.remove('is-entering'), 1700);
     }, { threshold: .3 });
     io.observe(root);
   }
-  addEventListener('resize', () => { place(); });
+  addEventListener('resize', () => { place(); placedPos = pos; placedVel = vel; });
 
   // Anything with data-case="<title>" (e.g. the Fliq tag on a client card)
   // jumps down to Work and brings that case to the centre.
