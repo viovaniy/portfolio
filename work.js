@@ -408,6 +408,13 @@
     else { section?.scrollIntoView({ behavior: reduced.matches ? 'auto' : 'smooth' }); setTimeout(bring, 700); }
   }
   window.workGallery = { open };
+  // A file in the About folder with data-film="<title>" swipes Work to that film.
+  document.addEventListener('click', e => {
+    const file = e.target.closest('[data-film]');
+    if (!file || root.contains(file)) return;
+    e.preventDefault();
+    open(file.dataset.film);
+  });
   document.addEventListener('click', e => {
     const link = e.target.closest('[data-case]:not(.pj-sheet)');
     if (!link || root.contains(link)) return;

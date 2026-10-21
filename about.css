@@ -536,5 +536,18 @@
    so nothing below it can shift (or spill into Work) when the image arrives. */
 /* Same picture underneath as a background: if Safari ever drops the <img>
    layer (it can, next to the blurred glass plate), the photo still shows. */
-.me-photo{aspect-ratio:1/1;min-height:0;background:#d9d7d4 url("assets/about-photo.jpg") center/cover no-repeat}
+/* Safari: a grid item with aspect-ratio doesn't stretch to its column, so
+   without an explicit width the frame collapsed to 0×0 (or, once the image
+   loaded, grew to the photo's full 900px and spilled into Work). */
+.me-photo{width:100%;justify-self:stretch;align-self:start;aspect-ratio:1/1;min-height:0;background:#d9d7d4 url("assets/about-photo.jpg") center/cover no-repeat}
 .me-photo>img{position:absolute;inset:0}
+/* and a classic square spacer, so the height never depends on aspect-ratio support */
+.me-photo::before{content:"";display:block;padding-top:100%}
+
+/* Fliq file: a juicy sunset-orange gradient with a warm glow and a soft sheen */
+.pj-sheet-fliq .pj-sheet-art{background:
+ radial-gradient(60% 55% at 82% 18%,rgba(255,236,170,.95),transparent 70%),
+ radial-gradient(75% 70% at 12% 92%,#ff4d1f,transparent 68%),
+ radial-gradient(55% 60% at 70% 95%,#ff3f7a,transparent 70%),
+ linear-gradient(150deg,#ffd28a 0%,#ff9a3c 38%,#ff6a2b 70%,#f2471f 100%)}
+.pj-sheet-fliq .pj-sheet-art::after{background:linear-gradient(180deg,rgba(255,255,255,.42) 0%,rgba(255,255,255,0) 40%),radial-gradient(120% 60% at 50% -10%,rgba(255,255,255,.35),transparent 60%)}

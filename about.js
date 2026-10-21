@@ -226,6 +226,7 @@
     const twin = sheet.cloneNode(true);
     twin.removeAttribute('href');
     twin.removeAttribute('data-case');
+    twin.removeAttribute('data-film');
     twin.removeAttribute('data-pointer-passive');
     twin.tabIndex = -1;
     frostInner.append(twin);
