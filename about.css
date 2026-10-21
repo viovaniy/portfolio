@@ -551,3 +551,12 @@
  radial-gradient(55% 60% at 70% 95%,#ff3f7a,transparent 70%),
  linear-gradient(150deg,#ffd28a 0%,#ff9a3c 38%,#ff6a2b 70%,#f2471f 100%)}
 .pj-sheet-fliq .pj-sheet-art::after{background:linear-gradient(180deg,rgba(255,255,255,.42) 0%,rgba(255,255,255,0) 40%),radial-gradient(120% 60% at 50% -10%,rgba(255,255,255,.35),transparent 60%)}
+
+/* While the window minimizes, restores or zooms, the clouds behind the glass
+   hold still for that half-second (a 4px/s drift — nobody sees the pause), so
+   the big frosted surface isn't re-blurred over moving clouds on every frame. */
+.about-section.is-window-moving .about-color-field::before,
+.about-section.is-window-moving .about-color-field::after{animation-play-state:paused}
+/* The heading and the tab content fade when the window minimizes; keeping them
+   on their own GPU layers means that fade never has to re-draw them first. */
+.about-heading,.about-panels{will-change:opacity}

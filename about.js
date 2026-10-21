@@ -30,7 +30,9 @@
   let lockedHeight = 0;
   function lockSection() {
     if (lockedHeight) return;
-    lockedHeight = section.offsetHeight;
+    // exact (fractional) height: offsetHeight rounds, and even a third of a
+    // pixel resized the two huge cloud layers, forcing a full re-raster
+    lockedHeight = section.getBoundingClientRect().height;
     section.style.height = `${lockedHeight}px`;
   }
   window.addEventListener('resize', () => {
@@ -40,50 +42,58 @@
   }, { passive: true });
 
   const EASE = 'cubic-bezier(.32,.72,0,1)';
-  function fold(element, closed) {
-    const running = folds.get(element);
-    const from = element.getBoundingClientRect().height;
-    const opacity = running ? getComputedStyle(element).opacity : (closed ? '1' : '0');
-    running?.cancel();
-    element.hidden = false;
-    element.style.height = '';
-    const to = closed ? 0 : element.getBoundingClientRect().height;
-    element.style.marginTop = '';
-    const margin = getComputedStyle(element).marginTop;
-    const fromMargin = running ? `${parseFloat(getComputedStyle(element).marginTop) || 0}px` : (closed ? margin : '0px');
-    element.inert = closed;
-    const finish = () => {
-      element.hidden = closed;
-      element.style.height = '';
-      element.style.marginTop = '';
-      element.style.overflow = '';
-      element.style.willChange = '';
-      folds.delete(element);
-    };
-    if (reduced.matches) { finish(); return; }
-    element.style.overflow = 'hidden';
-    element.style.willChange = 'opacity';
-    // Content fades quickly while the frame settles, like a native window.
-    const keyframes = closed
-      ? [{ height: `${from}px`, marginTop: fromMargin, opacity }, { opacity: 0, offset: .45 }, { height: '0px', marginTop: '0px', opacity: 0 }]
-      : [{ height: `${from}px`, marginTop: fromMargin, opacity }, { opacity: Number(opacity), offset: .3 }, { height: `${to}px`, marginTop: margin, opacity: 1 }];
-    const motion = element.animate(keyframes, { duration: closed ? 420 : 480, easing: EASE });
-    folds.set(element, motion);
-    motion.onfinish = finish;
-  }
+  // Minimize / restore without re-laying-out the content on every frame.
+  // Only three cheap things move: the window frame and the white card change
+  // height (their own boxes — nothing inside them reflows), and the card glides
+  // up/down by the heading's height. The heading and the tab content just fade
+  // on the GPU, and the card clips them while it shrinks. Layout is switched to
+  // its final state once, at the start (closing: at the end).
+  const card = section.querySelector('.about-card');
+  const box = el => el.getBoundingClientRect();
   function setMinimized(value) {
     if (value === minimized) return;
     lockSection();
     minimized = value;
     minimize.setAttribute('aria-expanded', String(!value));
     minimize.setAttribute('aria-label', value ? 'Restore description' : 'Minimize description');
-    const card = section.querySelector('.about-card');
-    card.style.willChange = 'transform';
-    fold(heading, value);
-    fold(description, value);
-    Promise.all([...folds.values()].map(m => m.finished.catch(() => {}))).then(() => {
-      if (!folds.size) card.style.willChange = '';
-    });
+    // where everything is right now (also mid-animation)
+    const from = { glass: box(glass).height, card: box(card).height, shift: box(card).top - box(glass).top,
+      head: Number(getComputedStyle(heading).opacity), desc: Number(getComputedStyle(description).opacity) };
+    folds.forEach(m => m.cancel()); folds.clear();
+    [glass, card].forEach(el => { el.style.height = ''; el.style.overflow = ''; });
+    // measure the open and the minimized layout once
+    heading.hidden = description.hidden = false;
+    const open = { glass: box(glass).height, card: box(card).height, shift: box(card).top - box(glass).top };
+    heading.hidden = description.hidden = true;
+    const shut = { glass: box(glass).height, card: box(card).height, shift: box(card).top - box(glass).top };
+    const to = value ? shut : open;
+    heading.inert = description.inert = value;
+    const settle = () => {
+      heading.hidden = description.hidden = value;
+      [glass, card].forEach(el => { el.style.height = ''; el.style.overflow = ''; });
+      section.classList.remove('is-window-moving');
+      folds.clear();
+    };
+    if (reduced.matches) { settle(); return; }
+    // the content stays laid out during the motion (it is only faded and clipped)
+    heading.hidden = description.hidden = false;
+    card.style.overflow = 'hidden';
+    section.classList.add('is-window-moving');
+    const dur = value ? 420 : 480, opt = { duration: dur, easing: EASE, fill: 'forwards' };
+    // the content keeps its open layout while moving, so offsets are relative to it
+    const dy0 = from.shift - open.shift, dy1 = to.shift - open.shift;
+    const run = [
+      glass.animate([{ height: `${from.glass}px` }, { height: `${to.glass}px` }], opt),
+      card.animate([{ height: `${from.card}px`, transform: `translateY(${dy0}px)` }, { height: `${to.card}px`, transform: `translateY(${dy1}px)` }], opt),
+      heading.animate(value
+        ? [{ opacity: from.head }, { opacity: 0, offset: .4 }, { opacity: 0 }]
+        : [{ opacity: from.head }, { opacity: from.head, offset: .3 }, { opacity: 1 }], opt),
+      description.animate(value
+        ? [{ opacity: from.desc }, { opacity: 0, offset: .45 }, { opacity: 0 }]
+        : [{ opacity: from.desc }, { opacity: from.desc, offset: .3 }, { opacity: 1 }], opt)
+    ];
+    run.forEach(m => folds.set(m, m));
+    run[0].finished.then(() => { if (folds.has(run[0])) { run.forEach(m => m.cancel()); settle(); } }).catch(() => {});
   }
   minimize.addEventListener('click', () => setMinimized(!minimized));
   // Zoom (green light): the content keeps its width; only the frosted frame,
@@ -107,12 +117,15 @@
     const sx = first.width / last.width;
     const dx = (first.left + first.width / 2) - (last.left + last.width / 2);
     const frame = [{ transform: `translateX(${dx}px) scaleX(${sx})` }, { transform: 'none' }];
+    section.classList.add('is-window-moving');
     zooms = [
       surface.animate(frame, ZOOM),
       chrome.animate(frame, ZOOM),
       // Undo the frame's horizontal scale so the round lights never stretch.
       lights.animate([{ transform: `scaleX(${1 / sx})` }, { transform: 'none' }], ZOOM)
     ];
+    const z = zooms[0];
+    z.finished.then(() => { if (zooms[0] === z && !folds.size) section.classList.remove('is-window-moving'); }).catch(() => {});
   });
   section.querySelector('[data-window-action="refuse"]').addEventListener('click', () => {
     shake?.cancel();
