@@ -452,8 +452,7 @@
    underneath it, like a QuickTime window on macOS. */
 html.fp-lock{overflow:hidden}
 .fp{outline:none}
-.bottom-nav{transition:opacity .3s ease}
-html.fp-lock .bottom-nav{opacity:0!important;pointer-events:none}
+html.fp-lock .bottom-nav{pointer-events:none}
 html.fp-lock body{padding-right:var(--fp-sw,0px)}
 .fp{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:clamp(16px,4vw,56px);overscroll-behavior:contain}
 .fp[hidden]{display:none}

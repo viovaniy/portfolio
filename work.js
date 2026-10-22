@@ -142,6 +142,23 @@
     return `translate(${tx.toFixed(1)}px,${ty.toFixed(1)}px) scale(${k.toFixed(4)})`;
   };
   const FP_EASE = 'cubic-bezier(.32,.72,0,1)';
+  // The dock steps aside while the player is open and floats back up after.
+  // (translate/scale are separate from the dock's own centring transform)
+  let dockAnim = null;
+  function dock(show) {
+    const nav = document.querySelector('.bottom-nav');
+    if (!nav) return;
+    const from = dockAnim ? getComputedStyle(nav) : null;
+    const now = from ? { opacity: from.opacity, translate: from.translate === 'none' ? '0 0' : from.translate, scale: from.scale === 'none' ? '1' : from.scale } : null;
+    dockAnim?.cancel();
+    if (reduced.matches) { dockAnim = show ? null : nav.animate([{ opacity: 0 }], { duration: 0, fill: 'forwards' }); return; }
+    dockAnim = show
+      ? nav.animate([now || { opacity: 0, translate: '0 26px', scale: .9 }, { opacity: 1, translate: '0 0', scale: 1 }],
+          { duration: 700, delay: now ? 0 : 140, easing: 'cubic-bezier(.34,1.45,.5,1)', fill: 'backwards' })
+      : nav.animate([now || { opacity: 1, translate: '0 0', scale: 1 }, { opacity: 0, translate: '0 22px', scale: .94 }],
+          { duration: 280, easing: 'cubic-bezier(.4,0,1,1)', fill: 'forwards' });
+    if (show) dockAnim.finished.then(() => { dockAnim = null; }).catch(() => {});
+  }
   // build the (hidden) player ahead of time so the first tap opens instantly
   (window.requestIdleCallback || (f => setTimeout(f, 1500)))(() => { if (!fp && slides.some(x => x.querySelector('video'))) fp = buildPlayer(); });
   function openPlayer(s) {
@@ -159,6 +176,7 @@
     src.pause(); src.dataset.userPaused = '1';
     const sw = innerWidth - document.documentElement.clientWidth;
     document.documentElement.classList.add('fp-lock');
+    dock(false);
     document.documentElement.style.setProperty('--fp-sw', sw + 'px');
     el.hidden = false;
     // try with sound; if the browser still says no, play silently with the
@@ -188,8 +206,9 @@
       fpBusy = null;
       fpFocus?.focus?.({ preventScroll: true });
     };
-    if (reduced.matches) { done(); return; }
+    if (reduced.matches) { done(); dock(true); return; }
     el.classList.add('is-closing');
+    dock(true);
     const media = s?.querySelector('.cg-media');
     const to = media?.getBoundingClientRect();
     const scr = el.querySelector('.fp-screen').getBoundingClientRect();
