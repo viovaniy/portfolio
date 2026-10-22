@@ -496,7 +496,15 @@ html.fp-lock .ios-pointer{z-index:250}
 .fp-close svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 .fp.is-open .fp-close{opacity:1;transform:none}
 .fp.is-closing .fp-close{opacity:0;transform:scale(.8);transition:opacity .15s ease,transform .2s ease}
-.fp-close:active{transform:scale(.9)}
+/* hover: the glass button turns ink-dark, the cross turns a quarter and the
+   button swells a touch — its own transitions, so no entrance delay applies */
+.fp-close{transition:opacity .3s ease .12s,transform .45s cubic-bezier(.34,1.5,.5,1) .12s,scale .4s cubic-bezier(.34,1.6,.5,1),background-color .25s ease,color .25s ease,box-shadow .25s ease}
+.fp-close svg{transition:transform .5s cubic-bezier(.34,1.5,.5,1)}
+@media(hover:hover){
+ .fp.is-open .fp-close:hover{scale:1.08;color:#fff;background:#1d1d1f;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 0 0 .5px rgba(28,25,40,.2),0 12px 26px -10px rgba(28,25,40,.55)}
+ .fp.is-open .fp-close:hover svg{transform:rotate(90deg)}
+}
+.fp.is-open .fp-close:active{scale:.92}
 @media(max-width:650px){
  .fp{padding:12px}
  .fp-card{width:100%;padding:6px;border-radius:22px}
