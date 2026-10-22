@@ -37,7 +37,7 @@
   // A white-framed Apple-style player over a frosted backdrop. It grows out of
   // the card you tapped (FLIP: one transform on one element), takes over the
   // film at the same second, and hands it back to the card when it closes.
-  let fp = null, fpFrom = null, fpBusy = null, fpFocus = null, fpOpenedAt = 0;
+  let fp = null, fpFrom = null, fpBusy = null, fpFocus = null, fpOpenedAt = 0, fpSoundOn = true;
   const fmt = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
   function buildPlayer() {
     const el = document.createElement('div');
@@ -55,6 +55,10 @@
           <span class="fp-time">0:00</span>
           <div class="fp-rail" role="slider" tabindex="0" aria-valuemin="0" data-pointer-passive><span class="fp-track"><i class="fp-fill"></i><b class="fp-knob"></b></span></div>
           <span class="fp-left">-0:00</span>
+          <button type="button" class="fp-btn fp-sound" data-pointer-shape="circle">
+            <svg class="i-on" viewBox="0 0 24 24" aria-hidden="true"><path class="f" d="M4.5 9.5h3l4-3.5v12l-4-3.5h-3z"/><path d="M15 9.2a4 4 0 0 1 0 5.6M17.6 6.8a7.4 7.4 0 0 1 0 10.4"/></svg>
+            <svg class="i-off" viewBox="0 0 24 24" aria-hidden="true"><path class="f" d="M4.5 9.5h3l4-3.5v12l-4-3.5h-3z"/><path d="M15.5 9.5l5 5M20.5 9.5l-5 5"/></svg>
+          </button>
           <button type="button" class="fp-btn fp-full" data-pointer-shape="circle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 9V4.5H9M15 4.5h4.5V9M19.5 15v4.5H15M9 19.5H4.5V15"/></svg></button>
         </div>
       </div>
@@ -84,6 +88,15 @@
     v.addEventListener('seeked', paint);
     v.addEventListener('loadedmetadata', paint);
     const flip = () => { if (v.paused) v.play().catch(() => {}); else v.pause(); };
+    // sound: on by default in the player (it opens from a tap, so browsers allow it)
+    const sound = el.querySelector('.fp-sound');
+    const setSound = on => {
+      v.muted = !on; fpSoundOn = on;
+      el.classList.toggle('is-muted', !on);
+      sound.setAttribute('aria-label', tr0(on ? 'Mute' : 'Unmute'));
+    };
+    sound.addEventListener('click', () => setSound(v.muted));
+    el._setSound = setSound;
     toggle.addEventListener('click', flip);
     // ignore the tap that opened the player (on touch its click lands here)
     el.querySelector('.fp-screen').addEventListener('click', () => { if (performance.now() - fpOpenedAt > 450) flip(); });
@@ -148,7 +161,10 @@
     document.documentElement.classList.add('fp-lock');
     document.documentElement.style.setProperty('--fp-sw', sw + 'px');
     el.hidden = false;
-    v.play().catch(() => {});
+    // try with sound; if the browser still says no, play silently with the
+    // sound button showing "off" so one tap brings the music in
+    el._setSound(fpSoundOn);
+    v.play().catch(() => { el._setSound(false); v.play().catch(() => {}); });
     fp.paint();
     const scr = el.querySelector('.fp-screen').getBoundingClientRect();
     const from = s.querySelector('.cg-media').getBoundingClientRect();
@@ -165,7 +181,7 @@
     const done = () => {
       el.hidden = true; el.classList.remove('is-open', 'is-closing');
       document.documentElement.classList.remove('fp-lock');
-      v.pause();
+      v.pause(); v.muted = true;
       // hand the film back at the same second (and tell the timeline it's a
       // jump, not a loop — otherwise it would move on to the next case)
       if (src) { try { src.currentTime = v.currentTime; src._last = v.currentTime; } catch {} delete src.dataset.userPaused; if (s.classList.contains('is-active')) src.play().catch(() => {}); }

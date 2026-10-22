@@ -471,7 +471,11 @@ html.fp-lock body{padding-right:var(--fp-sw,0px)}
 .fp.is-closing .fp-bar{opacity:0;transition:opacity .15s ease}
 .fp-btn{flex:none;display:grid;place-items:center;width:40px;height:40px;border:0;border-radius:50%;background:transparent;color:#1d1d1f;cursor:pointer;transition:background-color .2s ease,transform .2s cubic-bezier(.34,1.45,.5,1)}
 .fp-btn svg{width:20px;height:20px;fill:currentColor}
-.fp-full svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.fp-full svg,.fp-sound svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.fp-sound svg .f{fill:currentColor;stroke:none}
+.fp-sound .i-off,.fp.is-muted .fp-sound .i-on{display:none}.fp.is-muted .fp-sound .i-off{display:block}
+/* the custom cursor stays on top of the player */
+html.fp-lock .ios-pointer{z-index:250}
 @media(hover:hover){.fp-btn:hover{background:rgba(28,25,40,.06)}}
 .fp-btn:active{transform:scale(.9)}
 .fp .i-play{display:none}.fp.is-paused .i-play{display:block}.fp.is-paused .i-pause{display:none}
