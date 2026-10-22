@@ -196,13 +196,21 @@
     if (!fp || fp.el.hidden || fpBusy) return;
     const { el, v, card } = fp;
     const s = fpFrom, src = s?.querySelector('video');
+    let handedBack = false;
+    // hand the film back at the same second (and tell the timeline it's a
+    // jump, not a loop — otherwise it would move on to the next case)
+    const handBack = () => {
+      if (handedBack || !src) return; handedBack = true;
+      try { src.currentTime = v.currentTime; src._last = v.currentTime; } catch {}
+      delete src.dataset.userPaused;
+      if (s.classList.contains('is-active')) src.play().catch(() => {});
+    };
+    const screen = el.querySelector('.fp-screen');
     const done = () => {
       el.hidden = true; el.classList.remove('is-open', 'is-closing');
       document.documentElement.classList.remove('fp-lock');
       v.pause(); v.muted = true;
-      // hand the film back at the same second (and tell the timeline it's a
-      // jump, not a loop — otherwise it would move on to the next case)
-      if (src) { try { src.currentTime = v.currentTime; src._last = v.currentTime; } catch {} delete src.dataset.userPaused; if (s.classList.contains('is-active')) src.play().catch(() => {}); }
+      handBack();
       fpBusy = null;
       fpFocus?.focus?.({ preventScroll: true });
     };
@@ -211,13 +219,31 @@
     dock(true);
     const media = s?.querySelector('.cg-media');
     const to = media?.getBoundingClientRect();
-    const scr = el.querySelector('.fp-screen').getBoundingClientRect();
+    const scr = screen.getBoundingClientRect();
     const visible = to && to.bottom > 0 && to.top < innerHeight && s.classList.contains('is-active');
-    fpBusy = card.animate(visible
-      ? [{ transform: 'none' }, { transform: fpOffset(to, scr), borderRadius: '34px' }]
-      : [{ transform: 'none', opacity: 1 }, { transform: 'scale(.94)', opacity: 0 }],
-      { duration: visible ? 460 : 300, easing: FP_EASE, fill: 'forwards' });
-    fpBusy.finished.catch(() => {}).finally(() => { fpBusy?.cancel(); done(); });
+    if (!visible) {
+      fpBusy = card.animate([{ transform: 'none', opacity: 1 }, { transform: 'scale(.94)', opacity: 0 }], { duration: 300, easing: FP_EASE, fill: 'forwards' });
+      fpBusy.finished.catch(() => {}).finally(() => { fpBusy?.cancel(); done(); });
+      return;
+    }
+    // Landing: the card's own film is already running underneath at the same
+    // frame; on the way down the white frame and its shadow melt away, the
+    // corners take the card's radius, and the last stretch is a cross-fade —
+    // so the player dissolves into the card instead of snapping over it.
+    handBack();
+    const k = to.width / scr.width;
+    const r = (innerWidth <= 650 ? 26 : 34) / k;
+    const shadow = getComputedStyle(card).boxShadow;
+    const clear = shadow.replace(/rgba?\(([^,]+),([^,]+),([^,)]+)(,[^)]*)?\)/g, 'rgba($1,$2,$3,0)');
+    const opts = { duration: 520, easing: FP_EASE, fill: 'forwards' };
+    fpBusy = card.animate([
+      { transform: 'none', backgroundColor: '#fff', boxShadow: shadow, opacity: 1 },
+      { backgroundColor: 'rgba(255,255,255,0)', boxShadow: clear, opacity: 1, offset: .45 },
+      { opacity: 1, offset: .62 },
+      { transform: fpOffset(to, scr), backgroundColor: 'rgba(255,255,255,0)', boxShadow: clear, opacity: 0 }
+    ], opts);
+    const round = screen.animate([{ borderRadius: getComputedStyle(screen).borderRadius }, { borderRadius: `${r.toFixed(1)}px` }], opts);
+    fpBusy.finished.catch(() => {}).finally(() => { fpBusy?.cancel(); round.cancel(); done(); });
   }
 
   const segRows = slides.map(s => [...s.querySelectorAll('.cg-seg')]);
