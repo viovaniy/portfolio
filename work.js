@@ -21,8 +21,36 @@
     hud.querySelector('.cg-desc').textContent = tr0(s.dataset.desc);
     hud.querySelector('.cg-count b').textContent = String(i + 1).padStart(2, '0');
     hud.querySelector('.cg-caption').removeAttribute('aria-live');
+    // cases with their own page get an "Open case" pill under the description
+    if (s.dataset.caseUrl) {
+      const open = document.createElement('a');
+      open.className = 'cg-open'; open.href = s.dataset.caseUrl;
+      open.setAttribute('data-pointer-shape', 'pill');
+      open.innerHTML = `<span>${tr0('Open case')}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>`;
+      open.addEventListener('click', e => { e.preventDefault(); openCase(s); });
+      hud.querySelector('.cg-caption').append(open);
+    }
     s.querySelector('.cg-frame').append(hud);
   });
+  // Opening a case: the playing film morphs into the case page's player (a
+  // cross-document view transition where the browser supports it) and keeps
+  // playing from the same second.
+  let morphing = null;
+  function openCase(s) {
+    const v = s.querySelector('video');
+    const t = v && v.currentTime > .5 ? `?t=${v.currentTime.toFixed(1)}` : '';
+    const media = s.querySelector('.cg-media');
+    if (morphing && morphing !== media) morphing.style.viewTransitionName = '';
+    media.style.viewTransitionName = 'case-film'; morphing = media;
+    location.href = s.dataset.caseUrl + t;
+  }
+  addEventListener('pagereveal', e => {
+    if (!morphing) return;
+    const m = morphing; morphing = null;
+    const clear = () => { m.style.viewTransitionName = ''; };
+    if (e.viewTransition) e.viewTransition.finished.finally(clear); else clear();
+  });
+  addEventListener('pageshow', e => { if (e.persisted && morphing && !('onpagereveal' in window)) { morphing.style.viewTransitionName = ''; morphing = null; } });
   const segRows = slides.map(s => [...s.querySelectorAll('.cg-seg')]);
   // macOS-style scrubber: hovering the timeline of a film opens a Liquid Glass
   // seek bar with the elapsed time; click or drag to rewind.
@@ -267,7 +295,7 @@
 
   // Drag / swipe with velocity: a quick flick moves one (or two) cases.
   track.addEventListener('pointerdown', e => {
-    if (e.button !== 0 || e.target.closest('.cg-arrow,.cg-seg,.cg-scrub')) return;
+    if (e.button !== 0 || e.target.closest('.cg-arrow,.cg-seg,.cg-scrub,.cg-open')) return;
     drag = { x: e.clientX, y: e.clientY, pos, t: performance.now(), vx: 0, lx: e.clientX, lt: performance.now(), moved: false, id: e.pointerId };
     kick();
   });
@@ -298,6 +326,8 @@
       const half = slides[0].offsetWidth / 2;
       const x = (e ? e.clientX : d.x) - (r.left + r.width / 2);
       if (Math.abs(x) > half + 4) step(x > 0 ? 1 : -1);
+      // a tap on the film in the centre opens its case page, if it has one
+      else if (slides[active]?.dataset.caseUrl && !e?.target?.closest?.('a,button,.cg-scrub')) openCase(slides[active]);
       return;
     }
     const flick = -d.vx / gap() * .22;
