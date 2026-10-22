@@ -21,36 +21,170 @@
     hud.querySelector('.cg-desc').textContent = tr0(s.dataset.desc);
     hud.querySelector('.cg-count b').textContent = String(i + 1).padStart(2, '0');
     hud.querySelector('.cg-caption').removeAttribute('aria-live');
-    // cases with their own page get an "Open case" pill under the description
-    if (s.dataset.caseUrl) {
-      const open = document.createElement('a');
-      open.className = 'cg-open'; open.href = s.dataset.caseUrl;
-      open.setAttribute('data-pointer-shape', 'pill');
-      open.innerHTML = `<span>${tr0('Open case')}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>`;
-      open.addEventListener('click', e => { e.preventDefault(); openCase(s); });
-      hud.querySelector('.cg-caption').append(open);
+    // films get a "Watch film" pill under the description
+    if (s.querySelector('video')) {
+      const watch = document.createElement('button');
+      watch.type = 'button'; watch.className = 'cg-watch';
+      watch.setAttribute('data-pointer-shape', 'pill');
+      watch.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg><span>${tr0('Watch film')}</span>`;
+      watch.addEventListener('click', e => { e.stopPropagation(); openPlayer(s); });
+      hud.querySelector('.cg-caption').append(watch);
     }
     s.querySelector('.cg-frame').append(hud);
   });
-  // Opening a case: the playing film morphs into the case page's player (a
-  // cross-document view transition where the browser supports it) and keeps
-  // playing from the same second.
-  let morphing = null;
-  function openCase(s) {
-    const v = s.querySelector('video');
-    const t = v && v.currentTime > .5 ? `?t=${v.currentTime.toFixed(1)}` : '';
-    const media = s.querySelector('.cg-media');
-    if (morphing && morphing !== media) morphing.style.viewTransitionName = '';
-    media.style.viewTransitionName = 'case-film'; morphing = media;
-    location.href = s.dataset.caseUrl + t;
+
+  // ---------- full-screen film player ----------
+  // A white-framed Apple-style player over a frosted backdrop. It grows out of
+  // the card you tapped (FLIP: one transform on one element), takes over the
+  // film at the same second, and hands it back to the card when it closes.
+  let fp = null, fpFrom = null, fpBusy = null, fpFocus = null, fpOpenedAt = 0;
+  const fmt = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+  function buildPlayer() {
+    const el = document.createElement('div');
+    el.className = 'fp'; el.hidden = true; el.tabIndex = -1;
+    el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
+    el.innerHTML = `
+      <div class="fp-backdrop" data-close></div>
+      <div class="fp-card">
+        <div class="fp-screen"><video playsinline muted loop preload="auto"></video></div>
+        <div class="fp-bar">
+          <button type="button" class="fp-btn fp-toggle" data-pointer-shape="circle">
+            <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5h2.6v13H8zM13.4 5.5H16v13h-2.6z"/></svg>
+            <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+          </button>
+          <span class="fp-time">0:00</span>
+          <div class="fp-rail" role="slider" tabindex="0" aria-valuemin="0" data-pointer-passive><span class="fp-track"><i class="fp-fill"></i><b class="fp-knob"></b></span></div>
+          <span class="fp-left">-0:00</span>
+          <button type="button" class="fp-btn fp-full" data-pointer-shape="circle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 9V4.5H9M15 4.5h4.5V9M19.5 15v4.5H15M9 19.5H4.5V15"/></svg></button>
+        </div>
+      </div>
+      <button type="button" class="fp-close" data-close data-pointer-shape="circle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button>`;
+    document.body.append(el);
+    const v = el.querySelector('video'), card = el.querySelector('.fp-card');
+    const toggle = el.querySelector('.fp-toggle'), rail = el.querySelector('.fp-rail');
+    const time = el.querySelector('.fp-time'), left = el.querySelector('.fp-left');
+    el.querySelector('.fp-close').setAttribute('aria-label', tr0('Close'));
+    el.querySelector('.fp-full').setAttribute('aria-label', tr0('Full screen'));
+    rail.setAttribute('aria-label', tr0('Rewind'));
+    let raf = 0, lastK = '', lastT = '';
+    const paint = () => {
+      const d = v.duration > 0 ? v.duration : 0, t = v.currentTime || 0;
+      const k = d ? (t / d).toFixed(4) : '0';
+      if (k !== lastK) { rail.style.setProperty('--k', k); lastK = k; }
+      const tt = fmt(t);
+      if (tt !== lastT) {
+        lastT = tt; time.textContent = tt; left.textContent = '-' + fmt(Math.max(0, d - t));
+        rail.setAttribute('aria-valuenow', Math.round(t)); rail.setAttribute('aria-valuemax', Math.round(d)); rail.setAttribute('aria-valuetext', tt);
+      }
+    };
+    const loop = () => { paint(); raf = v.paused || el.hidden ? 0 : requestAnimationFrame(loop); };
+    const setPaused = p => { el.classList.toggle('is-paused', p); toggle.setAttribute('aria-label', tr0(p ? 'Play' : 'Pause')); };
+    v.addEventListener('play', () => { setPaused(false); if (!raf) raf = requestAnimationFrame(loop); });
+    v.addEventListener('pause', () => { setPaused(true); paint(); });
+    v.addEventListener('seeked', paint);
+    v.addEventListener('loadedmetadata', paint);
+    const flip = () => { if (v.paused) v.play().catch(() => {}); else v.pause(); };
+    toggle.addEventListener('click', flip);
+    // ignore the tap that opened the player (on touch its click lands here)
+    el.querySelector('.fp-screen').addEventListener('click', () => { if (performance.now() - fpOpenedAt > 450) flip(); });
+    el.querySelector('.fp-full').addEventListener('click', () => {
+      const scr = el.querySelector('.fp-screen');
+      if (document.fullscreenElement) document.exitFullscreen?.();
+      else if (scr.requestFullscreen) scr.requestFullscreen().catch(() => v.webkitEnterFullscreen?.());
+      else v.webkitEnterFullscreen?.();
+    });
+    el.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closePlayer));
+    // seek: tap or drag anywhere on the rail
+    const seekAt = x => { const r = rail.querySelector('.fp-track').getBoundingClientRect(); if (v.duration > 0) { v.currentTime = Math.min(1, Math.max(0, (x - r.left) / r.width)) * v.duration; paint(); } };
+    let grab = null;
+    rail.addEventListener('pointerdown', e => { grab = e.pointerId; rail.classList.add('is-grab'); try { rail.setPointerCapture(e.pointerId); } catch {} seekAt(e.clientX); });
+    rail.addEventListener('pointermove', e => { if (grab === e.pointerId) seekAt(e.clientX); });
+    const drop = () => { grab = null; rail.classList.remove('is-grab'); };
+    rail.addEventListener('pointerup', drop); rail.addEventListener('pointercancel', drop);
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { e.preventDefault(); closePlayer(); }
+      else if (e.key === ' ' && !e.target.closest('button')) { e.preventDefault(); flip(); }
+      else if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && v.duration > 0) { e.preventDefault(); v.currentTime = Math.min(v.duration, Math.max(0, v.currentTime + (e.key === 'ArrowRight' ? 5 : -5))); }
+      else if (e.key === 'Tab') {   // keep focus inside the dialog
+        const f = [...el.querySelectorAll('button,[tabindex="0"]')].filter(n => n.offsetParent);
+        const i = f.indexOf(document.activeElement);
+        if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
+        else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+      }
+    });
+    el.addEventListener('wheel', e => e.preventDefault(), { passive: false });
+    el.addEventListener('touchmove', e => { if (!e.target.closest('.fp-rail')) e.preventDefault(); }, { passive: false });
+    return { el, v, card, paint };
   }
-  addEventListener('pagereveal', e => {
-    if (!morphing) return;
-    const m = morphing; morphing = null;
-    const clear = () => { m.style.viewTransitionName = ''; };
-    if (e.viewTransition) e.viewTransition.finished.finally(clear); else clear();
-  });
-  addEventListener('pageshow', e => { if (e.persisted && morphing && !('onpagereveal' in window)) { morphing.style.viewTransitionName = ''; morphing = null; } });
+  // the transform that puts the player's screen exactly over a source rect
+  // (the card scales about its own centre, so solve for the translate that
+  // lands the screen's centre on the source's centre)
+  const fpOffset = (src, scr) => {
+    const c = fp.card.getBoundingClientRect();
+    const k = src.width / scr.width;
+    const cx = c.left + c.width / 2, cy = c.top + c.height / 2;
+    const sx = scr.left + scr.width / 2, sy = scr.top + scr.height / 2;
+    const tx = (src.left + src.width / 2) - cx - k * (sx - cx);
+    const ty = (src.top + src.height / 2) - cy - k * (sy - cy);
+    return `translate(${tx.toFixed(1)}px,${ty.toFixed(1)}px) scale(${k.toFixed(4)})`;
+  };
+  const FP_EASE = 'cubic-bezier(.32,.72,0,1)';
+  // build the (hidden) player ahead of time so the first tap opens instantly
+  (window.requestIdleCallback || (f => setTimeout(f, 1500)))(() => { if (!fp && slides.some(x => x.querySelector('video'))) fp = buildPlayer(); });
+  function openPlayer(s) {
+    if (fpBusy) return;
+    const src = s.querySelector('video');
+    if (!src) return;
+    fp = fp || buildPlayer();
+    const { el, v, card } = fp;
+    fpFrom = s; fpFocus = document.activeElement; fpOpenedAt = performance.now();
+    el.setAttribute('aria-label', tr0(s.dataset.title) + ' — ' + tr0(s.dataset.kind || 'Film'));
+    if (v.getAttribute('src') !== src.getAttribute('src')) { v.src = src.currentSrc || src.src; v.poster = src.poster; }
+    const t = src.currentTime || 0;
+    const start = () => { try { v.currentTime = t; } catch {} };
+    v.readyState ? start() : v.addEventListener('loadedmetadata', start, { once: true });
+    src.pause(); src.dataset.userPaused = '1';
+    const sw = innerWidth - document.documentElement.clientWidth;
+    document.documentElement.classList.add('fp-lock');
+    document.documentElement.style.setProperty('--fp-sw', sw + 'px');
+    el.hidden = false;
+    v.play().catch(() => {});
+    fp.paint();
+    const scr = el.querySelector('.fp-screen').getBoundingClientRect();
+    const from = s.querySelector('.cg-media').getBoundingClientRect();
+    el.focus({ preventScroll: true });   // the dialog itself: no focus ring flashes on a button
+    if (reduced.matches) { el.classList.add('is-open'); return; }
+    el.classList.add('is-open');
+    fpBusy = card.animate([{ transform: fpOffset(from, scr), borderRadius: '34px' }, { transform: 'none' }], { duration: 560, easing: FP_EASE });
+    fpBusy.finished.catch(() => {}).finally(() => { fpBusy = null; });
+  }
+  function closePlayer() {
+    if (!fp || fp.el.hidden || fpBusy) return;
+    const { el, v, card } = fp;
+    const s = fpFrom, src = s?.querySelector('video');
+    const done = () => {
+      el.hidden = true; el.classList.remove('is-open', 'is-closing');
+      document.documentElement.classList.remove('fp-lock');
+      v.pause();
+      // hand the film back at the same second (and tell the timeline it's a
+      // jump, not a loop — otherwise it would move on to the next case)
+      if (src) { try { src.currentTime = v.currentTime; src._last = v.currentTime; } catch {} delete src.dataset.userPaused; if (s.classList.contains('is-active')) src.play().catch(() => {}); }
+      fpBusy = null;
+      fpFocus?.focus?.({ preventScroll: true });
+    };
+    if (reduced.matches) { done(); return; }
+    el.classList.add('is-closing');
+    const media = s?.querySelector('.cg-media');
+    const to = media?.getBoundingClientRect();
+    const scr = el.querySelector('.fp-screen').getBoundingClientRect();
+    const visible = to && to.bottom > 0 && to.top < innerHeight && s.classList.contains('is-active');
+    fpBusy = card.animate(visible
+      ? [{ transform: 'none' }, { transform: fpOffset(to, scr), borderRadius: '34px' }]
+      : [{ transform: 'none', opacity: 1 }, { transform: 'scale(.94)', opacity: 0 }],
+      { duration: visible ? 460 : 300, easing: FP_EASE, fill: 'forwards' });
+    fpBusy.finished.catch(() => {}).finally(() => { fpBusy?.cancel(); done(); });
+  }
+
   const segRows = slides.map(s => [...s.querySelectorAll('.cg-seg')]);
   // macOS-style scrubber: hovering the timeline of a film opens a Liquid Glass
   // seek bar with the elapsed time; click or drag to rewind.
@@ -295,7 +429,7 @@
 
   // Drag / swipe with velocity: a quick flick moves one (or two) cases.
   track.addEventListener('pointerdown', e => {
-    if (e.button !== 0 || e.target.closest('.cg-arrow,.cg-seg,.cg-scrub,.cg-open')) return;
+    if (e.button !== 0 || e.target.closest('.cg-arrow,.cg-seg,.cg-scrub,.cg-watch')) return;
     drag = { x: e.clientX, y: e.clientY, pos, t: performance.now(), vx: 0, lx: e.clientX, lt: performance.now(), moved: false, id: e.pointerId };
     kick();
   });
@@ -326,8 +460,8 @@
       const half = slides[0].offsetWidth / 2;
       const x = (e ? e.clientX : d.x) - (r.left + r.width / 2);
       if (Math.abs(x) > half + 4) step(x > 0 ? 1 : -1);
-      // a tap on the film in the centre opens its case page, if it has one
-      else if (slides[active]?.dataset.caseUrl && !e?.target?.closest?.('a,button,.cg-scrub')) openCase(slides[active]);
+      // a tap on the film in the centre opens it in the full-screen player
+      else if (slides[active]?.querySelector('video') && !e?.target?.closest?.('a,button,.cg-scrub')) openPlayer(slides[active]);
       return;
     }
     const flick = -d.vx / gap() * .22;
