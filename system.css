@@ -125,3 +125,16 @@
 /* Works: the hover glow is a tighter, cleaner halo hugging the card */
 .cg-slide::before{box-shadow:0 0 0 1px rgba(255,141,184,calc(.28 * var(--gp))),0 0 18px 1px rgba(255,141,184,calc(.42 * var(--gp))),0 0 46px 6px rgba(255,180,143,calc(.24 * var(--gp)))!important}
 .cg-slide.is-active:is(.is-hover,:hover) .cg-frame{box-shadow:0 0 0 .5px rgba(255,141,184,.3),0 2px 4px rgba(28,25,40,.06),0 24px 44px -26px rgba(255,120,150,.32)!important}
+
+/* "Watch film": same hover as the hero CTA — the pill changes colour */
+.cg-watch{position:relative;isolation:isolate;overflow:hidden;transition:transform .2s cubic-bezier(.34,1.45,.5,1),box-shadow .35s ease}
+.cg-watch>*{position:relative;z-index:1}
+.cg-watch::before{content:"";position:absolute;inset:0;z-index:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(100deg,#ff5f9e,#ff8a7a 28%,#ffad6e 50%,#ff8a7a 72%,#ff5f9e);background-size:220% 100%;
+  opacity:0;transition:opacity .45s cubic-bezier(.22,1,.36,1)}
+@media(hover:hover){
+  .cg-watch:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 2px 4px rgba(224,86,127,.18),0 14px 26px -12px rgba(255,110,140,.75)}
+  .cg-watch:hover::before{opacity:1;animation:cta-flow 3s linear infinite}
+}
+.cg-watch:focus-visible::before{opacity:1}
+@media(prefers-reduced-motion:reduce){.cg-watch:hover::before{animation:none}}
