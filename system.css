@@ -120,3 +120,7 @@
 
 /* a white rim on the colour cards (drawn inside the edge, above the sky) */
 .about-backdrop,.pd-backdrop{border:2px solid rgba(255,255,255,.8);background-clip:padding-box}
+
+/* Works: the hover glow is a tighter, cleaner halo hugging the card */
+.cg-slide::before{box-shadow:0 0 0 1px rgba(255,141,184,calc(.28 * var(--gp))),0 0 18px 1px rgba(255,141,184,calc(.42 * var(--gp))),0 0 46px 6px rgba(255,180,143,calc(.24 * var(--gp)))!important}
+.cg-slide.is-active:is(.is-hover,:hover) .cg-frame{box-shadow:0 0 0 .5px rgba(255,141,184,.3),0 2px 4px rgba(28,25,40,.06),0 24px 44px -26px rgba(255,120,150,.32)!important}
