@@ -89,3 +89,17 @@
   updateActiveSection();
 
 })();
+
+// The hero's "Discuss a project" glides down to the brief (the last screen).
+(() => {
+  const cta = document.querySelector('[data-scroll-to]');
+  if (!cta) return;
+  cta.addEventListener('click', e => {
+    const target = document.getElementById(cta.dataset.scrollTo);
+    if (!target) return;
+    e.preventDefault();
+    if (window.siteScroll) window.siteScroll.to(target);
+    else target.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    history.pushState(null, '', '#' + target.id);
+  });
+})();

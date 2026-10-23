@@ -117,3 +117,6 @@
   .home-section .contact-button{margin-top:24px}
   .status-pill{height:22px;font-size:11.5px}
 }
+
+/* a white rim on the colour cards (drawn inside the edge, above the sky) */
+.about-backdrop,.pd-backdrop{border:2px solid rgba(255,255,255,.8);background-clip:padding-box}
