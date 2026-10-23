@@ -1,76 +1,87 @@
-/* ---------- Contact: the Messages preview inside a folded iPhone Duo ----------
-   Closed, the Duo is passport-shaped (about 1 : 1.4) with a 5.4" outer display.
-   iOS moves the bars to a strip on the right edge: the compact status bar sits in
-   the corner, Back and the call button at the top, and the Dynamic Island runs
-   vertically around the hole-punch camera. Content keeps the area to the left. */
+/* ---------- Contact: Messages on the outer screen of a folded iPhone Duo ----------
+   Built from the iPhone Duo · iOS 27 UI Kit: the Star White bezel is the kit's own
+   artwork (assets/duo-bezel.webp, camera included). Every size below is in kit
+   points: 1u = one point of the 524 × 730 bezel, so the whole phone scales as one. */
 @media(min-width:901px){
-  .brief-phone{--strip:56px;--rim:4.5px;--bezel:8px;--R:46px;
-    width:min(100%,calc((100svh - 205px)/1.4),404px);aspect-ratio:1/1.4;flex:none;justify-self:end;align-self:start;position:sticky;top:96px}
-  /* titanium body: polished star-white frame, micro-blasted hinge cover on the left */
-  .brief-phone::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-    border-radius:calc(var(--R) - 6px) var(--R) var(--R) calc(var(--R) - 6px);
-    background:
-      linear-gradient(90deg,#aeb1b6 0,#c3c6ca 3px,#b9bcc0 6.5px,transparent 7px),
-      linear-gradient(152deg,#fbfbfc 0,#d3d5d9 18%,#f1f2f4 34%,#c3c6cb 52%,#eceef0 70%,#b4b7bc 88%,#e2e4e7 100%);
-    box-shadow:
-      inset 0 0 0 .5px rgba(0,0,0,.35),inset 0 0 0 1.5px rgba(255,255,255,.55),
-      0 1px 1px rgba(28,25,40,.08),0 12px 24px -12px rgba(28,25,40,.28),0 44px 80px -36px rgba(28,25,40,.42)}
-  /* side button (Touch ID) and Camera Control on the right edge */
-  .brief-phone::after{content:"";position:absolute;z-index:0;right:-2.5px;top:21%;width:3px;height:58%;pointer-events:none;
-    background:
-      linear-gradient(90deg,#c9cbcf,#f2f3f5 60%,#b8babe) 0 0/100% 17% no-repeat,
-      linear-gradient(90deg,#c9cbcf,#f2f3f5 60%,#b8babe) 0 100%/100% 11% no-repeat;
-    border-radius:0 2px 2px 0}
-  .brief-phone>.brief-preview{position:absolute!important;z-index:1;top:calc(var(--rim) + var(--bezel));bottom:calc(var(--rim) + var(--bezel));
-    left:calc(var(--rim) + 2px + var(--bezel));right:calc(var(--rim) + var(--bezel));
-    display:flex;flex-direction:column;
-    border-radius:calc(var(--R) - 6px - var(--rim) - 2px - var(--bezel)) calc(var(--R) - var(--rim) - var(--bezel)) calc(var(--R) - var(--rim) - var(--bezel)) calc(var(--R) - 6px - var(--rim) - 2px - var(--bezel))!important;
-    background:#fff!important;box-shadow:0 0 0 var(--bezel) #050506,0 0 0 calc(var(--bezel) + .6px) rgba(0,0,0,.5)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
-  .brief-phone>.brief-preview::after{box-shadow:none}
-  .brief-phone>.brief-preview::before{display:none}
+  .brief-phone{width:min(100%,calc((100svh - 190px) * 524 / 730),420px);aspect-ratio:524/730;flex:none;justify-self:end;align-self:start;
+    position:sticky;top:96px;container-type:inline-size;--u:calc(100cqw / 524)}
+  /* soft shadow under the body */
+  .brief-phone::before{content:"";position:absolute;z-index:0;left:calc(4 * var(--u));top:calc(8 * var(--u));right:calc(10 * var(--u));bottom:calc(10 * var(--u));
+    border-radius:calc(10 * var(--u)) calc(80 * var(--u)) calc(80 * var(--u)) calc(10 * var(--u));pointer-events:none;
+    box-shadow:0 calc(18 * var(--u)) calc(36 * var(--u)) calc(-16 * var(--u)) rgba(28,25,40,.32),0 calc(50 * var(--u)) calc(90 * var(--u)) calc(-40 * var(--u)) rgba(28,25,40,.38)}
+  /* the kit's bezel sits on top of the screen (it also draws the camera) */
+  .brief-phone::after{content:"";position:absolute;inset:0;z-index:7;pointer-events:none;
+    background:url(assets/duo-bezel.webp) 0 0/100% 100% no-repeat}
 
-  /* the right-hand strip: status, controls, Dynamic Island */
-  .duo-strip{position:absolute;top:0;right:0;bottom:0;width:var(--strip);z-index:4;pointer-events:none}
-  .duo-status{position:absolute;top:12px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:4px;
-    font:600 12px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;letter-spacing:-.01em;color:#000;font-variant-numeric:tabular-nums}
-  .duo-icons{display:flex;align-items:center;gap:3px}
-  .duo-icons svg{display:block;fill:#000}
-  .duo-batt{position:relative;width:20px;height:9.5px;border-radius:3px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.38)}
-  .duo-batt::before{content:"";position:absolute;left:1.6px;top:1.6px;bottom:1.6px;width:72%;border-radius:1.4px;background:#000}
-  .duo-batt::after{content:"";position:absolute;right:-2.2px;top:3.2px;width:1.4px;height:3.2px;border-radius:0 1px 1px 0;background:rgba(0,0,0,.4)}
-  .duo-island{position:absolute;right:calc((var(--strip) - 23px)/2);top:50%;width:23px;height:74px;margin-top:-20px;border-radius:12px;background:#000}
-  .duo-island::before{content:"";position:absolute;left:50%;top:6px;width:11px;height:11px;margin-left:-5.5px;border-radius:50%;
-    background:radial-gradient(circle at 38% 34%,#3b4a6b 0,#141a28 32%,#05060a 62%);box-shadow:inset 0 0 0 1.5px #101218}
-  .duo-island::after{content:"";position:absolute;left:50%;top:9px;width:3px;height:3px;margin-left:-3px;border-radius:50%;background:rgba(140,170,255,.55)}
+  /* the outer display: 466 × 678 pt, square-ish corners on the hinge side */
+  .brief-phone>.brief-preview{position:absolute!important;z-index:1;top:calc(26 * var(--u));left:calc(29 * var(--u));
+    width:calc(467 * var(--u));height:calc(679 * var(--u));display:block;
+    border-radius:calc(8 * var(--u)) calc(66 * var(--u)) calc(66 * var(--u)) calc(8 * var(--u))!important;
+    background:#fff!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro","Segoe UI",sans-serif}
+  .brief-phone>.brief-preview::after,.brief-phone>.brief-preview::before{display:none}
 
-  /* header: avatar + name float over the content area, no grey bar */
-  .brief-preview .brief-chat-head{flex:none;padding:14px calc(var(--strip) + 6px) 8px 14px!important;background:linear-gradient(#fff 62%,rgba(255,255,255,0))!important;border:0!important;z-index:3}
-  .brief-preview .brief-chat-avatar{width:46px;height:46px}
-  .brief-preview .brief-chat-who strong{padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.72);
-    box-shadow:0 0 0 .5px rgba(0,0,0,.06),0 2px 8px -2px rgba(0,0,0,.12),inset 0 1px 0 #fff;font-size:12px;font-weight:600}
-  .brief-preview .im-progress{bottom:0}
+  /* ---- side strip: status, then the bar buttons ---- */
+  .duo-strip{position:absolute;top:0;right:0;width:calc(96 * var(--u));height:100%;z-index:5;pointer-events:none}
+  .duo-time{position:absolute;top:calc(84 * var(--u));left:0;right:0;margin-right:calc(-1.4 * var(--u));text-align:center;
+    font-size:calc(17 * var(--u));line-height:1;font-weight:600;letter-spacing:calc(-.2 * var(--u));color:#000;font-variant-numeric:tabular-nums}
+  .duo-ring{position:absolute;top:calc(106 * var(--u));left:50%;width:calc(40 * var(--u));height:calc(40 * var(--u));margin-left:calc(-18.6 * var(--u))}
+  .duo-ring .arc,.duo-ring .wifi{fill:none;stroke:#000;stroke-linecap:round}
+  .duo-ring .arc{stroke-width:3}
+  .duo-ring .wifi{stroke-width:2.6}
+  .duo-ring .dot,.duo-ring .wedge{fill:#000}
 
-  /* Back and FaceTime move to the top of the strip, as Liquid Glass circles */
-  .brief-preview .im-back,.brief-preview .im-video{position:absolute;z-index:5;right:calc((var(--strip) - 38px)/2)!important;left:auto!important;width:38px!important;height:38px!important;
-    display:grid;place-items:center;padding:0;border-radius:50%;color:#1c1c1e;
-    background:rgba(255,255,255,.78);box-shadow:0 0 0 .5px rgba(0,0,0,.07),0 3px 10px -3px rgba(0,0,0,.16),inset 0 1px 0 #fff}
-  .brief-preview .im-back{top:50px!important}
-  .brief-preview .im-back svg{width:10px;height:17px;stroke-width:2.4}
-  .brief-preview .im-video{top:96px!important;color:#1c1c1e}
-  .brief-preview .im-video svg{width:21px;height:15px;stroke-width:1.9}
-  .pointer-enabled .brief-preview .im-video:hover{background:rgba(255,255,255,.78)}
+  /* Liquid Glass bar buttons, 48 pt, centred on the strip */
+  .brief-phone .brief-preview .im-back,.brief-phone .brief-preview .im-video{position:absolute;z-index:6;left:auto!important;
+    right:calc(-51.7 * var(--u))!important;width:calc(48 * var(--u))!important;height:calc(48 * var(--u))!important;padding:0;border:0;border-radius:50%;
+    display:grid;place-items:center;color:#000;
+    background:linear-gradient(180deg,#fff 0%,#fbfbfb 55%,#f1f1f2 100%);
+    box-shadow:inset 0 0 0 calc(.6 * var(--u)) rgba(0,0,0,.075),inset 0 calc(1 * var(--u)) 0 #fff,0 calc(3 * var(--u)) calc(10 * var(--u)) calc(-2 * var(--u)) rgba(0,0,0,.09),0 calc(1 * var(--u)) calc(2 * var(--u)) rgba(0,0,0,.04)}
+  .brief-phone .brief-preview .im-back{top:calc(172 * var(--u))!important}
+  .brief-phone .brief-preview .im-video{top:calc(230 * var(--u))!important}
+  .brief-phone .brief-preview .im-back svg{width:calc(11 * var(--u));height:calc(19 * var(--u));stroke-width:2.6}
+  .brief-phone .brief-preview .im-video svg{width:calc(25 * var(--u));height:calc(17 * var(--u));stroke-width:1.9}
+  .brief-phone .brief-preview .im-video::after{inset:calc(-3 * var(--u))}
+  .pointer-enabled .brief-phone .brief-preview .im-video:hover{background:linear-gradient(180deg,#fff 0%,#fbfbfb 55%,#f1f1f2 100%)}
+  .brief-phone .brief-preview.is-call-open .im-video{opacity:1;pointer-events:auto}
 
-  /* chat and compose stay in the content area */
-  .brief-preview .brief-chat{flex:1 1 auto;min-height:0!important;overflow:hidden;padding:6px calc(var(--strip) + 8px) 6px 12px}
-  .brief-preview .brief-bubble{max-width:94%;font-size:14px;line-height:1.34;padding:7px 12px 8px;border-radius:18px;background:#0a84ff}
-  .brief-preview .brief-bubble::before{background:#0a84ff}
-  .brief-preview .im-time{font-size:10.5px}
-  .brief-preview .im-bar{flex:none;gap:8px;padding:6px calc(var(--strip) + 4px) 12px 10px}
-  .brief-preview .im-plus{width:34px;height:34px;background:rgba(118,118,128,.12);color:#3a3a3c}
-  .brief-preview .im-field{height:34px;font-size:14.5px;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.16)}
+  /* ---- content area: everything left of the strip ---- */
+  .brief-phone .brief-chat-head{position:absolute!important;top:0;left:0;right:calc(76 * var(--u));z-index:4;display:flex;flex-direction:column;align-items:center;
+    gap:calc(6 * var(--u));padding:calc(22 * var(--u)) 0 calc(18 * var(--u))!important;border:0!important;
+    background:linear-gradient(#fff 70%,rgba(255,255,255,0))!important}
+  .brief-phone .brief-chat-avatar{width:calc(58 * var(--u));height:calc(58 * var(--u))}
+  .brief-phone .brief-chat-who strong{gap:calc(3 * var(--u));padding:calc(5 * var(--u)) calc(11 * var(--u));border-radius:999px;
+    font-size:calc(13 * var(--u));font-weight:600;letter-spacing:0;color:#000;
+    background:linear-gradient(180deg,#fff,#f6f6f7);box-shadow:inset 0 0 0 calc(.6 * var(--u)) rgba(0,0,0,.07),0 calc(2 * var(--u)) calc(8 * var(--u)) calc(-2 * var(--u)) rgba(0,0,0,.1)}
+  .brief-phone .brief-chat-who strong svg{width:calc(6 * var(--u));height:calc(10 * var(--u))}
+  .brief-phone .im-progress{bottom:auto;top:0}
 
-  /* sheets stop short of the camera strip */
-  .brief-preview .call-sheet,.brief-preview .refs-sheet{left:8px;right:calc(var(--strip) + 2px);bottom:56px}
-  .brief-preview .call-sheet{max-height:calc(100% - 64px)}
+  .brief-phone .brief-chat{position:absolute!important;left:0;right:calc(76 * var(--u));top:calc(120 * var(--u));bottom:calc(66 * var(--u));
+    min-height:0!important;overflow:hidden;padding:0 calc(14 * var(--u)) calc(4 * var(--u)) calc(16 * var(--u))!important;display:flex;flex-direction:column;justify-content:flex-end}
+  .brief-phone .im-time{margin:0 0 calc(10 * var(--u));font-size:calc(12 * var(--u));line-height:1.3;color:#8a8a8e}
+  .brief-phone .brief-bubble{max-width:92%;margin-right:calc(4 * var(--u));padding:calc(7 * var(--u)) calc(13 * var(--u)) calc(8 * var(--u));
+    border-radius:calc(19 * var(--u));background:#0088ff;font-size:calc(16 * var(--u));line-height:1.3;letter-spacing:calc(-.2 * var(--u))}
+  .brief-phone .brief-bubble::before{background:#0088ff}
+  .brief-phone .brief-bubble p:first-child{margin-bottom:calc(6 * var(--u))}
+  .brief-phone .brief-bubble p{margin-bottom:calc(2 * var(--u))}
+  .brief-phone .brief-bubble [data-part="project"]{margin:calc(6 * var(--u)) 0}
+  .brief-phone .im-status{margin:calc(4 * var(--u)) calc(6 * var(--u)) 0 0;font-size:calc(11.5 * var(--u))}
+
+  /* compose: glass "+" and a glass field, bottom of the content area */
+  .brief-phone .im-bar{position:absolute!important;left:calc(14 * var(--u));right:calc(84 * var(--u));bottom:calc(16 * var(--u));z-index:4;
+    display:flex;align-items:center;gap:calc(8 * var(--u));padding:0!important;background:none!important}
+  .brief-phone .im-plus{width:calc(42 * var(--u));height:calc(42 * var(--u));color:#000;
+    background:linear-gradient(180deg,#fff 0%,#fbfbfb 55%,#f1f1f2 100%)!important;
+    box-shadow:inset 0 0 0 calc(.6 * var(--u)) rgba(0,0,0,.075),0 calc(3 * var(--u)) calc(10 * var(--u)) calc(-2 * var(--u)) rgba(0,0,0,.09)}
+  .brief-phone .im-plus svg{width:calc(19 * var(--u));height:calc(19 * var(--u))}
+  .brief-phone .im-field{height:calc(42 * var(--u));padding:0 calc(4 * var(--u)) 0 calc(15 * var(--u));font-size:calc(17 * var(--u));color:#a6a6ab;
+    background:linear-gradient(180deg,#fff,#fafafa);box-shadow:inset 0 0 0 calc(.6 * var(--u)) rgba(0,0,0,.09),0 calc(3 * var(--u)) calc(10 * var(--u)) calc(-2 * var(--u)) rgba(0,0,0,.08)}
+  .brief-phone .im-send{width:calc(34 * var(--u));height:calc(34 * var(--u));margin-left:calc(-42 * var(--u))}
+  .brief-phone .im-arrow{width:calc(27 * var(--u));height:calc(27 * var(--u))}
+
+  /* sheets open inside the content area */
+  .brief-phone .brief-preview .call-sheet,.brief-phone .brief-preview .refs-sheet{left:calc(10 * var(--u));right:calc(86 * var(--u));bottom:calc(68 * var(--u))}
+  .brief-phone .brief-preview .call-sheet{max-height:calc(100% - 84 * var(--u))}
+  .brief-phone .brief-preview .refs-sheet{max-height:calc(100% - 150 * var(--u))}
 }
 @media(max-width:900px){.duo-strip{display:none}}
