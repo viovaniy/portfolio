@@ -149,3 +149,16 @@
   .cg-slide.is-active .cg-arrow[data-step="-1"]:hover svg{transform:translateX(-2px)}
 }
 .cg-arrow:active{transform:scale(.92)}
+
+/* ---------- dark pills: a little physics ----------
+   Hover lifts the pill a touch; pressing squashes it (wider than tall, like
+   rubber); letting go springs it back past rest and settles. */
+:is(.home-section .contact-button,.cg-watch,.brief-send){
+  transition:transform .6s cubic-bezier(.34,1.9,.45,1),box-shadow .35s ease,background-color .25s ease,opacity .25s ease!important;will-change:transform}
+@media(hover:hover){
+  :is(.home-section .contact-button,.cg-watch,.brief-send):hover{transform:translateY(-2px)}
+}
+:is(.home-section .contact-button,.cg-watch,.brief-send):active{
+  transform:translateY(0) scale(1.04,.9)!important;transition:transform .12s cubic-bezier(.3,0,.6,1),box-shadow .2s ease!important}
+.home-section .contact-button:active .magnetic-label{--press-scale:1}
+@media(prefers-reduced-motion:reduce){:is(.home-section .contact-button,.cg-watch,.brief-send){transition:none!important;transform:none!important}}
