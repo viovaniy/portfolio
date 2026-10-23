@@ -134,9 +134,26 @@
     renderTimes();
     times.classList.remove('is-in'); void times.offsetWidth; times.classList.add('is-in');
   });
+  // A time that only peeks in at the edge can't be picked: tapping it slides it into view first.
+  const peeking = b => {
+    const r = b.getBoundingClientRect(), box = times.getBoundingClientRect();
+    return r.left < box.left - 1 || r.right > box.right + 1;
+  };
+  const markPeek = () => times.querySelectorAll('.call-time').forEach(x => {
+    const p = peeking(x);
+    x.classList.toggle('is-peek', p);
+    x.toggleAttribute('data-pointer-passive', p); // the cursor doesn't wrap a half-hidden chip
+  });
+  times.addEventListener('scroll', () => requestAnimationFrame(markPeek), { passive: true });
+  new MutationObserver(() => requestAnimationFrame(markPeek)).observe(times, { childList: true });
   times.addEventListener('click', e => {
     const b = e.target.closest('.call-time');
     if (!b) return;
+    if (peeking(b)) {
+      const box = times.getBoundingClientRect(), r = b.getBoundingClientRect();
+      times.scrollBy({ left: r.right > box.right ? r.right - box.right : r.left - box.left, behavior: reduced.matches ? 'auto' : 'smooth' });
+      return;
+    }
     pickedAt = +b.dataset.at;
     times.querySelectorAll('.call-time').forEach(x => x.setAttribute('aria-selected', String(x === b)));
     next.disabled = false;

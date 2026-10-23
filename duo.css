@@ -100,6 +100,9 @@
   /* time chips: four fit across and the next one peeks in, so the row reads as swipeable */
   .brief-phone .call-times{margin:8px 0 0;padding:2px 0 4px;min-height:32px;scroll-padding:0;scroll-snap-type:x mandatory}
   .brief-phone .call-times>*+*{margin-left:5px}
+  .call-time.is-peek{opacity:.55;transition:opacity .2s ease}
+  .call-time.is-peek[aria-selected="true"]{opacity:.55}
+  .call-time.is-peek,.call-time.is-peek:hover{background:rgba(118,118,128,.1)!important;cursor:e-resize}
   .brief-phone .call-time{flex:0 0 calc((100% - 20px) / 4.3);height:28px;padding:0 2px;font-size:11px;letter-spacing:-.02em;white-space:nowrap;scroll-snap-align:start}
   /* red dots instead of the handwritten hints: until the button is tried */
   .brief-phone .brief-preview :is(.im-video,.im-plus)::after{content:"";position:absolute;inset:auto;top:calc(1 * var(--u));right:calc(1 * var(--u));
