@@ -202,18 +202,19 @@
   });
 })();
 
-// About tab: the word "click" plays a small burst on hover (mouse) or tap.
+// About tab: "No AI slop" — split the note into words so they drift in one by one.
 (() => {
-  const word = document.querySelector('.me-click');
-  if (!word) return;
-  const play = () => {
-    word.classList.remove('is-burst');
-    void word.offsetWidth; // restart the animation
-    word.classList.add('is-burst');
-  };
-  word.addEventListener('click', play);
-  word.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') play(); });
-  word.addEventListener('animationend', event => { if (event.target === word.querySelector('.me-burst i:last-child')) word.classList.remove('is-burst'); });
+  const note = document.querySelector('.me-noslop-more');
+  if (!note) return;
+  const text = note.textContent.trim();
+  note.textContent = '';
+  text.split(/\s+/).forEach((word, i) => {
+    const w = document.createElement('span');
+    w.className = 'w';
+    w.style.setProperty('--i', i);
+    w.textContent = word;
+    note.append(w, ' ');
+  });
 })();
 
 // Projects tab: blue glass folder holding the cases.
