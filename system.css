@@ -59,23 +59,22 @@
   .products-section .pd-layout{padding-left:16px;padding-right:16px}
 }
 
-/* Hero CTA hover: the site's sunset (pink → peach) blooms out of the dark pill
-   and keeps slowly flowing, with one soft sheen passing through. */
+/* Hero CTA hover: the whole pill changes colour — dark melts into the site's
+   sunset (pink → peach), which keeps slowly flowing. No scaling. */
 .home-section .contact-button{isolation:isolate;overflow:hidden}
 .home-section .contact-button::before{content:"";position:absolute;inset:0;z-index:0;border-radius:inherit;pointer-events:none;
   background:linear-gradient(100deg,#ff5f9e,#ff8a7a 28%,#ffad6e 50%,#ff8a7a 72%,#ff5f9e);background-size:220% 100%;
-  opacity:0;scale:.6 .45;transition:opacity .35s ease,scale .6s cubic-bezier(.34,1.45,.5,1)}
+  opacity:0;transition:opacity .45s cubic-bezier(.22,1,.36,1)}
 .home-section .contact-button::after{content:"";position:absolute;top:0;bottom:0;left:-40%;width:35%;z-index:0;pointer-events:none;
   background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-18deg);opacity:0}
 .home-section .contact-button .magnetic-label{z-index:1}
 @media(hover:hover){
   .home-section .contact-button:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 2px 4px rgba(224,86,127,.18),0 20px 36px -14px rgba(255,110,140,.75)}
-  .home-section .contact-button:hover::before{opacity:1;scale:1;animation:cta-flow 3s linear infinite}
-  .home-section .contact-button:hover::after{animation:cta-sheen 1.1s cubic-bezier(.22,1,.36,1) .15s}
+  .home-section .contact-button:hover::before{opacity:1;animation:cta-flow 3s linear infinite}
   .home-section .contact-button:hover .cta-copy{--ts-base:#fff;--ts-highlight:#fff3e8}
   .home-section .contact-button:hover .button-arrow{opacity:1}
 }
-.home-section .contact-button:focus-visible::before{opacity:1;scale:1}
+.home-section .contact-button:focus-visible::before{opacity:1}
 @keyframes cta-flow{to{background-position:-220% 0}}
 @keyframes cta-sheen{0%{opacity:1;transform:skewX(-18deg) translateX(0)}100%{opacity:0;transform:skewX(-18deg) translateX(520%)}}
 @media(prefers-reduced-motion:reduce){.home-section .contact-button:hover::before{animation:none}.home-section .contact-button:hover::after{animation:none}}
