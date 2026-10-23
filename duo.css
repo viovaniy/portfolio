@@ -97,6 +97,10 @@
   .brief-phone .brief-preview .call-sheet,.brief-phone .brief-preview .refs-sheet{left:calc(10 * var(--u));right:calc(86 * var(--u));bottom:calc(68 * var(--u))}
   .brief-phone .brief-preview .call-sheet{max-height:calc(100% - 84 * var(--u))}
   .brief-phone .brief-preview .refs-sheet{max-height:calc(100% - 150 * var(--u))}
+  /* time chips: exactly four fit across, the rest are a swipe away (never chopped) */
+  .brief-phone .call-times{margin:8px 0 0;padding:2px 0 4px;min-height:32px;scroll-padding:0;scroll-snap-type:x mandatory}
+  .brief-phone .call-times>*+*{margin-left:5px}
+  .brief-phone .call-time{flex:0 0 calc((100% - 15px) / 4);height:28px;padding:0 2px;font-size:11.5px;letter-spacing:-.02em;white-space:nowrap;scroll-snap-align:start}
   /* red dots instead of the handwritten hints: until the button is tried */
   .brief-phone .brief-preview :is(.im-video,.im-plus)::after{content:"";position:absolute;inset:auto;top:calc(1 * var(--u));right:calc(1 * var(--u));
     width:calc(11 * var(--u));height:calc(11 * var(--u));border-radius:50%;background:#ff3b30;box-shadow:0 0 0 calc(2 * var(--u)) #fff;
