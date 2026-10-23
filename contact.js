@@ -225,6 +225,7 @@
       textarea.value = '';
       window.briefRefs?.clear();
       window.briefCall?.clear();
+      extrasOk = false;
       form.querySelectorAll('input[type=radio]').forEach(radio => { radio.checked = false; });
       fieldOf('project')?.classList.remove('is-pill');
       grow();
@@ -325,6 +326,7 @@
   async function send() {
     if (sending) return;
     sending = true;
+    dropNudge?.();
     briefText.value = message();
     const started = performance.now();
     resetConversation();
@@ -373,6 +375,76 @@
   }
   done.querySelector('.brief-retry').addEventListener('click', send);
 
+  // No references and no call yet: a friendly nudge in the chat, then an
+  // Apple-style alert ("Send without extras?" · No / Yes) before the brief goes out.
+  const nudgePhone = root.querySelector('.brief-preview');
+  const nudgeChat = nudgePhone?.querySelector('.brief-chat');
+  const nudgeWide = matchMedia('(min-width: 901px)');
+  const ICON_PLUS = '<i class="im-in-ico" aria-label="+"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg></i>';
+  const ICON_CAM = '<i class="im-in-ico" aria-label="camera"><svg viewBox="0 0 26 18" aria-hidden="true"><rect x="1" y="2" width="16" height="14" rx="4"/><path d="m18 7.5 6-3.5v10l-6-3.5Z"/></svg></i>';
+  let extrasOk = false, nudgeBubble = null, alertBox = null;
+  const needsNudge = () => !extrasOk && !((window.briefRefs?.count() || 0) > 0) && !window.briefCall?.get?.();
+  function dropNudge() { nudgeBubble?.remove(); nudgeBubble = null; }
+  function closeAlert(answer) {
+    if (!alertBox) return;
+    const box = alertBox; alertBox = null;
+    box.classList.remove('is-open');
+    nudgePhone?.classList.remove('is-alert-open');
+    document.documentElement.classList.remove('duo-alert-lock');
+    setTimeout(() => box.remove(), reduced.matches ? 0 : 260);
+    if (answer === 'yes') { extrasOk = true; send(); return; }
+    // "No": point at the two buttons again.
+    nudgePhone?.classList.remove('is-explored');
+    const tools = form.querySelector('.brief-tools');
+    if (tools) { tools.classList.remove('is-nudge'); void tools.offsetWidth; tools.classList.add('is-nudge'); }
+    (nudgeWide.matches ? nudgePhone?.querySelector('.im-plus') : tools?.querySelector('.brief-tool'))?.focus({ preventScroll: true });
+  }
+  function openAlert() {
+    if (alertBox) return;
+    alertBox = document.createElement('div');
+    alertBox.className = 'duo-alert';
+    alertBox.setAttribute('role', 'alertdialog');
+    alertBox.setAttribute('aria-modal', 'true');
+    alertBox.setAttribute('aria-labelledby', 'duo-alert-title');
+    alertBox.setAttribute('aria-describedby', 'duo-alert-text');
+    alertBox.innerHTML = `<div class="duo-alert-card"><h4 id="duo-alert-title">${tr('Send without extras?')}</h4>` +
+      `<p id="duo-alert-text">${tr('No references or video call yet. Send the brief anyway?')}</p>` +
+      `<div class="duo-alert-btns"><button type="button" data-a="no" data-pointer-shape="pill">${tr('No')}</button>` +
+      `<button type="button" data-a="yes" class="is-primary" data-pointer-shape="pill">${tr('Yes')}</button></div></div>`;
+    alertBox.addEventListener('click', e => {
+      const b = e.target.closest('[data-a]');
+      if (b) closeAlert(b.dataset.a);
+    });
+    alertBox.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { e.preventDefault(); closeAlert('no'); }
+      if (e.key === 'Tab') { // keep focus on the two buttons
+        const bs = [...alertBox.querySelectorAll('button')];
+        const i = bs.indexOf(document.activeElement);
+        e.preventDefault();
+        bs[(i + (e.shiftKey ? bs.length - 1 : 1)) % bs.length].focus();
+      }
+    });
+    const inPhone = nudgeWide.matches && nudgePhone;
+    (inPhone ? nudgePhone : document.body).append(alertBox);
+    if (!inPhone) { alertBox.classList.add('is-page'); document.documentElement.classList.add('duo-alert-lock'); }
+    nudgePhone?.classList.add('is-alert-open');
+    requestAnimationFrame(() => requestAnimationFrame(() => alertBox?.classList.add('is-open')));
+    setTimeout(() => alertBox?.querySelector('[data-a="no"]').focus({ preventScroll: true }), 60);
+  }
+  function nudge() {
+    window.briefRefs?.close?.();
+    window.briefCall?.close?.();
+    if (nudgeWide.matches && nudgeChat && !nudgeBubble) {
+      nudgeBubble = document.createElement('div');
+      nudgeBubble.className = 'im-in';
+      nudgeBubble.innerHTML = `<p>${tr('Before you send: want to pin a few references or book a quick video call?')}</p>` +
+        `<p class="im-in-sub">${tr('Just tap {plus} or {camera}.', { plus: ICON_PLUS, camera: ICON_CAM })}</p>`;
+      nudgeChat.append(nudgeBubble);
+      pop(nudgeBubble);
+      setTimeout(openAlert, reduced.matches ? 0 : 900);
+    } else openAlert();
+  }
+
   form.addEventListener('submit', event => {
     event.preventDefault();
     const missing = required.filter(key => !value(key));
@@ -392,6 +464,7 @@
       return;
     }
     if (form.elements.namedItem('botcheck').checked) return; // spam bot
+    if (needsNudge()) { nudge(); return; }
     send();
   });
 

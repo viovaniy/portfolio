@@ -97,10 +97,10 @@
   .brief-phone .brief-preview .call-sheet,.brief-phone .brief-preview .refs-sheet{left:calc(10 * var(--u));right:calc(86 * var(--u));bottom:calc(68 * var(--u))}
   .brief-phone .brief-preview .call-sheet{max-height:calc(100% - 84 * var(--u))}
   .brief-phone .brief-preview .refs-sheet{max-height:calc(100% - 150 * var(--u))}
-  /* time chips: exactly four fit across, the rest are a swipe away (never chopped) */
+  /* time chips: four fit across and the next one peeks in, so the row reads as swipeable */
   .brief-phone .call-times{margin:8px 0 0;padding:2px 0 4px;min-height:32px;scroll-padding:0;scroll-snap-type:x mandatory}
   .brief-phone .call-times>*+*{margin-left:5px}
-  .brief-phone .call-time{flex:0 0 calc((100% - 15px) / 4);height:28px;padding:0 2px;font-size:11.5px;letter-spacing:-.02em;white-space:nowrap;scroll-snap-align:start}
+  .brief-phone .call-time{flex:0 0 calc((100% - 20px) / 4.3);height:28px;padding:0 2px;font-size:11px;letter-spacing:-.02em;white-space:nowrap;scroll-snap-align:start}
   /* red dots instead of the handwritten hints: until the button is tried */
   .brief-phone .brief-preview :is(.im-video,.im-plus)::after{content:"";position:absolute;inset:auto;top:calc(1 * var(--u));right:calc(1 * var(--u));
     width:calc(11 * var(--u));height:calc(11 * var(--u));border-radius:50%;background:#ff3b30;box-shadow:0 0 0 calc(2 * var(--u)) #fff;
@@ -112,12 +112,64 @@
   /* a sheet is up: the rest of the phone sinks into an iOS-style blur */
   .brief-phone .brief-preview :is(.brief-chat-avatar,.brief-chat-who,.brief-chat,.im-bar,.duo-strip){
     transition:filter .45s cubic-bezier(.22,1,.36,1),opacity .45s ease,transform .45s cubic-bezier(.22,1,.36,1)}
-  .brief-phone .brief-preview:is(.is-call-open,.is-refs-open) :is(.brief-chat-avatar,.brief-chat-who,.brief-chat,.im-bar,.duo-strip){
+  .brief-phone .brief-preview:is(.is-call-open,.is-refs-open,.is-alert-open) :is(.brief-chat-avatar,.brief-chat-who,.brief-chat,.im-bar,.duo-strip){
     filter:blur(calc(7 * var(--u))) saturate(1.15);opacity:.75!important;transform:none!important}
-  .brief-phone .brief-preview:is(.is-call-open,.is-refs-open) .im-bar{pointer-events:none}
-  .brief-phone .brief-preview:is(.is-call-open,.is-refs-open) .brief-chat-head{z-index:6;background:none!important}
-  .brief-phone .brief-preview:is(.is-call-open,.is-refs-open)::before{display:block;content:"";position:absolute;inset:0;z-index:5;
+  .brief-phone .brief-preview:is(.is-call-open,.is-refs-open,.is-alert-open) .im-bar{pointer-events:none}
+  .brief-phone .brief-preview:is(.is-call-open,.is-refs-open,.is-alert-open) .brief-chat-head{z-index:6;background:none!important}
+  .brief-phone .brief-preview:is(.is-call-open,.is-refs-open,.is-alert-open)::before{display:block;content:"";position:absolute;inset:0;z-index:5;
     background:rgba(255,255,255,.18);pointer-events:none}
   @media(prefers-reduced-motion:reduce){.brief-phone .brief-preview :is(.brief-chat-avatar,.brief-chat-who,.brief-chat,.im-bar,.duo-strip){transition:none}}
 }
 @media(max-width:900px){.duo-strip{display:none}}
+
+/* ---------- the "extras" nudge: an incoming iMessage + an iOS alert ---------- */
+.im-in{position:relative;align-self:flex-start;max-width:86%;margin:10px 0 2px 4px;padding:8px 13px 9px;border-radius:19px;background:#e9e9eb;color:#000;
+  font-size:15px;line-height:1.32;letter-spacing:-.01em;transform-origin:0 100%}
+.im-in::before,.im-in::after{content:"";position:absolute;bottom:0;height:20px}
+.im-in::before{left:-7px;width:20px;background:#e9e9eb;border-bottom-right-radius:16px 14px}
+.im-in::after{left:-26px;width:26px;background:#fff;border-bottom-right-radius:10px}
+.im-in p{margin:0}
+.im-in .im-in-sub{margin-top:4px;color:#3c3c43}
+.im-in-ico{display:inline-grid;place-items:center;width:1.45em;height:1.45em;margin:0 .1em;vertical-align:-.36em;border-radius:50%;background:#fff;
+  box-shadow:inset 0 0 0 .5px rgba(0,0,0,.08),0 1px 3px rgba(0,0,0,.1);font-style:normal}
+.im-in-ico svg{width:.85em;height:.85em;fill:none;stroke:#000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media(min-width:901px){
+  .brief-phone .im-in{margin:calc(10 * var(--u)) 0 calc(2 * var(--u)) calc(4 * var(--u));padding:calc(7 * var(--u)) calc(13 * var(--u)) calc(8 * var(--u));
+    border-radius:calc(19 * var(--u));font-size:calc(16 * var(--u))}
+}
+
+/* iOS 26 alert: frosted card, bold title, two capsule buttons */
+.duo-alert{position:absolute;inset:0;z-index:9;display:grid;place-items:center;padding:0 20px;background:rgba(0,0,0,0);transition:background-color .25s ease}
+.duo-alert.is-open{background:rgba(0,0,0,.12)}
+.duo-alert-card{width:min(100%,270px);padding:20px 16px 14px;border-radius:30px;text-align:center;
+  background:rgba(255,255,255,.86);-webkit-backdrop-filter:blur(30px) saturate(1.8);backdrop-filter:blur(30px) saturate(1.8);
+  box-shadow:inset 0 0 0 .5px rgba(255,255,255,.9),0 0 0 .5px rgba(0,0,0,.06),0 20px 50px -12px rgba(0,0,0,.35);
+  opacity:0;transform:scale(1.12);transition:opacity .22s ease,transform .38s cubic-bezier(.32,1.25,.5,1)}
+.duo-alert.is-open .duo-alert-card{opacity:1;transform:none}
+.duo-alert-card h4{margin:0 0 6px;font-size:17px;line-height:1.25;font-weight:600;letter-spacing:-.02em;color:#000}
+.duo-alert-card p{margin:0 0 16px;font-size:13.5px;line-height:1.35;color:#3c3c43}
+.duo-alert-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.duo-alert-btns button{height:44px;border:0;border-radius:999px;font:inherit;font-size:16px;font-weight:600;cursor:pointer;
+  background:rgba(118,118,128,.14);color:#000;transition:transform .15s cubic-bezier(.22,1,.36,1),background-color .2s ease}
+.duo-alert-btns button.is-primary{background:#0088ff;color:#fff}
+@media(hover:hover){.duo-alert-btns button:hover{background:rgba(118,118,128,.22)}.duo-alert-btns button.is-primary:hover{background:#0a7ae6}}
+.duo-alert-btns button:active{transform:scale(.95)}
+.duo-alert-btns button:focus-visible{outline:3px solid #91baff;outline-offset:2px}
+/* inside the phone: sized in kit points */
+@media(min-width:901px){
+  .brief-phone .duo-alert{padding:0 calc(30 * var(--u))}
+  .brief-phone .duo-alert-card{width:calc(300 * var(--u));padding:calc(22 * var(--u)) calc(18 * var(--u)) calc(16 * var(--u));border-radius:calc(34 * var(--u))}
+  .brief-phone .duo-alert-card h4{font-size:calc(17 * var(--u));margin-bottom:calc(6 * var(--u))}
+  .brief-phone .duo-alert-card p{font-size:calc(14 * var(--u));margin-bottom:calc(18 * var(--u))}
+  .brief-phone .duo-alert-btns{gap:calc(8 * var(--u))}
+  .brief-phone .duo-alert-btns button{height:calc(46 * var(--u));font-size:calc(17 * var(--u))}
+}
+/* on phones (no mockup) the alert floats over the page */
+.duo-alert.is-page{position:fixed;z-index:120;-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0);transition:background-color .25s ease,backdrop-filter .3s ease}
+.duo-alert.is-page.is-open{background:rgba(20,18,28,.22);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+html.duo-alert-lock{overflow:hidden}
+/* "No": the two tool buttons give a little wave */
+.brief-tools.is-nudge .brief-tool{animation:duo-wave .6s cubic-bezier(.34,1.5,.5,1) both}
+.brief-tools.is-nudge .brief-tool+.brief-tool{animation-delay:.08s}
+@keyframes duo-wave{30%{transform:translateY(-4px) scale(1.04)}60%{transform:translateY(1px)}}
+@media(prefers-reduced-motion:reduce){.duo-alert-card,.duo-alert{transition:none}.brief-tools.is-nudge .brief-tool{animation:none}}
