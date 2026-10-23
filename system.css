@@ -79,3 +79,42 @@
 @keyframes cta-flow{to{background-position:-220% 0}}
 @keyframes cta-sheen{0%{opacity:1;transform:skewX(-18deg) translateX(0)}100%{opacity:0;transform:skewX(-18deg) translateX(520%)}}
 @media(prefers-reduced-motion:reduce){.home-section .contact-button:hover::before{animation:none}.home-section .contact-button:hover::after{animation:none}}
+
+/* ---------- first screen: bigger, calmer type with little icon tiles ---------- */
+.home-section h1{font-size:clamp(36px,3.7vw,54px);line-height:1.12;letter-spacing:-.035em;font-weight:500}
+.home-section .reveal-secondary{font-size:.6em;line-height:1.36;letter-spacing:-.022em;color:#9b9ba1;margin-top:18px;max-width:22em}
+.home-section .greeting-stage{margin-bottom:14px}
+.home-section .contact-button{margin-top:34px}
+/* tiles sit in the sentence like app icons (Satya-style) and pop in with the words */
+.hero-reveal .tile-clip{overflow:visible;vertical-align:baseline;padding:0;margin:0 .04em}
+.hero-reveal .hero-tile{display:inline-grid;place-items:center;width:1.1em;height:1.1em;border-radius:.3em;vertical-align:-.2em;margin:-.14em 0;
+  box-shadow:0 0 0 2px #fff,0 1px 2px rgba(28,25,40,.12),0 8px 16px -8px rgba(28,25,40,.45);
+  animation:hero-tile-in .8s cubic-bezier(.34,1.56,.5,1) backwards;animation-delay:calc(var(--reveal-delay,0s) + .12s);
+  transition:transform .55s cubic-bezier(.34,1.6,.5,1)}
+.hero-reveal .hero-tile svg{width:58%;height:58%}
+.hero-tile-spark svg{width:64%!important;height:64%!important}
+.hero-tile-play{transform:rotate(-7deg);background:linear-gradient(160deg,#3a3a3e,#1c1c1e);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -2px 6px rgba(0,0,0,.35),0 0 0 2px #fff,0 1px 2px rgba(28,25,40,.12),0 8px 16px -8px rgba(28,25,40,.5)!important}
+.hero-tile-play svg{fill:#ffb3cf;margin-left:8%}
+.hero-tile-spark{transform:rotate(6deg);background:linear-gradient(150deg,#ffadcd,#ffbb96)}
+.hero-tile-spark svg{fill:#fff;filter:drop-shadow(0 1px 1px rgba(196,71,58,.25))}
+@media(hover:hover){.hero-reveal:hover .hero-tile-play{transform:rotate(5deg) scale(1.08)}.hero-reveal:hover .hero-tile-spark{transform:rotate(-8deg) scale(1.08)}}
+@keyframes hero-tile-in{from{transform:rotate(-40deg) scale(.2);opacity:0}60%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.hero-reveal .hero-tile{animation:none}}
+
+/* availability: a quiet glass pill under the name, with a breathing green dot */
+.home-section .identity{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.status-pill{display:inline-flex;align-items:center;gap:8px;margin:0;height:28px;padding:0 12px 0 10px;border-radius:999px;font-size:13px;font-weight:500;letter-spacing:-.005em;color:var(--ink-2);
+  background:rgba(255,255,255,.8);box-shadow:0 0 0 1px var(--hair),0 6px 14px -10px rgba(28,25,40,.3)}
+.status-dot{position:relative;width:8px;height:8px;border-radius:50%;background:#34c759;box-shadow:0 0 0 2px rgba(52,199,89,.16)}
+.status-dot::after{content:"";position:absolute;inset:0;border-radius:50%;background:#34c759;animation:status-ping 2.4s cubic-bezier(.2,.6,.3,1) infinite}
+@keyframes status-ping{0%{transform:scale(1);opacity:.55}70%,100%{transform:scale(2.8);opacity:0}}
+@media(prefers-reduced-motion:reduce){.status-dot::after{animation:none}}
+/* Chinese and Japanese set denser: a step smaller so lines break kindly */
+.home-section h1:is(:lang(ja),:lang(zh)){font-size:clamp(30px,3vw,42px);line-height:1.22}
+@media(max-width:650px){
+  .home-section h1{font-size:clamp(30px,8.4vw,36px)}
+  .home-section h1:is(:lang(ja),:lang(zh)){font-size:clamp(26px,7vw,30px)}
+  .home-section .reveal-secondary{font-size:.64em;margin-top:12px}
+  .home-section .contact-button{margin-top:24px}
+  .status-pill{height:26px;font-size:12px}
+}

@@ -46,16 +46,30 @@
       lines.forEach(line => {
         const source = [...line.querySelectorAll('.reveal-word')].map(w => w.textContent).join(' ');
         const text = t(source);
-        said.push(text);
+        said.push(text.replace(/\s*\{\w+\}/g, ''));
         if (text === source) { i += line.querySelectorAll('.reveal-word').length; return; }
-        const tokens = CJK ? text.match(/.[、。，！？：；」』）)!?,.]*/gu) || [text] : text.split(/\s+/);
+        // {play} / {spark} mark where the little icon tiles sit in each language
+        const tiles = {};
+        line.querySelectorAll('.hero-tile').forEach(tile => { tiles[tile.textContent.trim()] = tile.cloneNode(true); });
+        const tokens = CJK ? text.match(/\{\w+\}[、。，！？：；」』）)!?,.]*|.[、。，！？：；」』）)!?,.]*/gu) || [text] : text.split(/\s+/);
         line.textContent = '';
         tokens.forEach(token => {
-          const clip = document.createElement('span'); clip.className = 'reveal-clip';
-          const word = document.createElement('span'); word.className = 'reveal-word';
-          word.style.setProperty('--reveal-delay', `${(0.1 + i++ * (CJK ? 0.012 : 0.026)).toFixed(3)}s`);
-          word.textContent = token;
-          clip.append(word); line.append(clip);
+          const delay = `${(0.1 + i++ * (CJK ? 0.012 : 0.026)).toFixed(3)}s`;
+          const mark = token.match(/^(\{\w+\})(.*)$/);
+          const clip = document.createElement('span');
+          if (mark && tiles[mark[1]]) {
+            clip.className = 'reveal-clip tile-clip';
+            const tile = tiles[mark[1]].cloneNode(true);
+            tile.style.setProperty('--reveal-delay', delay);
+            clip.append(tile); line.append(clip);
+            if (mark[2]) { const p = document.createElement('span'); p.className = 'reveal-clip'; const w = document.createElement('span'); w.className = 'reveal-word'; w.style.setProperty('--reveal-delay', delay); w.textContent = mark[2]; p.append(w); line.append(p); }
+          } else {
+            clip.className = 'reveal-clip';
+            const word = document.createElement('span'); word.className = 'reveal-word';
+            word.style.setProperty('--reveal-delay', delay);
+            word.textContent = token;
+            clip.append(word); line.append(clip);
+          }
           if (!CJK) line.append(' ');
         });
       });
