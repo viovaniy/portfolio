@@ -172,23 +172,27 @@
    only the pink surface unfolds (clip-path) and the words drift in. */
 .me-likes li.me-noslop{--head:30px;position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:stretch;gap:0;padding:0;cursor:default;outline:none;
   background:none;box-shadow:none;border-radius:10px;transition:none;transform:none!important}
-.me-noslop::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:10px;
-  background:linear-gradient(135deg,#fff3f7,#fff6ef);box-shadow:inset 0 0 0 1px rgba(255,141,184,.34);
-  clip-path:inset(0 0 calc(100% - var(--head)) 0 round 10px);transition:clip-path .55s cubic-bezier(.22,1,.36,1),box-shadow .35s ease}
-.me-noslop-head{display:flex;align-items:center;gap:7px;height:var(--head);padding:0 10px 0 9px;font-weight:600;color:#c43b72}
-.me-noslop-head svg{width:15px;height:15px;color:#e0679a!important}
+.me-noslop::before,.me-noslop::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:10px;
+  clip-path:inset(0 0 calc(100% - var(--head)) 0 round 10px);transition:clip-path .55s cubic-bezier(.22,1,.36,1),opacity .35s ease}
+.me-noslop::before{background:var(--glass-well,rgba(118,118,128,.075))}
+.me-noslop::after{background:linear-gradient(120deg,#ffe1ec,#ffe8dc);opacity:0}
+.me-noslop-head{display:flex;align-items:center;gap:7px;height:var(--head);padding:0 10px 0 9px;color:#2a2a30;transition:color .35s ease}
+.me-noslop-head svg{width:15px;height:15px;color:#8e8e93!important;transition:color .35s ease}
 .me-noslop .me-noslop-chev{width:10px!important;height:10px!important;margin-left:auto;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .45s cubic-bezier(.34,1.5,.5,1)}
 .me-noslop-more{display:block;padding:0 11px 9px;font-size:12.5px;font-weight:400;line-height:1.45;color:#6e6e73}
 .me-noslop-more .w{display:inline-block;opacity:0;transform:translateY(5px);
   transition:opacity .18s ease,transform .18s ease}
-.me-noslop:is(:hover,:focus-within)::before{clip-path:inset(0 round 10px);box-shadow:inset 0 0 0 1px rgba(255,141,184,.5)}
+.me-noslop:is(:hover,:focus-within)::before,.me-noslop:is(:hover,:focus-within)::after{clip-path:inset(0 round 10px)}
+.me-noslop:is(:hover,:focus-within)::after{opacity:1}
+.me-noslop:is(:hover,:focus-within) .me-noslop-head{color:#c43b72}
+.me-noslop:is(:hover,:focus-within) .me-noslop-head svg{color:#e0679a!important}
 .me-noslop:is(:hover,:focus-within) .me-noslop-more .w{opacity:1;transform:none;
   transition:opacity .45s ease calc(120ms + var(--i)*22ms),transform .6s cubic-bezier(.22,1,.36,1) calc(120ms + var(--i)*22ms)}
 .me-noslop:is(:hover,:focus-within) .me-noslop-chev{transform:rotate(180deg)}
-.me-noslop:focus-visible::before{box-shadow:inset 0 0 0 2px #91baff}
+.me-noslop:focus-visible{box-shadow:0 0 0 2px #91baff}
 /* the card itself stays put while the chip opens */
 .me-card:has(.me-best){transform:none!important;box-shadow:0 0 0 1px rgba(28,25,40,.06),0 1px 2px rgba(28,25,40,.03),0 10px 24px -18px rgba(28,25,40,.22)!important}
-@media(prefers-reduced-motion:reduce){.me-noslop::before,.me-noslop-more .w{transition:none!important}}
+@media(prefers-reduced-motion:reduce){.me-noslop::before,.me-noslop::after,.me-noslop-more .w{transition:none!important}}
 /* the list needs the full width: two neat columns, "No AI slop" across both */
 .me-stack{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto!important}
 .me-best{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px!important;align-items:stretch}
