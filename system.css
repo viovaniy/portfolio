@@ -201,3 +201,18 @@
 @media(max-width:650px){
   .me-best{grid-template-columns:minmax(0,1fr)}
 }
+
+/* "Send brief": dark pill when ready (no gradient at rest); on hover it melts into
+   the flowing sunset, exactly like "Discuss a project" and "Watch film". */
+.brief .brief-send::before{background:linear-gradient(100deg,#ff5f9e,#ff8a7a 28%,#ffad6e 50%,#ff8a7a 72%,#ff5f9e);background-size:220% 100%;
+  opacity:0;transition:opacity .45s cubic-bezier(.22,1,.36,1)}
+.brief.is-complete .brief-send::before{opacity:0}
+.brief.is-complete .brief-send{box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 2px 4px rgba(28,25,40,.12),0 16px 30px -14px rgba(28,25,40,.55)}
+@media(hover:hover){
+  .brief.is-complete .brief-send:hover::before{opacity:1;animation:cta-flow 3s linear infinite}
+  .brief.is-complete .brief-send:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 2px 4px rgba(224,86,127,.18),0 18px 32px -14px rgba(255,110,140,.75)}
+  /* not ready yet: a quieter hover, it still lifts and lightens */
+  .brief:not(.is-complete) .brief-send:hover{opacity:.78}
+}
+.brief.is-complete .brief-send:focus-visible::before{opacity:1}
+@media(prefers-reduced-motion:reduce){.brief .brief-send:hover::before{animation:none}}
