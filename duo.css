@@ -1,0 +1,76 @@
+/* ---------- Contact: the Messages preview inside a folded iPhone Duo ----------
+   Closed, the Duo is passport-shaped (about 1 : 1.4) with a 5.4" outer display.
+   iOS moves the bars to a strip on the right edge: the compact status bar sits in
+   the corner, Back and the call button at the top, and the Dynamic Island runs
+   vertically around the hole-punch camera. Content keeps the area to the left. */
+@media(min-width:901px){
+  .brief-phone{--strip:56px;--rim:4.5px;--bezel:8px;--R:46px;
+    width:min(100%,calc((100svh - 205px)/1.4),404px);aspect-ratio:1/1.4;flex:none;justify-self:end;align-self:start;position:sticky;top:96px}
+  /* titanium body: polished star-white frame, micro-blasted hinge cover on the left */
+  .brief-phone::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+    border-radius:calc(var(--R) - 6px) var(--R) var(--R) calc(var(--R) - 6px);
+    background:
+      linear-gradient(90deg,#aeb1b6 0,#c3c6ca 3px,#b9bcc0 6.5px,transparent 7px),
+      linear-gradient(152deg,#fbfbfc 0,#d3d5d9 18%,#f1f2f4 34%,#c3c6cb 52%,#eceef0 70%,#b4b7bc 88%,#e2e4e7 100%);
+    box-shadow:
+      inset 0 0 0 .5px rgba(0,0,0,.35),inset 0 0 0 1.5px rgba(255,255,255,.55),
+      0 1px 1px rgba(28,25,40,.08),0 12px 24px -12px rgba(28,25,40,.28),0 44px 80px -36px rgba(28,25,40,.42)}
+  /* side button (Touch ID) and Camera Control on the right edge */
+  .brief-phone::after{content:"";position:absolute;z-index:0;right:-2.5px;top:21%;width:3px;height:58%;pointer-events:none;
+    background:
+      linear-gradient(90deg,#c9cbcf,#f2f3f5 60%,#b8babe) 0 0/100% 17% no-repeat,
+      linear-gradient(90deg,#c9cbcf,#f2f3f5 60%,#b8babe) 0 100%/100% 11% no-repeat;
+    border-radius:0 2px 2px 0}
+  .brief-phone>.brief-preview{position:absolute!important;z-index:1;top:calc(var(--rim) + var(--bezel));bottom:calc(var(--rim) + var(--bezel));
+    left:calc(var(--rim) + 2px + var(--bezel));right:calc(var(--rim) + var(--bezel));
+    display:flex;flex-direction:column;
+    border-radius:calc(var(--R) - 6px - var(--rim) - 2px - var(--bezel)) calc(var(--R) - var(--rim) - var(--bezel)) calc(var(--R) - var(--rim) - var(--bezel)) calc(var(--R) - 6px - var(--rim) - 2px - var(--bezel))!important;
+    background:#fff!important;box-shadow:0 0 0 var(--bezel) #050506,0 0 0 calc(var(--bezel) + .6px) rgba(0,0,0,.5)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+  .brief-phone>.brief-preview::after{box-shadow:none}
+  .brief-phone>.brief-preview::before{display:none}
+
+  /* the right-hand strip: status, controls, Dynamic Island */
+  .duo-strip{position:absolute;top:0;right:0;bottom:0;width:var(--strip);z-index:4;pointer-events:none}
+  .duo-status{position:absolute;top:12px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:4px;
+    font:600 12px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;letter-spacing:-.01em;color:#000;font-variant-numeric:tabular-nums}
+  .duo-icons{display:flex;align-items:center;gap:3px}
+  .duo-icons svg{display:block;fill:#000}
+  .duo-batt{position:relative;width:20px;height:9.5px;border-radius:3px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.38)}
+  .duo-batt::before{content:"";position:absolute;left:1.6px;top:1.6px;bottom:1.6px;width:72%;border-radius:1.4px;background:#000}
+  .duo-batt::after{content:"";position:absolute;right:-2.2px;top:3.2px;width:1.4px;height:3.2px;border-radius:0 1px 1px 0;background:rgba(0,0,0,.4)}
+  .duo-island{position:absolute;right:calc((var(--strip) - 23px)/2);top:50%;width:23px;height:74px;margin-top:-20px;border-radius:12px;background:#000}
+  .duo-island::before{content:"";position:absolute;left:50%;top:6px;width:11px;height:11px;margin-left:-5.5px;border-radius:50%;
+    background:radial-gradient(circle at 38% 34%,#3b4a6b 0,#141a28 32%,#05060a 62%);box-shadow:inset 0 0 0 1.5px #101218}
+  .duo-island::after{content:"";position:absolute;left:50%;top:9px;width:3px;height:3px;margin-left:-3px;border-radius:50%;background:rgba(140,170,255,.55)}
+
+  /* header: avatar + name float over the content area, no grey bar */
+  .brief-preview .brief-chat-head{flex:none;padding:14px calc(var(--strip) + 6px) 8px 14px!important;background:linear-gradient(#fff 62%,rgba(255,255,255,0))!important;border:0!important;z-index:3}
+  .brief-preview .brief-chat-avatar{width:46px;height:46px}
+  .brief-preview .brief-chat-who strong{padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.72);
+    box-shadow:0 0 0 .5px rgba(0,0,0,.06),0 2px 8px -2px rgba(0,0,0,.12),inset 0 1px 0 #fff;font-size:12px;font-weight:600}
+  .brief-preview .im-progress{bottom:0}
+
+  /* Back and FaceTime move to the top of the strip, as Liquid Glass circles */
+  .brief-preview .im-back,.brief-preview .im-video{position:absolute;z-index:5;right:calc((var(--strip) - 38px)/2)!important;left:auto!important;width:38px!important;height:38px!important;
+    display:grid;place-items:center;padding:0;border-radius:50%;color:#1c1c1e;
+    background:rgba(255,255,255,.78);box-shadow:0 0 0 .5px rgba(0,0,0,.07),0 3px 10px -3px rgba(0,0,0,.16),inset 0 1px 0 #fff}
+  .brief-preview .im-back{top:50px!important}
+  .brief-preview .im-back svg{width:10px;height:17px;stroke-width:2.4}
+  .brief-preview .im-video{top:96px!important;color:#1c1c1e}
+  .brief-preview .im-video svg{width:21px;height:15px;stroke-width:1.9}
+  .pointer-enabled .brief-preview .im-video:hover{background:rgba(255,255,255,.78)}
+
+  /* chat and compose stay in the content area */
+  .brief-preview .brief-chat{flex:1 1 auto;min-height:0!important;overflow:hidden;padding:6px calc(var(--strip) + 8px) 6px 12px}
+  .brief-preview .brief-bubble{max-width:94%;font-size:14px;line-height:1.34;padding:7px 12px 8px;border-radius:18px;background:#0a84ff}
+  .brief-preview .brief-bubble::before{background:#0a84ff}
+  .brief-preview .im-time{font-size:10.5px}
+  .brief-preview .im-bar{flex:none;gap:8px;padding:6px calc(var(--strip) + 4px) 12px 10px}
+  .brief-preview .im-plus{width:34px;height:34px;background:rgba(118,118,128,.12);color:#3a3a3c}
+  .brief-preview .im-field{height:34px;font-size:14.5px;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.16)}
+
+  /* sheets stop short of the camera strip */
+  .brief-preview .call-sheet,.brief-preview .refs-sheet{left:8px;right:calc(var(--strip) + 2px);bottom:56px}
+  .brief-preview .call-sheet{max-height:calc(100% - 64px)}
+}
+@media(max-width:900px){.duo-strip{display:none}}
