@@ -202,33 +202,18 @@
   });
 })();
 
-// About tab: "No AI slop" — the note blurs in letter by letter (and out in reverse).
+// About tab: "No AI slop" — split the note into words so they drift in one by one.
 (() => {
   const note = document.querySelector('.me-noslop-more');
   if (!note) return;
   const text = note.textContent.trim();
-  const sr = document.createElement('span');
-  sr.className = 'sr-only';
-  sr.textContent = text;
   note.textContent = '';
-  note.append(sr);
-  const words = text.split(/\s+/);
-  let i = 0;
-  const total = words.join(' ').length;
-  note.style.setProperty('--n', total);
-  words.forEach((word, wi) => {
+  text.split(/\s+/).forEach((word, i) => {
     const w = document.createElement('span');
     w.className = 'w';
-    w.setAttribute('aria-hidden', 'true');
-    [...word].forEach(ch => {
-      const c = document.createElement('span');
-      c.className = 'ch';
-      c.style.setProperty('--i', i++);
-      c.textContent = ch;
-      w.append(c);
-    });
-    note.append(w);
-    if (wi < words.length - 1) { note.append(' '); i++; }
+    w.style.setProperty('--i', i);
+    w.textContent = word;
+    note.append(w, ' ');
   });
 })();
 
