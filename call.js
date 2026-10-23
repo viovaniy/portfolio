@@ -345,3 +345,22 @@
   tick();
   document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
 })();
+
+// The phone's Back button: one step back in the booking, out of a sheet otherwise.
+(() => {
+  const back = document.querySelector('.brief-preview .im-back');
+  const preview = back?.closest('.brief-preview');
+  if (!back || !preview) return;
+  back.addEventListener('click', () => {
+    if (preview.classList.contains('is-call-open')) {
+      const pages = preview.querySelector('.call-pages');
+      if (pages?.dataset.page === '2') preview.querySelector('.call-back')?.click();
+      else preview.querySelector('.call-sheet .call-cancel')?.click();
+    } else if (preview.classList.contains('is-refs-open')) {
+      preview.querySelector('.refs-done')?.click();
+    } else {
+      back.classList.remove('is-nudge'); void back.offsetWidth; back.classList.add('is-nudge');
+    }
+  });
+  back.addEventListener('animationend', () => back.classList.remove('is-nudge'));
+})();
