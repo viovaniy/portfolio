@@ -1,7 +1,8 @@
 (() => {
   const section = document.querySelector('.about-section');
   if (!section) return;
-  const sizeBackdrop = () => section.style.setProperty('--about-viewport', `${document.documentElement.clientWidth}px`);
+  // the page width without the scrollbar — the colour cards size from it
+  const sizeBackdrop = () => document.documentElement.style.setProperty('--about-viewport', `${document.documentElement.clientWidth}px`);
   sizeBackdrop();
   window.addEventListener('resize', sizeBackdrop, { passive: true });
   if ('IntersectionObserver' in window) {

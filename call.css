@@ -225,13 +225,13 @@
 .brief-tools{display:none}
 @media(max-width:900px){
  .brief-tools{display:flex;flex:1 0 100%;gap:8px;margin:0 0 -4px}
- .brief-tool{position:relative;display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 15px 0 13px;border:0;border-radius:999px;background:#fff;color:#1f1f22;font:inherit;font-size:14.5px;font-weight:550;letter-spacing:-.01em;cursor:pointer;
+ .brief-tool{position:relative;display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 15px 0 13px;border:0;border-radius:999px;background:#fff;color:#1f1f22;font:inherit;font-size:14.5px;font-weight:500;letter-spacing:-.01em;cursor:pointer;
   box-shadow:0 0 0 1px rgba(28,25,40,.08),0 1px 2px rgba(28,25,40,.04),0 8px 18px -10px rgba(28,25,40,.18);transition:transform .15s cubic-bezier(.22,1,.36,1),box-shadow .25s ease;-webkit-tap-highlight-color:transparent}
  .brief-tool:active{transform:scale(.96)}
  .brief-tool svg{width:18px;height:18px;flex:none;fill:none;stroke:#007aff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
  .brief-tool[data-tool="call"] svg{width:21px;height:15px}
  .brief-tool.is-on{box-shadow:0 0 0 1.5px rgba(0,122,255,.35),0 8px 18px -10px rgba(0,122,255,.35)}
- .brief-tool-badge{display:grid;place-items:center;min-width:18px;height:18px;margin-right:-5px;padding:0 5px;border-radius:999px;background:#007aff;color:#fff;font-size:11px;font-weight:650;font-variant-numeric:tabular-nums}
+ .brief-tool-badge{display:grid;place-items:center;min-width:18px;height:18px;margin-right:-5px;padding:0 5px;border-radius:999px;background:#007aff;color:#fff;font-size:11px;font-weight:600;font-variant-numeric:tabular-nums}
  .brief-tool-badge[hidden]{display:none}
 
  /* The card itself is gone; the preview becomes an invisible full-screen layer for the sheets. */

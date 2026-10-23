@@ -50,7 +50,7 @@
 
 /* Send */
 .brief-actions{display:flex;align-items:center;flex-wrap:wrap;gap:16px;margin-top:26px}
-.brief-send{display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 22px 0 24px;border:0;border-radius:999px;background:linear-gradient(#3a3a3e,#1c1c1e);color:#fff;font:inherit;font-size:16px;font-weight:550;letter-spacing:-.01em;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 2px 4px rgba(28,25,40,.12),0 16px 30px -14px rgba(28,25,40,.55);cursor:pointer;position:relative;overflow:hidden;isolation:isolate;transition:transform .45s var(--b-spring),box-shadow .35s var(--b-ease)}
+.brief-send{display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 22px 0 24px;border:0;border-radius:999px;background:linear-gradient(#3a3a3e,#1c1c1e);color:#fff;font:inherit;font-size:16px;font-weight:500;letter-spacing:-.01em;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 2px 4px rgba(28,25,40,.12),0 16px 30px -14px rgba(28,25,40,.55);cursor:pointer;position:relative;overflow:hidden;isolation:isolate;transition:transform .45s var(--b-spring),box-shadow .35s var(--b-ease)}
 .brief-send svg{width:18px;height:18px;stroke-width:2;transition:transform .45s var(--b-spring)}
 .brief-send::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(100deg,#ff7eaa,#ff9f86 55%,#ffbf8a);opacity:0;transition:opacity .5s var(--b-ease)}
 .brief.is-complete .brief-send::before{opacity:1}
@@ -117,7 +117,7 @@
 .brief-ready h3{margin:0 0 10px;text-align:center;font-size:11px;font-weight:600;color:#8e8e93;outline:none}
 .brief-ready-actions{justify-content:center}
 .brief-ready-actions{display:flex;flex-wrap:wrap;gap:8px}
-.brief-tg{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:999px;background:#0b84fe;color:#fff;font-size:15px;font-weight:550;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 10px 22px -12px rgba(31,127,239,.8);transition:transform .45s var(--b-spring)}
+.brief-tg{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:999px;background:#0b84fe;color:#fff;font-size:15px;font-weight:500;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 10px 22px -12px rgba(31,127,239,.8);transition:transform .45s var(--b-spring)}
 .brief-tg svg{width:17px;height:17px;stroke-width:1.8;stroke-linejoin:round}
 @media(hover:hover){.brief-tg:hover{transform:translateY(-2px)}}
 .brief-tg:active{transform:scale(.96)}
@@ -207,7 +207,7 @@
 .brief.is-failed .mark-bg{fill:#ff9f0a}
 .brief.is-failed .mark-alert{opacity:1}
 .brief.is-failed .brief-done-mark{animation:brief-shake .42s cubic-bezier(.22,1,.36,1)}
-.brief-done-title{margin:0;font-size:clamp(24px,2.6vw,32px);line-height:1.2;font-weight:560;letter-spacing:-.03em;color:var(--b-ink);outline:none}
+.brief-done-title{margin:0;font-size:clamp(24px,2.6vw,32px);line-height:1.2;font-weight:600;letter-spacing:-.03em;color:var(--b-ink);outline:none}
 .brief-done-text{margin:12px 0 0;max-width:440px;font-size:16px;line-height:1.55;color:var(--b-soft)}
 /* Only the copy for the current state shows. */
 .brief-done :is(.t-sending,.t-sent,.t-failed,.t-after,.t-failed-inline){display:none}
@@ -217,9 +217,9 @@
 .brief:is(.is-sent,.is-failed) .brief-done-title,.brief:is(.is-sent,.is-failed) .brief-done-text{animation:brief-swap .5s cubic-bezier(.22,1,.36,1)}
 @keyframes brief-swap{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .brief-done-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
-.brief-retry{height:52px;padding:0 24px;border:0;border-radius:999px;background:linear-gradient(#3a3a3e,#1c1c1e);color:#fff;font:inherit;font-size:16px;font-weight:550;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 14px 28px -14px rgba(28,25,40,.6);transition:transform .45s var(--b-spring)}
+.brief-retry{height:52px;padding:0 24px;border:0;border-radius:999px;background:linear-gradient(#3a3a3e,#1c1c1e);color:#fff;font:inherit;font-size:16px;font-weight:500;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 14px 28px -14px rgba(28,25,40,.6);transition:transform .45s var(--b-spring)}
 .brief-retry:active{transform:scale(.96)}
-.brief-done-tg{display:inline-flex;align-items:center;gap:9px;height:52px;padding:0 24px;border-radius:999px;background:#0b84fe;color:#fff;font-size:16px;font-weight:550;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 14px 28px -14px rgba(11,132,254,.85);transition:transform .45s var(--b-spring)}
+.brief-done-tg{display:inline-flex;align-items:center;gap:9px;height:52px;padding:0 24px;border-radius:999px;background:#0b84fe;color:#fff;font-size:16px;font-weight:500;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 14px 28px -14px rgba(11,132,254,.85);transition:transform .45s var(--b-spring)}
 .brief-done-tg svg{width:18px;height:18px;stroke-width:1.8;stroke-linejoin:round}
 @media(hover:hover){.brief-done-tg:hover{transform:translateY(-2px)}}
 .brief-done-tg:active{transform:scale(.96)}

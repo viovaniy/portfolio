@@ -1,0 +1,60 @@
+/* viovaniy — shared design system (loaded last).
+   One canvas, one heading voice, one button family, one set of radii.
+   Colour lives inside big rounded cards instead of bleeding edge to edge. */
+:root{
+  --ink:#1d1d1f;
+  --ink-2:#6e6e73;
+  --grey:#a1a1a8;
+  --hair:rgba(28,25,40,.08);
+  --accent:#ff8db8;
+  --r-xl:clamp(28px,2.8vw,40px);   /* colour cards / big surfaces */
+  --r-lg:28px;                      /* cards */
+  --r-md:20px;                      /* inner cards */
+  --r-sm:14px;                      /* tiles, inputs */
+  --shadow-soft:0 1px 2px rgba(28,25,40,.04),0 8px 20px -10px rgba(28,25,40,.10),0 30px 60px -30px rgba(28,25,40,.18);
+  --btn-dark:linear-gradient(#3a3a3e,#1c1c1e);
+  --btn-dark-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 2px 4px rgba(28,25,40,.15),0 18px 30px -14px rgba(28,25,40,.55);
+  --card-inset:clamp(10px,1.4vw,22px);
+  --h2:clamp(34px,4vw,52px);
+}
+
+/* ---------- section headings: one size, one weight, two tones ---------- */
+#work-title,#products-title,#contact-title{
+  font-size:var(--h2)!important;font-weight:600!important;letter-spacing:-.035em!important;line-height:1.08!important;text-wrap:balance}
+#contact-title .ink,.cg-ink{color:var(--ink)}
+#contact-title .grey,.cg-grey{color:var(--grey)}
+#products-title .pd-ink{display:block}
+/* the contact screen must still fit one viewport, so its heading follows the height */
+.content-section.contact-section #contact-title{font-size:clamp(30px,min(4vw,5.4vh),52px)!important;margin-bottom:14px}
+/* the window title in About keeps its smaller size, same voice */
+#about-title{font-weight:600;letter-spacing:-.035em}
+@media(max-width:650px){
+  :root{--h2:clamp(30px,8.4vw,38px)}
+  .content-section.contact-section #contact-title{font-size:30px!important;margin-bottom:8px}
+}
+
+/* ---------- buttons: dark pill = main action ---------- */
+.home-section .contact-button{
+  height:50px;margin-left:0;padding:0 22px 0 24px;gap:8px;color:#fff;font-size:17px;font-weight:500;letter-spacing:-.01em;
+  background:var(--btn-dark);box-shadow:var(--btn-dark-shadow);transition:transform .15s cubic-bezier(.22,1,.36,1),box-shadow .3s ease}
+.home-section .contact-button:hover,.home-section .contact-button:active,
+.pointer-enabled .home-section .contact-button:hover,.pointer-enabled .home-section .contact-button:active{background:var(--btn-dark)}
+.home-section .contact-button:active{transform:scale(.96)}
+.home-section .cta-copy{--ts-base:#fff;--ts-highlight:#ffc9a8}
+.home-section .contact-button .button-arrow{color:#fff;opacity:.8}
+@media(max-width:650px){.home-section .contact-button{height:48px;font-size:16px}}
+
+/* ---------- colour lives in cards ---------- */
+.about-backdrop,.pd-backdrop{
+  top:0;bottom:0;height:auto;width:calc(var(--about-viewport,100vw) - 2 * var(--card-inset));
+  border-radius:var(--r-xl);overflow:hidden;-webkit-mask:none;mask:none;isolation:isolate}
+.about-backdrop::before,.pd-backdrop::before{display:none}
+@media(max-width:650px){:root{--card-inset:8px;--r-xl:26px}}
+
+/* breathing room around the colour cards */
+.products-section{margin-bottom:clamp(28px,5vw,72px)}
+.about-section{margin-bottom:clamp(8px,2vw,24px)}
+@media(max-width:650px){
+  /* content inside the orange card keeps clear of its rounded edge */
+  .products-section .pd-layout{padding-left:16px;padding-right:16px}
+}

@@ -1,6 +1,6 @@
 /* Language picker under "Discuss a project": quiet on purpose, the popover does the talking. */
 .lang{--l-ink:#1f1f22;--l-grey:#8e8e93;--l-ease:cubic-bezier(.22,1,.36,1);--l-enter:cubic-bezier(.16,1,.3,1);--l-spring:cubic-bezier(.34,1.45,.5,1);position:relative;display:block;width:max-content;margin:16px 0 0 -10px;z-index:80}
-.lang-btn{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 11px 0 10px;border:0;border-radius:999px;background:transparent;color:var(--l-grey);font:inherit;font-size:14px;font-weight:450;letter-spacing:-.005em;cursor:pointer;transition:background-color .25s var(--l-ease),color .25s var(--l-ease),transform .15s var(--l-ease)}
+.lang-btn{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 11px 0 10px;border:0;border-radius:999px;background:transparent;color:var(--l-grey);font:inherit;font-size:14px;font-weight:400;letter-spacing:-.005em;cursor:pointer;transition:background-color .25s var(--l-ease),color .25s var(--l-ease),transform .15s var(--l-ease)}
 @media(hover:hover){.lang-btn:hover{background:rgba(28,25,40,.05);color:#5f5f66}}
 .lang-btn:active{transform:scale(.96)}
 .lang-btn:focus-visible{outline:2px solid #91baff;outline-offset:2px}

@@ -437,7 +437,7 @@
 .cg-timeline.no-trans .cg-seg{transition:none!important}
 
 /* ---------- "Watch film" pill ---------- */
-.cg-watch{pointer-events:auto;display:inline-flex;align-items:center;gap:7px;height:36px;margin-top:16px;padding:0 16px 0 12px;border:0;border-radius:999px;font:inherit;font-size:14px;font-weight:550;letter-spacing:-.01em;cursor:pointer;
+.cg-watch{pointer-events:auto;display:inline-flex;align-items:center;gap:7px;height:36px;margin-top:16px;padding:0 16px 0 12px;border:0;border-radius:999px;font:inherit;font-size:14px;font-weight:500;letter-spacing:-.01em;cursor:pointer;
  color:#fff;background:linear-gradient(#3a3a3e,#1c1c1e);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 2px 4px rgba(28,25,40,.15),0 12px 22px -12px rgba(28,25,40,.6);
  transition:transform .2s cubic-bezier(.34,1.45,.5,1)}
 .cg-watch svg{width:14px;height:14px;fill:currentColor;transition:transform .45s cubic-bezier(.34,1.6,.5,1)}
@@ -478,7 +478,7 @@ html.fp-lock .ios-pointer{z-index:250}
 @media(hover:hover){.fp-btn:hover{background:rgba(28,25,40,.06)}}
 .fp-btn:active{transform:scale(.9)}
 .fp .i-play{display:none}.fp.is-paused .i-play{display:block}.fp.is-paused .i-pause{display:none}
-.fp-time,.fp-left{flex:none;min-width:38px;font-size:13px;font-weight:550;font-variant-numeric:tabular-nums;color:#1d1d1f}
+.fp-time,.fp-left{flex:none;min-width:38px;font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;color:#1d1d1f}
 .fp-left{text-align:right;color:#86868b}
 .fp-rail{flex:1;height:40px;display:flex;align-items:center;cursor:pointer;touch-action:none;outline:none}
 .fp-track{position:relative;flex:1;height:5px;border-radius:99px;background:rgba(28,25,40,.12);transition:height .3s cubic-bezier(.34,1.5,.5,1)}
