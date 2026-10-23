@@ -324,3 +324,24 @@
   setVia('email'); platform = seg('platform', 'Google Meet');
   window.briefCall = { get, clear, lock, close: () => setOpen(false) };
 })();
+
+// iPhone Duo status bar: the visitor's own local time, like a real phone.
+(() => {
+  const el = document.querySelector('.duo-time');
+  if (!el) return;
+  let fmt;
+  try {
+    fmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
+  } catch (e) { return; }
+  const render = () => {
+    // iOS shows the time without AM/PM in the status bar.
+    const parts = fmt.formatToParts(new Date());
+    el.textContent = parts.filter(p => p.type === 'hour' || p.type === 'minute' || (p.type === 'literal' && p.value.includes(':'))).map(p => p.value).join('') || '9:41';
+  };
+  const tick = () => {
+    render();
+    setTimeout(tick, 60000 - (Date.now() % 60000) + 50);
+  };
+  tick();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
+})();
