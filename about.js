@@ -416,6 +416,34 @@
   });
   select(Math.max(0, apps.findIndex(a => a.dataset.key === 'after-effects')), false); // After Effects first: the heart of the work.
 
+  // Every tool gets the same height: the text block is as tall as the tallest
+  // tool (title row + description) at the current width, so the card never jumps.
+  const copyEl = descEl.closest('.tl-detail-copy');
+  const lockHeight = () => {
+    const w = copyEl.getBoundingClientRect().width;
+    if (!w) return;
+    const probe = copyEl.cloneNode(true);
+    probe.setAttribute('aria-hidden', 'true');
+    Object.assign(probe.style, { position: 'absolute', visibility: 'hidden', pointerEvents: 'none', left: '0', top: '0', width: w + 'px', height: 'auto' });
+    detail.append(probe);
+    let max = 0;
+    tools.forEach(t => {
+      probe.querySelector('.tl-detail-name').textContent = t.name;
+      probe.querySelector('.tl-detail-cat').textContent = t.cat;
+      probe.querySelector('.tl-detail-desc').textContent = t.desc;
+      max = Math.max(max, probe.getBoundingClientRect().height);
+    });
+    probe.remove();
+    copyEl.style.height = Math.ceil(max) + 'px';
+  };
+  lockHeight();
+  let lockW = 0;
+  new ResizeObserver(([entry]) => {
+    const w = Math.round(entry.contentRect.width);
+    if (w && w !== lockW) { lockW = w; lockHeight(); }
+  }).observe(detail);
+  document.fonts?.ready.then(lockHeight);
+
   // Magnification like the macOS Dock: icons grow with a smooth falloff around
   // the cursor. Sizes ease toward their target every frame (no springs, no
   // overshoot), so entering, moving and leaving all glide.

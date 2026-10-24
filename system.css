@@ -216,3 +216,6 @@
 }
 .brief.is-complete .brief-send:focus-visible::before{opacity:1}
 @media(prefers-reduced-motion:reduce){.brief .brief-send:hover::before{animation:none}}
+
+/* Tools card: the text column always spans the card, so its height can be locked */
+.tl-detail-copy{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center}
