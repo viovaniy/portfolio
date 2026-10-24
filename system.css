@@ -227,4 +227,5 @@
 #work-title .wh-word{display:inline-block;white-space:nowrap}
 #work-title .wh-l{display:inline-block;text-align:center;font-weight:600;
   transition:font-weight .35s cubic-bezier(.22,1,.36,1),color .35s ease}
+#work-title .wh-l.is-hot{color:#ff8db8}
 #work-title.wh-measure .wh-l{width:auto!important;font-weight:600!important}

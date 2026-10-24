@@ -670,7 +670,6 @@
   if (!line || !head) return;
   const fine = matchMedia('(hover: hover) and (pointer: fine)');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const INK = [31, 31, 34], PINK = [255, 95, 158];
   const BASE = 600, THIN = 160;
 
   // Split into words (kept together) and letters.
@@ -722,10 +721,9 @@
       let t = active ? Math.max(0, 1 - d / R) : 0;
       t = t * t * (3 - 2 * t);
       const w = Math.round(BASE - (BASE - THIN) * t);
-      const tc = Math.min(1, t * 1.7); // colour arrives a bit sooner than the weight
-      const c = INK.map((v, k) => Math.round(v + (PINK[k] - v) * tc));
       l.style.fontWeight = w;
-      l.style.color = t > 0.001 ? `rgb(${c})` : '';
+      // pure site pink near the cursor, plain ink elsewhere (no muddy in-between shades)
+      l.classList.toggle('is-hot', t > 0.45);
     });
   };
   const queue = () => { if (!raf) raf = requestAnimationFrame(paint); };
