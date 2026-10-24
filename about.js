@@ -388,7 +388,7 @@
       if (event.key === 'Home') { event.preventDefault(); apps[0].focus(); }
       if (event.key === 'End') { event.preventDefault(); apps[apps.length - 1].focus(); }
     });
-    app.tabIndex = i === 1 ? 0 : -1;
+    app.tabIndex = app.dataset.key === 'after-effects' ? 0 : -1;
     app.addEventListener('focus', () => apps.forEach(a => { a.tabIndex = a === app ? 0 : -1; }));
   });
   // Official app icons: drop assets/tools/<key>.svg or .png into the project
@@ -414,7 +414,7 @@
     };
     tryLoad(['svg', 'png']);
   });
-  select(1, false); // After Effects first: the heart of the work.
+  select(Math.max(0, apps.findIndex(a => a.dataset.key === 'after-effects')), false); // After Effects first: the heart of the work.
 
   // Magnification like the macOS Dock: icons grow with a smooth falloff around
   // the cursor. Sizes ease toward their target every frame (no springs, no

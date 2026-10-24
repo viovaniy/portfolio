@@ -247,6 +247,17 @@
     }
   }
   eventCard.addEventListener('click', () => setOpen(true));
+  // Changed your mind about the call: × on the card, or "Remove call" in the sheet.
+  const removeCall = () => {
+    if (locked || !booking) return;
+    const wrap = eventCard.parentElement;
+    const done = () => { clear(); wrap.classList.remove('is-out'); setOpen(false); };
+    if (reduced.matches) done();
+    else { wrap.classList.add('is-out'); setTimeout(done, 260); }
+    button.focus({ preventScroll: true });
+  };
+  preview.querySelector('.im-event-x')?.addEventListener('click', removeCall);
+  el('.call-remove').addEventListener('click', removeCall);
 
   // ---------- open / close ----------
   let open = false, locked = false;
@@ -263,6 +274,7 @@
         if (isFinite(first)) { const f = new Date(first); view = new Date(f.getFullYear(), f.getMonth(), 1); }
       }
       renderMonth(); renderTimes();
+      el('.call-remove').hidden = !booking;
       pages.dataset.page = 1;
       sheet.hidden = false;
       fit();

@@ -191,3 +191,27 @@ html.duo-alert-lock{overflow:hidden}
   .brief-phone .im-attach{width:calc(150 * var(--u));height:calc(112 * var(--u));margin:0 calc(6 * var(--u)) calc(10 * var(--u)) 0}
   .brief-phone .im-attach-card{right:calc(var(--i) * 16 * var(--u));width:calc(80 * var(--u));height:calc(104 * var(--u));border-radius:calc(16 * var(--u))}
 }
+
+/* the booked call can be taken back out of the brief */
+.im-event-wrap{position:relative;align-self:flex-end;max-width:88%;flex-shrink:0;transition:opacity .25s ease,transform .3s cubic-bezier(.22,1,.36,1)}
+.im-event-wrap:has(.im-event[hidden]){display:none}
+.im-event-wrap .im-event{max-width:100%;margin-right:0}
+.im-event-wrap.is-out{opacity:0;transform:scale(.9)}
+.im-event-x{position:absolute;top:-7px;left:-7px;z-index:2;display:grid;place-items:center;width:22px;height:22px;padding:0;border:0;border-radius:50%;cursor:pointer;
+  background:#fff;color:#6e6e73;box-shadow:0 0 0 .5px rgba(0,0,0,.1),0 2px 6px -1px rgba(0,0,0,.18);
+  transition:background-color .2s ease,color .2s ease,transform .25s cubic-bezier(.34,1.5,.5,1)}
+.im-event-x svg{width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+@media(hover:hover){.im-event-x:hover{background:#ff3b30;color:#fff;transform:scale(1.08)}}
+.im-event-x:active{transform:scale(.9)}
+.im-event-x:focus-visible{outline:2px solid #91baff;outline-offset:2px}
+.im-event:disabled~.im-event-x{display:none}
+.call-remove{height:34px;padding:0 10px;border:0;border-radius:999px;background:none;color:#ff3b30;font:inherit;font-size:14px;cursor:pointer;margin-right:auto}
+.call-remove[hidden]{display:none}
+@media(hover:hover){.call-remove:hover{background:rgba(255,59,48,.08)}}
+@media(min-width:901px){
+  .brief-phone .im-event-wrap{margin:0 calc(4 * var(--u)) calc(10 * var(--u)) 0}
+  .brief-phone .im-event-wrap .im-event{margin:0}
+  .brief-phone .im-event-x{top:calc(-8 * var(--u));left:calc(-8 * var(--u));width:calc(24 * var(--u));height:calc(24 * var(--u))}
+  .brief-phone .im-event-x svg{width:calc(10 * var(--u));height:calc(10 * var(--u))}
+}
+@media(prefers-reduced-motion:reduce){.im-event-wrap{transition:none}}
