@@ -661,3 +661,83 @@
   place();
   kick();
 })();
+
+// "I've set in motion.": the letters near the cursor get thinner and blush pink,
+// with a smooth falloff. Each letter keeps its regular width, so nothing shifts.
+(() => {
+  const line = document.querySelector('#work-title .cg-grey');
+  const head = document.getElementById('work-title');
+  if (!line || !head) return;
+  const fine = matchMedia('(hover: hover) and (pointer: fine)');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const INK = [31, 31, 34], PINK = [255, 95, 158];
+  const BASE = 600, THIN = 160;
+
+  // Split into words (kept together) and letters.
+  const text = line.textContent;
+  line.textContent = '';
+  line.setAttribute('aria-label', text);
+  const letters = [];
+  text.split(/(\s+)/).forEach(part => {
+    if (!part) return;
+    if (/^\s+$/.test(part)) { line.append(' '); return; }
+    const word = document.createElement('span');
+    word.className = 'wh-word';
+    word.setAttribute('aria-hidden', 'true');
+    [...part].forEach(ch => {
+      const l = document.createElement('span');
+      l.className = 'wh-l';
+      l.textContent = ch;
+      word.append(l);
+      letters.push(l);
+    });
+    line.append(word);
+  });
+
+  // Lock every letter to its regular-weight width.
+  const lockWidths = () => {
+    letters.forEach(l => { l.style.width = ''; });
+    head.classList.add('wh-measure');
+    const widths = letters.map(l => l.getBoundingClientRect().width);
+    head.classList.remove('wh-measure');
+    letters.forEach((l, i) => { l.style.width = widths[i] + 'px'; });
+  };
+  let centers = [];
+  const measureCenters = () => {
+    centers = letters.map(l => { const r = l.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; });
+  };
+  const ready = () => { lockWidths(); };
+  (document.fonts?.ready || Promise.resolve()).then(ready);
+  let lastW = innerWidth;
+  addEventListener('resize', () => { if (innerWidth !== lastW) { lastW = innerWidth; ready(); } });
+
+  let px = 0, py = 0, raf = 0, active = false;
+  const paint = () => {
+    raf = 0;
+    const size = parseFloat(getComputedStyle(head).fontSize) || 48;
+    const R = size * 2.2;
+    letters.forEach((l, i) => {
+      const [cx, cy] = centers[i];
+      const d = Math.hypot(px - cx, (py - cy) * 1.4);
+      let t = active ? Math.max(0, 1 - d / R) : 0;
+      t = t * t * (3 - 2 * t);
+      const w = Math.round(BASE - (BASE - THIN) * t);
+      const tc = Math.min(1, t * 1.7); // colour arrives a bit sooner than the weight
+      const c = INK.map((v, k) => Math.round(v + (PINK[k] - v) * tc));
+      l.style.fontWeight = w;
+      l.style.color = t > 0.001 ? `rgb(${c})` : '';
+    });
+  };
+  const queue = () => { if (!raf) raf = requestAnimationFrame(paint); };
+  head.addEventListener('pointerenter', e => {
+    if (!fine.matches || reduced.matches || e.pointerType !== 'mouse') return;
+    measureCenters();
+    active = true; px = e.clientX; py = e.clientY; queue();
+  });
+  head.addEventListener('pointermove', e => {
+    if (!active) return;
+    px = e.clientX; py = e.clientY; queue();
+  });
+  head.addEventListener('pointerleave', () => { if (!active) return; active = false; queue(); });
+  addEventListener('scroll', () => { if (active) measureCenters(); }, { passive: true });
+})();

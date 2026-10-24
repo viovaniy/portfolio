@@ -219,3 +219,12 @@
 
 /* Tools card: the text column always spans the card, so its height can be locked */
 .tl-detail-copy{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center}
+
+/* Works headline: centred on the page, both lines in ink; the second line reacts
+   to the cursor letter by letter (weight + pink), see work.js. */
+#work-title{margin-left:auto!important;margin-right:auto!important}
+#work-title .cg-grey{color:var(--ink)}
+#work-title .wh-word{display:inline-block;white-space:nowrap}
+#work-title .wh-l{display:inline-block;text-align:center;font-weight:600;
+  transition:font-weight .35s cubic-bezier(.22,1,.36,1),color .35s ease}
+#work-title.wh-measure .wh-l{width:auto!important;font-weight:600!important}
