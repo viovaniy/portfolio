@@ -198,7 +198,7 @@ html.duo-alert-lock{overflow:hidden}
 .im-event-wrap .im-event{max-width:100%;margin-right:0}
 .im-event-wrap.is-out{opacity:0;transform:scale(.9)}
 .im-event-x{position:absolute;top:-7px;left:-7px;z-index:2;display:grid;place-items:center;width:22px;height:22px;padding:0;border:0;border-radius:50%;cursor:pointer;
-  background:#fff;color:#6e6e73;box-shadow:0 0 0 .5px rgba(0,0,0,.1),0 2px 6px -1px rgba(0,0,0,.18);
+  background:#fff;color:#56565b;box-shadow:0 0 0 .5px rgba(0,0,0,.1),0 2px 6px -1px rgba(0,0,0,.18);
   transition:background-color .2s ease,color .2s ease,transform .25s cubic-bezier(.34,1.5,.5,1)}
 .im-event-x svg{width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
 @media(hover:hover){.im-event-x:hover{background:#ff3b30;color:#fff;transform:scale(1.08)}}

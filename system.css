@@ -4,7 +4,7 @@
 :root{
   --ink:#1d1d1f;
   --ink-2:#6e6e73;
-  --grey:#a1a1a8;
+  --grey:#86868d;
   --hair:rgba(28,25,40,.08);
   --accent:#ff8db8;
   --r-xl:clamp(28px,2.8vw,40px);   /* colour cards / big surfaces */
@@ -81,7 +81,7 @@
 
 /* ---------- first screen: bigger, calmer type with little icon tiles ---------- */
 .home-section h1{font-size:clamp(32px,3.2vw,46px);line-height:1.12;letter-spacing:-.035em;font-weight:500}
-.home-section .reveal-secondary{font-size:.6em;line-height:1.36;letter-spacing:-.022em;color:#9b9ba1;margin-top:18px;max-width:22em}
+.home-section .reveal-secondary{font-size:.6em;line-height:1.36;letter-spacing:-.022em;color:#7c7c83;margin-top:18px;max-width:22em}
 .home-section .greeting-stage{margin-bottom:14px}
 .home-section .contact-button{margin-top:34px}
 /* tiles sit in the sentence like app icons (Satya-style) and pop in with the words */
@@ -177,9 +177,9 @@
 .me-noslop::before{background:var(--glass-well,rgba(118,118,128,.075))}
 .me-noslop::after{background:linear-gradient(120deg,#ffe1ec,#ffe8dc);opacity:0}
 .me-noslop-head{display:flex;align-items:center;gap:7px;height:var(--head);padding:0 10px 0 9px;color:#2a2a30;transition:color .35s ease}
-.me-noslop-head svg{width:15px;height:15px;color:#8e8e93!important;transition:color .35s ease}
+.me-noslop-head svg{width:15px;height:15px;color:#76767c!important;transition:color .35s ease}
 .me-noslop .me-noslop-chev{width:10px!important;height:10px!important;margin-left:auto;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .45s cubic-bezier(.34,1.5,.5,1)}
-.me-noslop-more{display:block;padding:0 11px 9px;font-size:12.5px;font-weight:400;line-height:1.45;color:#6e6e73}
+.me-noslop-more{display:block;padding:0 11px 9px;font-size:12.5px;font-weight:400;line-height:1.45;color:#56565b}
 .me-noslop-more .w{display:inline-block;opacity:0;transform:translateY(5px);
   transition:opacity .18s ease,transform .18s ease}
 .me-noslop:is(:hover,:focus-within)::before,.me-noslop:is(:hover,:focus-within)::after{clip-path:inset(0 round 10px)}
@@ -254,7 +254,7 @@
 .ps-text.is-on{opacity:1;visibility:inherit;transform:none;transition:opacity .35s ease .05s,transform .45s cubic-bezier(.22,1,.36,1) .05s,visibility 0s}
 .ps-text-head{margin:0 0 6px;font-size:15px;font-weight:600;letter-spacing:-.015em;color:var(--ink)}
 .ps-text-num{color:var(--tone);font-variant-numeric:tabular-nums}
-.ps-text-body{margin:0;font-size:14px;line-height:1.5;color:#6e6e73;text-wrap:pretty}
+.ps-text-body{margin:0;font-size:14px;line-height:1.5;color:#56565b;text-wrap:pretty}
 @media(max-width:650px){
   .about-panel-process{padding:20px 12px}
   .about-panel-process .ps-statement{font-size:19px}
@@ -371,7 +371,7 @@
    both live in the same cell, so the card never changes size */
 .ps-detail{position:relative}
 .ps-compact{position:absolute;top:12px;right:12px;z-index:2;display:grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:50%;
-  background:rgba(118,118,128,.1);color:#6e6e73;cursor:pointer;transition:background-color .2s ease,color .2s ease,transform .2s cubic-bezier(.34,1.5,.5,1)}
+  background:rgba(118,118,128,.1);color:#56565b;cursor:pointer;transition:background-color .2s ease,color .2s ease,transform .2s cubic-bezier(.34,1.5,.5,1)}
 .ps-compact:active{transform:scale(.9)}
 .ps-compact svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .ps-compact svg g{transition:opacity .25s ease,transform .4s cubic-bezier(.34,1.5,.5,1);transform-origin:10px 10px}
@@ -626,7 +626,7 @@
   box-shadow:0 0 0 .5px rgba(28,25,40,.06),0 1px 2px rgba(28,25,40,.04),0 12px 26px -12px rgba(120,40,80,.22),0 30px 50px -30px rgba(120,40,80,.18)}
 .tl-top{background:none;border-bottom:1px solid #f2f0f1}
 .tl-top i{background:#e4e1e3}
-.tl-top b{color:#8e8e93;font-weight:500}
+.tl-top b{color:#76767c;font-weight:500}
 .tl-tc{color:#1f1f22;font-weight:500;opacity:.7}
 .tl-ruler{border-bottom:1px solid #f2f0f1}
 .tl-ruler i{background:#e3e0e2}
@@ -689,7 +689,7 @@
 .tl-play svg{width:55%;height:55%}
 .tl-play path{fill:#fff!important;stroke:none!important}
 .tl-play .q{opacity:0}
-.tl-time{flex:1;text-align:center;font:500 clamp(6px,2.7cqw,9.5px)/1 ui-monospace,"SF Mono",Menlo,monospace;color:#6e6e73;letter-spacing:.02em}
+.tl-time{flex:1;text-align:center;font:500 clamp(6px,2.7cqw,9.5px)/1 ui-monospace,"SF Mono",Menlo,monospace;color:#56565b;letter-spacing:.02em}
 .tl-cursor path{fill:#1f1f22!important;stroke:#fff!important;stroke-width:1.2}
 .tl-cursor{filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
 
@@ -863,3 +863,11 @@
 /* the file chip sizes to its name (never clips), centred on the drop spot */
 .dv-file{left:50%!important;width:max-content!important;translate:-50% 0;padding:0 9px 0 3px!important;gap:6px!important}
 .dv-file b{flex:none;overflow:visible}
+
+/* ---------- one typeface everywhere: SF Pro Display ----------
+   (falls back to the system San Francisco on any Apple device, then Helvetica/Segoe) */
+:root{--font:"SF Pro Display",-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif}
+html,body,body *:not(svg):not(svg *):not(.lang-flag){font-family:var(--font)!important}
+/* numbers that used a monospace face keep their alignment with tabular figures */
+.tl-tc,.tl-time,.ps-num,.ps-text-num,.cg-count,[data-im-time]{font-variant-numeric:tabular-nums}
+.dv-send{width:auto!important;padding:0 9px}

@@ -33,8 +33,8 @@
 
 .call-head{display:flex;align-items:flex-start;justify-content:space-between;margin:0 0 10px;padding:0 2px}
 .call-head h4{margin:0;font-size:17px;font-weight:600;letter-spacing:-.022em;color:#1f1f22}
-.call-sub{margin:2px 0 0;font-size:12.5px;color:#8e8e93}
-.call-tz{flex:none;margin-left:10px;padding:3px 8px;border-radius:999px;background:rgba(118,118,128,.1);font-size:11px;color:#6e6e73;white-space:nowrap}
+.call-sub{margin:2px 0 0;font-size:12.5px;color:#76767c}
+.call-tz{flex:none;margin-left:10px;padding:3px 8px;border-radius:999px;background:rgba(118,118,128,.1);font-size:11px;color:#56565b;white-space:nowrap}
 .call-back{display:inline-flex;align-items:center;margin:0 0 4px -4px;padding:2px 4px;border:0;border-radius:8px;background:none;color:#007aff;font:inherit;font-size:14px;cursor:pointer}
 .call-back svg,.call-nav svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .call-back svg{margin-right:2px}
@@ -47,7 +47,7 @@
 .call-nav:disabled{color:#c7c7cc;cursor:default}
 @media(hover:hover){.call-nav:not(:disabled):hover{background:rgba(0,122,255,.08)}}
 .call-dow,.call-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));justify-items:center}
-.call-dow span{font-size:10.5px;font-weight:600;color:#a1a1a8;text-transform:uppercase;padding:2px 0 4px}
+.call-dow span{font-size:10.5px;font-weight:600;color:#86868d;text-transform:uppercase;padding:2px 0 4px}
 .call-days{row-gap:2px}
 .call-days.is-slide-l{animation:call-slide-l .35s cubic-bezier(.22,1,.36,1)}
 .call-days.is-slide-r{animation:call-slide-r .35s cubic-bezier(.22,1,.36,1)}
@@ -71,10 +71,10 @@
 @media(hover:hover){.call-time:hover{background:rgba(118,118,128,.16)}}
 .call-time[aria-selected="true"]{background:#007aff;color:#fff;transform:scale(1.04)}
 .call-times.is-in .call-time{animation:refs-rise .4s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i) * 30ms)}
-.call-times-empty{margin:0;align-self:center;font-size:12.5px;color:#a1a1a8}
+.call-times-empty{margin:0;align-self:center;font-size:12.5px;color:#86868d}
 
 /* Page 2 */
-.call-label{margin:6px 2px 6px;font-size:12.5px;font-weight:500;color:#6e6e73}
+.call-label{margin:6px 2px 6px;font-size:12.5px;font-weight:500;color:#56565b}
 .call-seg{--i:0;position:relative;display:grid;grid-template-columns:1fr 1fr;padding:2px;border-radius:10px;background:rgba(118,118,128,.12)}
 .call-seg button{position:relative;z-index:1;height:30px;border:0;background:none;color:#1f1f22;font:inherit;font-size:13.5px;font-weight:500;cursor:pointer;border-radius:8px}
 .call-seg button[aria-checked="true"]{font-weight:600}
@@ -108,7 +108,7 @@
 .im-event-cal i{font-style:normal;font-size:20px;font-weight:500;line-height:1.05;letter-spacing:-.02em}
 .im-event-text{display:flex;flex-direction:column;min-width:0}
 .im-event-text b{font-size:14px;font-weight:600;letter-spacing:-.01em}
-.im-event-text span{font-size:12.5px;color:#6e6e73;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.im-event-text span{font-size:12.5px;color:#56565b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* Handwritten hint for the call: inside the phone, pointing up at the camera */
 .call-hint{position:absolute;right:30px;top:96px;z-index:4;display:flex;align-items:flex-start;pointer-events:none;transition:opacity .35s ease}
@@ -264,7 +264,7 @@
 }
 
 /* Call details under the title, like a booking page */
-.call-meta{display:flex;flex-wrap:wrap;gap:4px 12px;margin:4px 0 0;font-size:12.5px;color:#6e6e73}
+.call-meta{display:flex;flex-wrap:wrap;gap:4px 12px;margin:4px 0 0;font-size:12.5px;color:#56565b}
 .call-meta span{display:inline-flex;align-items:center;gap:5px}
 .call-meta svg{width:13px;height:13px;flex:none;fill:none;stroke:#8e8e93;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .call-meta span+span svg{width:16px;height:11px;stroke-width:2}

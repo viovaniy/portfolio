@@ -45,7 +45,7 @@
 .pd-art i{position:absolute;display:block}
 .pd-info{display:grid;grid-template-columns:1fr auto;align-items:end;gap:2px 8px;padding:12px 8px 4px}
 .pd-name{grid-column:1;font-size:16px;font-weight:600;letter-spacing:-.02em}
-.pd-kind{grid-column:1;font-size:12.5px;color:#8e8e93}
+.pd-kind{grid-column:1;font-size:12.5px;color:#76767c}
 .pd-on{grid-column:2;grid-row:1/3;align-self:center;display:inline-flex;align-items:center;gap:3px;height:26px;padding:0 10px;border-radius:99px;font-size:12px;font-weight:600;color:#e2550f;background:#fff0e6;box-shadow:inset 0 0 0 1px rgba(226,85,15,.15)}
 .pd-link:focus-visible{outline:2px solid #fff;outline-offset:3px}
 .pd-hint{margin:22px 0 0;font-size:12.5px;color:rgba(255,255,255,.8);transition:opacity .3s}

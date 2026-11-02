@@ -1,5 +1,5 @@
 /* Footer: one slim row and a quiet meta line under a softly glowing hairline. */
-.site-footer{--f-ink:#1f1f22;--f-grey:#9b9ba1;--f-soft:#74747e;--f-ease:cubic-bezier(.22,1,.36,1);--f-spring:cubic-bezier(.34,1.5,.5,1);position:relative;padding:0 0 132px;color:var(--f-ink)}
+.site-footer{--f-ink:#1f1f22;--f-grey:#7c7c83;--f-soft:#5c5c66;--f-ease:cubic-bezier(.22,1,.36,1);--f-spring:cubic-bezier(.34,1.5,.5,1);position:relative;padding:0 0 132px;color:var(--f-ink)}
 .footer-inner{position:relative;width:min(100% - 112px,1000px);margin:0 auto;padding-top:28px}
 .footer-inner::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,rgba(28,25,40,.06),rgba(255,141,184,.55) 50%,rgba(28,25,40,.06))}
 .footer-row{display:flex;align-items:center;justify-content:space-between;gap:24px}

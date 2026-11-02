@@ -16,7 +16,7 @@ svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.6;stroke
 .name{font-size:35px;letter-spacing:-1.25px;font-weight:600;line-height:1.1;margin:0}
 .intro{margin-top:36px}
 h1{font-size:clamp(29px,3.5vw,43px);line-height:1.23;letter-spacing:-1.2px;font-weight:500;margin:0}
-.description{font-size:clamp(21px,2.3vw,28px);line-height:1.35;letter-spacing:-.65px;color:#929292;margin:17px 0 0}
+.description{font-size:clamp(21px,2.3vw,28px);line-height:1.35;letter-spacing:-.65px;color:#77777c;margin:17px 0 0}
 .contact-button{position:relative;display:inline-flex;align-items:center;justify-content:center;background:transparent;color:#087bff;padding:12px 22px;margin-top:31px;margin-left:-22px;border:0;border-radius:999px;font-size:20px;font-weight:400;letter-spacing:-.5px;min-height:49px;touch-action:manipulation;transition:background .18s}
 .contact-button{user-select:none;-webkit-user-select:none}
 .contact-button:hover,.contact-button:active{background:#f0f1f3}
@@ -40,7 +40,7 @@ html:is(.pointer-mouse,.pointer-enabled),html:is(.pointer-mouse,.pointer-enabled
 .expertise h2{font-size:11px;color:#969696;font-weight:400;margin:0 0 14px}
 .tags{display:flex;flex-wrap:wrap;gap:10px;list-style:none;padding:0;margin:0;max-width:630px}
 .tags li{display:flex;align-items:center;gap:9px;border:1px solid #eaeaea;background:#f8f8f8;color:#737373;border-radius:8px;padding:10px 13px;font-size:12px;line-height:1.4}
-.tags svg{width:16px;height:16px;color:#888}
+.tags svg{width:16px;height:16px;color:#727277}
 @media(max-width:650px){.page{width:calc(100% - 48px);padding:64px 0 60px}.avatar{width:64px;height:64px;border-radius:16px}.profile{gap:16px}.name{font-size:31px}.intro{margin-top:31px}h1{font-size:28px;letter-spacing:-.8px}.description{font-size:23px;letter-spacing:-.45px;margin-top:16px}.contact-button{margin-top:27px}.expertise{margin-top:54px}.tags{gap:8px}.tags li{padding:9px 11px;font-size:11px;gap:7px}.tags svg{width:15px;height:15px}}
 @media(max-width:380px){.page{width:calc(100% - 40px);padding-top:46px}h1{font-size:26px}.description{font-size:21px}.tags li{font-size:10px;padding:9px}.expertise{margin-top:43px}}
 
@@ -57,7 +57,7 @@ html:is(.pointer-mouse,.pointer-enabled),html:is(.pointer-mouse,.pointer-enabled
 .work-placeholder p{font-size:17px;margin:18px 0 8px;color:#777}
 .work-placeholder>span{font-size:12px;line-height:1.6}
 .contact-section{padding-bottom:100px}
-.form-intro{color:#929292;max-width:520px;font-size:17px;line-height:1.55;margin:0 0 33px}
+.form-intro{color:#77777c;max-width:520px;font-size:17px;line-height:1.55;margin:0 0 33px}
 #project-brief{max-width:630px;display:grid;gap:22px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 #project-brief label{display:block;font-size:12px;color:#737373;line-height:1.5}
@@ -69,7 +69,7 @@ input:focus,textarea:focus{outline:2px solid #91baff;outline-offset:2px;border-c
 .brief-submit{justify-self:start;font-family:inherit;margin-top:0}
 .brief-review{max-width:630px;margin-top:36px;border-top:1px solid #ededed;padding-top:28px;scroll-margin-top:40px}
 .brief-review h3{font-size:23px;font-weight:500;letter-spacing:-.5px;margin:0 0 12px}
-.brief-review p{font-size:13px;color:#929292;line-height:1.6}
+.brief-review p{font-size:13px;color:#77777c;line-height:1.6}
 .brief-review textarea{font-size:13px;min-height:190px}
 .review-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px}
 .review-actions .contact-button{font-size:17px;margin-top:0}
