@@ -738,7 +738,7 @@
 .dv-send{right:8%;bottom:8%;width:16cqw;height:16%;border-radius:999px;background:#1f1f22;display:grid!important;place-items:center;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 4px 8px -4px rgba(0,0,0,.4)}
 .dv-send b{font-size:clamp(6px,2.6cqw,9.5px);font-weight:600;color:#fff;letter-spacing:-.01em}
-.dv-file{left:37cqw;top:40cqh;width:26cqw;height:14cqh;display:flex!important;align-items:center;gap:5px;padding:0 6px 0 3px;box-sizing:border-box;border-radius:7px;background:#fff;z-index:3;
+.dv-file{left:35cqw;top:40cqh;width:30cqw;height:14cqh;display:flex!important;align-items:center;gap:5px;padding:0 6px 0 3px;box-sizing:border-box;border-radius:7px;background:#fff;z-index:3;
   box-shadow:0 0 0 .5px rgba(0,0,0,.06),0 6px 14px -6px rgba(0,0,0,.28)}
 .dv-thumb{flex:none;display:grid;place-items:center;width:10cqh;height:10cqh;border-radius:4px;background:linear-gradient(120deg,#ffd6e6,#ffc8a8 45%,#d9c8ff)}
 .dv-thumb svg{width:60%;height:60%}.dv-thumb path{fill:#fff!important;stroke:none!important}
@@ -800,3 +800,29 @@
   100%{transform:translate(100cqw,110cqh);opacity:0}}
 @media(max-width:650px){.dv-cursor{display:none}}
 @media(prefers-reduced-motion:reduce){.dv *{animation:none!important}}
+
+/* Delivery drag & drop with physics: the file lifts on pickup, swings like it hangs
+   from the cursor (tilt follows the speed and overshoots when it stops), squashes on
+   drop and wobbles to rest — while the drop zone morphs into the file's own outline. */
+.ps-on .dv-file{animation:dv-file2 var(--T) linear infinite}
+.ps-on .dv-drop{animation:dv-drop2 var(--T) linear infinite}
+@keyframes dv-file2{
+  0%,5%{opacity:0;transform:translate(29cqw,-34cqh) scale(.9);box-shadow:0 0 0 .5px rgba(0,0,0,.06),0 6px 14px -6px rgba(0,0,0,.28);animation-timing-function:cubic-bezier(.16,1,.3,1)}
+  8%{opacity:1;transform:translate(29cqw,-36cqh)}
+  9.5%{transform:translate(29cqw,-37.5cqh) scale(1.08) rotate(0deg);box-shadow:0 0 0 .5px rgba(0,0,0,.05),0 18px 26px -10px rgba(0,0,0,.32);animation-timing-function:cubic-bezier(.5,0,.5,1)}
+  11%{transform:translate(24cqw,-31cqh) scale(1.08) rotate(9deg)}
+  13%{transform:translate(12cqw,-17cqh) scale(1.08) rotate(12deg)}
+  15%{transform:translate(2cqw,-5cqh) scale(1.08) rotate(5deg)}
+  16%{transform:translate(0,-3.5cqh) scale(1.08) rotate(-6deg);box-shadow:0 0 0 .5px rgba(0,0,0,.05),0 18px 26px -10px rgba(0,0,0,.32)}
+  17%{transform:translate(0,-2cqh) scale(1.1,.9) rotate(2deg);box-shadow:0 0 0 .5px rgba(0,0,0,.06),0 3px 6px -3px rgba(0,0,0,.2)}
+  18%{transform:translate(0,-2cqh) scale(.96,1.05) rotate(-1.5deg)}
+  19%{transform:translate(0,-2cqh) scale(1.02,.98) rotate(.6deg)}
+  20%,35%{opacity:1;transform:translate(0,-2cqh);box-shadow:0 0 0 .5px rgba(0,0,0,.06),0 3px 6px -3px rgba(0,0,0,.2)}
+  37.5%,100%{opacity:0;transform:translate(0,-2cqh) scale(.94)}}
+@keyframes dv-drop2{
+  0%,12%{left:8%;right:8%;top:26%;height:44%;border-radius:8px;border-style:dashed;border-color:#d6d6da;background:transparent}
+  14%{left:7%;right:7%;top:25%;height:46%;border-radius:8px;border-style:dashed;border-color:#34c759;background:rgba(52,199,89,.06);animation-timing-function:cubic-bezier(.34,1.4,.5,1)}
+  16%{left:7%;right:7%;top:25%;height:46%;border-radius:8px;border-style:dashed;border-color:#34c759;background:rgba(52,199,89,.06);animation-timing-function:cubic-bezier(.34,1.4,.5,1)}
+  20%,36%{left:24.5%;right:24.5%;top:30.5%;height:24%;border-radius:10px;border-style:solid;border-color:rgba(52,199,89,.45);background:rgba(52,199,89,.07)}
+  38%,100%{left:8%;right:8%;top:26%;height:44%;border-radius:8px;border-style:dashed;border-color:#d6d6da;background:transparent}}
+.dv-drop{transform-origin:50% 50%}
