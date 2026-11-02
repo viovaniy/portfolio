@@ -417,3 +417,90 @@
 @media(max-width:650px){.ps-text-body{padding-right:0}}
 /* every line about the same length */
 .ps-text-body{text-wrap:balance}
+
+/* ---------- Concept step animation (20s loop) ----------
+   A Figma frame: the cursor draws a square and drags it into a rectangle, leaves;
+   the frame shrinks aside, two more frames fly in with their own shapes, prototype
+   noodles connect them and everything rests (~10s); then it all clears and loops. */
+.cn{position:relative;container-type:size;overflow:hidden;--T:20s;
+  background:radial-gradient(circle,rgba(154,79,208,.13) .7px,transparent 1px) 0 0/9px 9px,
+    radial-gradient(120% 120% at 20% 0%,#fbf8ff 0%,#f2eaff 60%,#ebe0ff 100%)!important}
+.cn>*{position:absolute;display:block}
+.cn-frame{border-radius:6px;background:#fff;box-shadow:0 0 0 .5px rgba(28,25,40,.08),0 6px 14px -7px rgba(90,50,150,.3)}
+.cn-main{left:50%;top:50%;width:54cqw;height:74cqh;transform:translate(-50%,-50%);z-index:2}
+.cn-rect{position:absolute;left:20%;top:22%;width:28%;height:50%;border-radius:3px;background:linear-gradient(135deg,#c9a8ff,#a77bf0);
+  transform-origin:0 0;transform:scale(0)}
+.cn-rect::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 1px #0d99ff}
+.ps-on .cn-rect::after{animation:cn-handles var(--T) ease infinite}
+.cn-rect i{position:absolute;width:5px;height:5px;margin:-2.5px;background:#fff;box-shadow:0 0 0 1px #0d99ff;border-radius:1px}
+.cn-rect i:nth-child(1){left:0;top:0}.cn-rect i:nth-child(2){right:0;top:0;margin-right:-2.5px}
+.cn-rect i:nth-child(3){left:0;bottom:0;margin-bottom:-2.5px}.cn-rect i:nth-child(4){right:0;bottom:0;margin:0 -2.5px -2.5px 0}
+.cn-f2,.cn-f3{width:24cqw;height:38cqh;z-index:2;opacity:0}
+.cn-f2{left:39cqw;top:15cqh;transform:translateX(70cqw)}
+.cn-f3{left:71cqw;top:45cqh;transform:translateX(50cqw)}
+.cn-circle{position:absolute;left:12%;top:20%;width:13cqh;height:13cqh;border-radius:50%;background:linear-gradient(135deg,#ffc6a8,#ff9a6b)}
+.cn-bar{position:absolute;left:56%;height:3px;border-radius:2px;background:#e6e0f0;width:calc(var(--w) * .4)}
+.cn-bar:nth-of-type(1){top:32%}.cn-bar:nth-of-type(2){top:48%}
+.cn-f2 .cn-bar{display:block}
+.cn-pill{position:absolute;left:12%;top:22%;width:76%;height:24%;border-radius:999px;background:linear-gradient(90deg,#ffadcd,#ffc9df)}
+.cn-tri{position:absolute;left:38%;top:56%;width:24%;height:28%;background:linear-gradient(135deg,#9fc6ff,#6aa5ff);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.cn-f2>*,.cn-f3>*{transform:scale(0)}
+.cn-links{left:0;top:0;width:100%;height:100%;z-index:1;overflow:visible}
+.cn-link{fill:none!important;stroke:#0d99ff!important;stroke-width:1.5;vector-effect:non-scaling-stroke;stroke-linecap:butt;stroke-dasharray:1;stroke-dashoffset:1;opacity:0}
+.cn-dot{left:calc(var(--x) * 1cqw);top:calc(var(--y) * 1cqh);width:4px;height:4px;margin:-2px;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px #0d99ff;z-index:3;transform:scale(0)}
+.cn-cursor{left:0;top:0;width:13px;height:13px;z-index:5;overflow:visible;transform:translate(100cqw,110cqh)}
+.cn-cursor path{fill:#1f1f22!important;stroke:#fff!important;stroke-width:1.2;stroke-linejoin:round}
+
+.ps-on .cn-main{animation:cn-main var(--T) cubic-bezier(.4,0,.2,1) infinite}
+.ps-on .cn-rect{animation:cn-rect var(--T) linear infinite}
+.ps-on .cn-rect i{animation:cn-handles var(--T) ease infinite}
+.ps-on .cn-cursor{animation:cn-cursor var(--T) linear infinite}
+.ps-on .cn-f2{animation:cn-f2 var(--T) linear infinite}
+.ps-on .cn-f3{animation:cn-f3 var(--T) linear infinite}
+.ps-on .cn-f2>*,.ps-on .cn-f3>*{animation:cn-pop var(--T) cubic-bezier(.34,1.6,.5,1) infinite}
+.ps-on .cn-f3>*{animation-name:cn-pop3}
+.ps-on .cn-link1{animation:cn-link1 var(--T) ease infinite}
+.ps-on .cn-link2{animation:cn-link2 var(--T) ease infinite}
+.ps-on .cn-dot{animation:cn-dot var(--T) cubic-bezier(.34,1.6,.5,1) infinite;animation-delay:calc(var(--d) * .25s)}
+.ps-paused .cn *,.ps-paused .cn-rect::after{animation-play-state:paused!important}
+/* plays only while Concept is the chosen step; otherwise a calm frame with its rectangle */
+.ps-card[aria-pressed="false"] .cn *{animation:none!important}
+.ps-card[aria-pressed="false"] .cn-rect{transform:none;width:60%}
+.ps-card[aria-pressed="false"] .cn-rect::after{opacity:0;animation:none!important}
+.ps-card[aria-pressed="false"] .cn-rect i{opacity:0}
+
+@keyframes cn-cursor{
+  0%,3%{transform:translate(100cqw,110cqh);opacity:1;animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  6%{transform:translate(33.8cqw,29.3cqh)}
+  8%{transform:translate(48.9cqw,66.3cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  9%{transform:translate(48.9cqw,66.3cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  16%{transform:translate(66.2cqw,66.3cqh);animation-timing-function:cubic-bezier(.5,0,.8,.4)}
+  17%{transform:translate(66.2cqw,66.3cqh);opacity:1;animation-timing-function:cubic-bezier(.5,0,.8,.4)}
+  20%{transform:translate(72cqw,120cqh);opacity:0}
+  100%{transform:translate(100cqw,110cqh);opacity:0}}
+@keyframes cn-rect{
+  0%,6%{transform:scale(0);width:28%;opacity:1;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  8%,9%{transform:scale(1);width:28%;opacity:1;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  16%,92%{transform:scale(1);width:60%;opacity:1}
+  95%,100%{transform:scale(1);width:60%;opacity:0}}
+@keyframes cn-handles{0%,17%{opacity:1}20%,100%{opacity:0}}
+@keyframes cn-main{
+  0%,20%{transform:translate(-50%,-50%) scale(1)}
+  25%,92%{transform:translate(calc(-50% - 31cqw),-50%) scale(.48)}
+  98%,100%{transform:translate(-50%,-50%) scale(1)}}
+@keyframes cn-f2{
+  0%,23%{opacity:0;transform:translateX(70cqw)}
+  24%{opacity:1;animation-timing-function:cubic-bezier(.22,1.25,.36,1)}
+  29%,91%{opacity:1;transform:none;animation-timing-function:cubic-bezier(.6,0,.8,.4)}
+  95%,100%{opacity:0;transform:translateX(70cqw)}}
+@keyframes cn-f3{
+  0%,25%{opacity:0;transform:translateX(50cqw)}
+  26%{opacity:1;animation-timing-function:cubic-bezier(.22,1.25,.36,1)}
+  31%,91.5%{opacity:1;transform:none;animation-timing-function:cubic-bezier(.6,0,.8,.4)}
+  95.5%,100%{opacity:0;transform:translateX(50cqw)}}
+@keyframes cn-pop{0%,29%{transform:scale(0)}32%,100%{transform:scale(1)}}
+@keyframes cn-pop3{0%,31%{transform:scale(0)}34%,100%{transform:scale(1)}}
+@keyframes cn-link1{0%,32.9%{stroke-dashoffset:1;opacity:0}33%{stroke-dashoffset:1;opacity:1}37%,90%{stroke-dashoffset:0;opacity:1}92%{stroke-dashoffset:0;opacity:0}100%{stroke-dashoffset:1;opacity:0}}
+@keyframes cn-link2{0%,35.9%{stroke-dashoffset:1;opacity:0}36%{stroke-dashoffset:1;opacity:1}40%,90%{stroke-dashoffset:0;opacity:1}92%{stroke-dashoffset:0;opacity:0}100%{stroke-dashoffset:1;opacity:0}}
+@keyframes cn-dot{0%,33%{transform:scale(0)}36%,86%{transform:scale(1)}88%,100%{transform:scale(0)}}
+@media(prefers-reduced-motion:reduce){.cn *{animation:none!important}.cn-rect{transform:none!important;width:60%!important}}
