@@ -99,8 +99,8 @@ input:focus,textarea:focus{outline:2px solid #91baff;outline-offset:2px;border-c
 .bottom-nav>a[aria-current="location"]{color:#fafafa;background:#2c2c2e}
 .bottom-nav>a[aria-current="location"]:hover,.bottom-nav>a[aria-current="location"]:focus-visible{background:#454548}
 .pointer-enabled .ios-pointer.on-nav-target{visibility:visible}
-.bottom-nav svg{width:25px;height:25px;stroke-width:1.8}
-.bottom-nav .home-icon{fill:currentColor;stroke-width:1.2}
+.bottom-nav svg{width:25px;height:25px;stroke-width:1.75}
+.bottom-nav>a[aria-current="location"]{--nb:currentColor;--nd:#2c2c2e}.bottom-nav>a[aria-current="location"]:hover,.bottom-nav>a[aria-current="location"]:focus-visible{--nd:#454548}
 .bottom-nav .magnetic-label{transform:none;transition:none}
 .shop-badge{position:absolute;right:0;top:0;display:grid;place-items:center;min-width:20px;height:20px;padding:0 4px;border:2px solid #111;border-radius:50%;background:#ff453a;color:#fff;font-size:10px;line-height:1;font-weight:600;font-variant-numeric:tabular-nums;pointer-events:none;z-index:2;transform-origin:center}
 /* Transitions.dev — Spinning counter, one 0–5 reel over exactly 1000ms. */
