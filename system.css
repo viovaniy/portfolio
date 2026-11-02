@@ -502,3 +502,72 @@
 @keyframes cn-link2{0%,35.9%{stroke-dashoffset:1;opacity:0}36%{stroke-dashoffset:1;opacity:1}40%,90%{stroke-dashoffset:0;opacity:1}92%{stroke-dashoffset:0;opacity:0}100%{stroke-dashoffset:1;opacity:0}}
 @keyframes cn-dot{0%,33%{transform:scale(0)}36%,86%{transform:scale(1)}88%,100%{transform:scale(0)}}
 @media(prefers-reduced-motion:reduce){.cn *{animation:none!important}.cn-rect{transform:none!important;width:60%!important}}
+
+/* ---------- Animation step: a minimal After Effects timeline (14s loop) ----------
+   The cursor nudges two keyframes, steps aside, the playhead plays the comp,
+   then the cursor drags the keyframes back to where they were and leaves. */
+.tl{position:relative;container-type:size;overflow:hidden;--T:14s;
+  background:radial-gradient(120% 120% at 20% 0%,#fff7fa 0%,#ffeaf1 60%,#ffe0ea 100%)!important}
+.tl>*,.tl-panel>*{position:absolute;display:block}
+.tl-panel{left:6cqw;right:6cqw;top:12cqh;bottom:10cqh;border-radius:8px;background:#fff;
+  box-shadow:0 0 0 .5px rgba(28,25,40,.08),0 6px 14px -7px rgba(160,50,90,.25);overflow:hidden;container-type:size}
+.tl-ruler{left:0;right:0;top:0;height:16cqh;border-bottom:1px solid #f1eef0}
+.tl-ruler i{position:absolute;left:calc(var(--x) * 1cqw);bottom:0;width:1px;height:35%;background:#e2dde0}
+.tl-row{left:0;right:0;top:calc((var(--y) - 22) * 1cqh * 1.18);height:18cqh}
+.tl-row::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:#f6f3f5}
+.tl-tag{position:absolute;left:4cqw;top:50%;width:10cqw;height:4px;margin-top:-2px;border-radius:2px;background:#ebe7ea}
+.tl-tag::before{content:"";position:absolute;left:-2.4cqw;top:-1px;width:6px;height:6px;border-radius:2px;background:var(--c)}
+.tl-bar{position:absolute;left:calc(var(--a) * 1cqw);width:calc((var(--b) - var(--a)) * 1cqw);top:50%;height:2px;margin-top:-1px;border-radius:1px;
+  background:color-mix(in srgb,var(--c) 45%,#fff)}
+.tl-k{position:absolute;left:calc(var(--x) * 1cqw);top:50%;width:7px;height:7px;margin:-3.5px;background:#fff;border:1.5px solid #8e8e93;border-radius:1.5px;transform:rotate(45deg);z-index:1}
+.tl-head{left:22cqw;top:0;bottom:0;width:1.5px;margin-left:-.75px;background:#0d99ff;z-index:2}
+.tl-head::before{content:"";position:absolute;left:50%;top:0;width:9px;height:9px;margin-left:-4.5px;border-radius:2px 2px 50% 50%;background:#0d99ff}
+.tl-cursor{left:-3px;top:-1px;width:13px;height:13px;z-index:5;overflow:visible;transform:translate(100cqw,110cqh)}
+.tl-cursor path{fill:#1f1f22!important;stroke:#fff!important;stroke-width:1.2;stroke-linejoin:round}
+
+.ps-on .tl-cursor{animation:tl-cursor var(--T) linear infinite}
+.ps-on .tl-k.kA{animation:tl-kA var(--T) linear infinite}
+.ps-on .tl-k.kB{animation:tl-kB var(--T) linear infinite}
+.ps-on .tl-row:has(.kA) .tl-bar{animation:tl-barA var(--T) linear infinite}
+.ps-on .tl-head{animation:tl-head var(--T) linear infinite}
+.ps-paused .tl *{animation-play-state:paused!important}
+.ps-card[aria-pressed="false"] .tl *{animation:none!important}
+.ps-card[aria-pressed="false"] .tl-head{left:46cqw}
+
+/* panel coordinates → slot: x = 6 + px * .88 (cqw), y = 12 + py * .78 (cqh); kA row centre ≈ 26.5cqh, kB ≈ 59.5cqh */
+@keyframes tl-cursor{
+  0%,3%{transform:translate(100cqw,110cqh);opacity:1;animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  9%{transform:translate(56.6cqw,25.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  10%{transform:translate(56.6cqw,25.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  15%{transform:translate(65.4cqw,25.5cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  20%{transform:translate(64cqw,58.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  21%{transform:translate(64cqw,58.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  26%{transform:translate(53.4cqw,58.5cqh);animation-timing-function:cubic-bezier(.4,0,.2,1)}
+  31%,68%{transform:translate(82cqw,80cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  74%{transform:translate(65.4cqw,25.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  75%{transform:translate(65.4cqw,25.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  80%{transform:translate(56.6cqw,25.5cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  85%{transform:translate(53.4cqw,58.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  86%{transform:translate(53.4cqw,58.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  91%{transform:translate(64cqw,58.5cqh);opacity:1;animation-timing-function:cubic-bezier(.5,0,.8,.4)}
+  97%{transform:translate(78cqw,120cqh);opacity:0}
+  100%{transform:translate(100cqw,110cqh);opacity:0}}
+@keyframes tl-kA{
+  0%,9.5%{left:58cqw;border-color:#8e8e93;background:#fff}
+  10%{left:58cqw;border-color:#ff5f9e;background:#ffd3e3;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  15%{left:68cqw;border-color:#ff5f9e;background:#ffd3e3}
+  16%,74.5%{left:68cqw;border-color:#8e8e93;background:#fff}
+  75%{left:68cqw;border-color:#ff5f9e;background:#ffd3e3;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  80%{left:58cqw;border-color:#ff5f9e;background:#ffd3e3}
+  81%,100%{left:58cqw;border-color:#8e8e93;background:#fff}}
+@keyframes tl-barA{0%,10%{width:28cqw;animation-timing-function:cubic-bezier(.45,0,.25,1)}15%,75%{width:38cqw;animation-timing-function:cubic-bezier(.45,0,.25,1)}80%,100%{width:28cqw}}
+@keyframes tl-kB{
+  0%,20.5%{left:66cqw;border-color:#8e8e93;background:#fff}
+  21%{left:66cqw;border-color:#ff5f9e;background:#ffd3e3;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  26%{left:54cqw;border-color:#ff5f9e;background:#ffd3e3}
+  27%,85.5%{left:54cqw;border-color:#8e8e93;background:#fff}
+  86%{left:54cqw;border-color:#ff5f9e;background:#ffd3e3;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  91%{left:66cqw;border-color:#ff5f9e;background:#ffd3e3}
+  92%,100%{left:66cqw;border-color:#8e8e93;background:#fff}}
+@keyframes tl-head{0%,30%{left:22cqw;opacity:1}68%{left:94cqw;opacity:1}72%{left:94cqw;opacity:0}73%{left:22cqw;opacity:0}78%,100%{left:22cqw;opacity:1}}
+@media(prefers-reduced-motion:reduce){.tl *{animation:none!important}}
