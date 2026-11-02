@@ -826,3 +826,40 @@
   20%,36%{left:24.5%;right:24.5%;top:30.5%;height:24%;border-radius:10px;border-style:solid;border-color:rgba(52,199,89,.45);background:rgba(52,199,89,.07)}
   38%,100%{left:8%;right:8%;top:26%;height:44%;border-radius:8px;border-style:dashed;border-color:#d6d6da;background:transparent}}
 .dv-drop{transform-origin:50% 50%}
+
+/* Delivery drop v2: a crisp "click" — the zone snaps shut into the file, the file
+   pops (quick squeeze → overshoot → settle), a green ring clicks on around it and a
+   soft pulse ripples out. The ring belongs to the file itself, so it always fits. */
+.dv-file::before,.dv-file::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none}
+.dv-file::after{box-shadow:0 0 0 1.5px #34c759;opacity:0}
+.dv-file::before{box-shadow:0 0 0 1.5px rgba(52,199,89,.6);opacity:0}
+.ps-on .dv-file::after{animation:dv-ring var(--T) linear infinite}
+.ps-on .dv-file::before{animation:dv-ripple var(--T) linear infinite}
+.ps-paused .dv-file::before,.ps-paused .dv-file::after{animation-play-state:paused!important}
+.ps-card[aria-pressed="false"] .dv-file::after{opacity:1}
+.ps-on .dv-file{animation:dv-file3 var(--T) linear infinite}
+.ps-on .dv-drop{animation:dv-drop3 var(--T) linear infinite}
+.dv-file b{flex:1;text-align:center;overflow:hidden;text-overflow:clip}
+@keyframes dv-file3{
+  0%,5%{opacity:0;transform:translate(29cqw,-34cqh) scale(.9);box-shadow:0 0 0 .5px rgba(0,0,0,.06),0 6px 14px -6px rgba(0,0,0,.28);animation-timing-function:cubic-bezier(.16,1,.3,1)}
+  8%{opacity:1;transform:translate(29cqw,-36cqh)}
+  9.5%{transform:translate(29cqw,-37.5cqh) scale(1.08) rotate(0deg);box-shadow:0 0 0 .5px rgba(0,0,0,.05),0 18px 26px -10px rgba(0,0,0,.32);animation-timing-function:cubic-bezier(.5,0,.5,1)}
+  11%{transform:translate(24cqw,-31cqh) scale(1.08) rotate(9deg)}
+  13%{transform:translate(12cqw,-17cqh) scale(1.08) rotate(12deg)}
+  15%{transform:translate(1cqw,-4cqh) scale(1.08) rotate(4deg)}
+  16%{transform:translate(0,-3cqh) scale(1.08) rotate(-3deg);box-shadow:0 0 0 .5px rgba(0,0,0,.05),0 18px 26px -10px rgba(0,0,0,.32);animation-timing-function:cubic-bezier(.6,0,1,.6)}
+  16.4%{transform:translate(0,-2cqh) scale(.9) rotate(0);box-shadow:0 0 0 .5px rgba(0,0,0,.06),0 2px 4px -2px rgba(0,0,0,.2);animation-timing-function:cubic-bezier(.2,1.6,.4,1)}
+  17.3%{transform:translate(0,-2cqh) scale(1.06)}
+  18%,35%{opacity:1;transform:translate(0,-2cqh);box-shadow:0 0 0 .5px rgba(0,0,0,.06),0 3px 6px -3px rgba(0,0,0,.2)}
+  37.5%,100%{opacity:0;transform:translate(0,-2cqh) scale(.94)}}
+@keyframes dv-drop3{
+  0%,12%{opacity:1;transform:none;border-color:#d6d6da;background:transparent}
+  14%,16%{opacity:1;transform:scale(1.03);border-color:#34c759;background:rgba(52,199,89,.06);animation-timing-function:cubic-bezier(.6,0,1,.6)}
+  16.4%{opacity:0;transform:scale(.55);border-color:#34c759;background:rgba(52,199,89,.06)}
+  16.5%,37%{opacity:0;transform:scale(.55)}
+  39%,100%{opacity:1;transform:none;border-color:#d6d6da;background:transparent}}
+@keyframes dv-ring{0%,16.3%{opacity:0}16.4%,35%{opacity:1}37%,100%{opacity:0}}
+@keyframes dv-ripple{0%,16.3%{opacity:0;transform:scale(1)}16.4%{opacity:1;transform:scale(1);animation-timing-function:cubic-bezier(.16,1,.3,1)}19%,100%{opacity:0;transform:scale(1.35,1.9)}}
+/* the file chip sizes to its name (never clips), centred on the drop spot */
+.dv-file{left:50%!important;width:max-content!important;translate:-50% 0;padding:0 9px 0 3px!important;gap:6px!important}
+.dv-file b{flex:none;overflow:visible}
