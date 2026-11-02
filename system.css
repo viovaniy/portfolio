@@ -314,7 +314,7 @@
 .bf-pocket .bf-face{fill:#f4f8ff!important}
 .bf svg path{stroke:none!important}
 .bf svg path.bf-crease{fill:none!important;stroke:rgba(110,140,200,.22)!important;stroke-linecap:round;stroke-width:1;vector-effect:non-scaling-stroke}
-.bf-flap{height:62%;transform-origin:50% 0;transform:scaleY(-1);opacity:0;filter:drop-shadow(0 1.5px 1.5px rgba(60,100,180,.18))}
+.bf-flap{height:72%;transform-origin:50% 0;transform:scaleY(-1);opacity:0;filter:drop-shadow(0 1.5px 1.5px rgba(60,100,180,.18))}
 .bf-flap path{fill:#fbfdff!important}
 .bf-pocket::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 .6px rgba(120,150,210,.25),inset 0 1px 0 #fff;pointer-events:none}
 .ps-on .bf-flap-open{animation:bf-flap-open var(--T) ease infinite}
@@ -333,8 +333,8 @@
   4%,16%{opacity:1;transform:translate(-50%,0);width:56cqw;height:78cqh;border-radius:10px;padding-top:9cqh}
   20%,22%{opacity:1;transform:translate(-50%,-1cqh);width:var(--pw);height:80cqh;border-radius:5px;padding-top:4cqh}
   25.5%{opacity:1;transform:translate(-50%,-8cqh) scale(.48);width:var(--pw);height:80cqh;border-radius:5px;padding-top:4cqh}
-  29.5%{opacity:1;transform:translate(-50%,20cqh) scale(.48);width:var(--pw);height:80cqh;border-radius:5px;padding-top:4cqh}
-  30%,100%{opacity:0;transform:translate(-50%,20cqh) scale(.48);width:var(--pw);height:80cqh;border-radius:5px;padding-top:4cqh}}
+  29.5%,33.6%{opacity:1;transform:translate(-50%,21cqh) scale(.48);width:var(--pw);height:80cqh;border-radius:5px;padding-top:4cqh}
+  33.8%,100%{opacity:0;transform:translate(-50%,21cqh) scale(.48);width:var(--pw);height:80cqh;border-radius:5px;padding-top:4cqh}}
 @keyframes bf-title{0%,5%{opacity:0;transform:translateY(3px);font-size:11px}7%,16%{opacity:1;transform:none;font-size:11px}20%,100%{opacity:1;transform:none;font-size:8px}}
 @keyframes bf-l{0%,7%{transform:scaleX(0)}11%,100%{transform:scaleX(1)}}
 @keyframes bf-dots{0%,16%{opacity:1}19%,100%{opacity:0}}
@@ -342,10 +342,11 @@
 @keyframes bf-pdf{0%,19.5%{opacity:0;transform:scale(.4)}22%,100%{opacity:1;transform:none}}
 @keyframes bf-env{
   0%,23%{opacity:0;transform:translate(-50%,24cqh)}
-  27%{opacity:1;transform:translate(-50%,0)}
-  60%{opacity:1;transform:translate(-50%,-2cqh)}
-  91%{opacity:1;transform:translate(-50%,0)}
-  96%{opacity:0;transform:translate(-50%,-150cqh)}
+  27%,34%{opacity:1;transform:translate(-50%,0)}
+  38%{opacity:1;transform:translate(-50%,-20cqh) scale(1.12)}
+  64%{opacity:1;transform:translate(-50%,-22cqh) scale(1.12)}
+  91%{opacity:1;transform:translate(-50%,-20cqh) scale(1.12)}
+  96%{opacity:0;transform:translate(-50%,-150cqh) scale(1.12)}
   100%{opacity:0;transform:translate(-50%,24cqh)}}
 @keyframes bf-flap{0%,29.8%{opacity:0;transform:scaleY(-1)}30%{opacity:1;transform:scaleY(-1);animation-timing-function:cubic-bezier(.5,0,.3,1)}33.5%,100%{opacity:1;transform:scaleY(1)}}
 @keyframes bf-flap-open{0%,24%{opacity:0}27%,29.8%{opacity:1}30%,100%{opacity:0}}
@@ -353,3 +354,10 @@
 @media(prefers-reduced-motion:reduce){
   .bf .bf-doc{opacity:1;transform:translate(-50%,0)}.bf .bf-title{opacity:1}.bf .bf-l{transform:none}
 }
+
+/* the Brief animation only plays while its step is the chosen one; otherwise it
+   rests on the filled notes window */
+.ps-card[aria-pressed="false"] .bf *,.ps-card[aria-pressed="false"] .bf-doc::after{animation:none!important}
+.ps-card[aria-pressed="false"] .bf-doc{opacity:1;transform:translate(-50%,0)}
+.ps-card[aria-pressed="false"] .bf-title{opacity:1}
+.ps-card[aria-pressed="false"] .bf-l{transform:none}
