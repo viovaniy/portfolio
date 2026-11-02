@@ -617,3 +617,43 @@
 @media(max-width:650px){.tl-top{display:none!important}.tl-ruler{top:0}.tl-row{top:calc(14cqh + (var(--y) - 34) * 1cqh * 1.15)}.tl-head{top:0}}
 
 @media(max-width:650px){.tl-cursor{display:none}}
+
+/* Timeline, light premium version: a white floating panel on a soft neutral-pink
+   ground, hairline rows, quiet pastel layer bars, ink playhead, dark diamonds */
+.tl{background:radial-gradient(120% 120% at 20% 0%,#ffffff 0%,#fbf2f5 55%,#f4e7ec 100%)!important}
+.tl-glow{display:none}
+.tl-panel{left:7cqw;right:7cqw;top:11cqh;bottom:9cqh;border-radius:10px;background:#fff;
+  box-shadow:0 0 0 .5px rgba(28,25,40,.06),0 1px 2px rgba(28,25,40,.04),0 12px 26px -12px rgba(120,40,80,.22),0 30px 50px -30px rgba(120,40,80,.18)}
+.tl-top{background:none;border-bottom:1px solid #f2f0f1}
+.tl-top i{background:#e4e1e3}
+.tl-top b{color:#8e8e93;font-weight:500}
+.tl-tc{color:#1f1f22;font-weight:500;opacity:.7}
+.tl-ruler{border-bottom:1px solid #f2f0f1}
+.tl-ruler i{background:#e3e0e2}
+.tl-row::after{background:#f6f4f5}
+.tl-tag{background:#efedee}
+.tl-tag::before{box-shadow:none}
+.tl-bar{height:56%;top:22%;border-radius:999px;
+  background:color-mix(in srgb,var(--c) 22%,#fff);box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--c) 45%,transparent)}
+.tl-k{background:#1f1f22;box-shadow:0 0 0 1.5px #fff}
+@keyframes tl-kA{
+  0%,9.5%{left:58cqw;background:#1f1f22;box-shadow:0 0 0 1.5px #fff}
+  10%{left:58cqw;background:#ff5f9e;box-shadow:0 0 0 1.5px #fff,0 0 0 4px rgba(255,95,158,.18);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  15%{left:68cqw;background:#ff5f9e;box-shadow:0 0 0 1.5px #fff,0 0 0 4px rgba(255,95,158,.18)}
+  16%,74.5%{left:68cqw;background:#1f1f22;box-shadow:0 0 0 1.5px #fff}
+  75%{left:68cqw;background:#ff5f9e;box-shadow:0 0 0 1.5px #fff,0 0 0 4px rgba(255,95,158,.18);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  80%{left:58cqw;background:#ff5f9e;box-shadow:0 0 0 1.5px #fff,0 0 0 4px rgba(255,95,158,.18)}
+  81%,100%{left:58cqw;background:#1f1f22;box-shadow:0 0 0 1.5px #fff}}
+@keyframes tl-kB{
+  0%,20.5%{left:66cqw;background:#1f1f22;box-shadow:0 0 0 1.5px #fff}
+  21%{left:66cqw;background:#ff5f9e;box-shadow:0 0 0 1.5px #fff,0 0 0 4px rgba(255,95,158,.18);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  26%{left:54cqw;background:#ff5f9e;box-shadow:0 0 0 1.5px #fff,0 0 0 4px rgba(255,95,158,.18)}
+  27%,85.5%{left:54cqw;background:#1f1f22;box-shadow:0 0 0 1.5px #fff}
+  86%{left:54cqw;background:#ff5f9e;box-shadow:0 0 0 1.5px #fff,0 0 0 4px rgba(255,95,158,.18);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  91%{left:66cqw;background:#ff5f9e;box-shadow:0 0 0 1.5px #fff,0 0 0 4px rgba(255,95,158,.18)}
+  92%,100%{left:66cqw;background:#1f1f22;box-shadow:0 0 0 1.5px #fff}}
+.tl-head{width:1px;margin-left:-.5px;background:#1f1f22;box-shadow:none}
+.tl-head::before{width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:#1f1f22;box-shadow:0 0 0 2px #fff}
+.tl-cursor path{fill:#1f1f22!important;stroke:#fff!important;stroke-width:1.2}
+.tl-cursor{filter:drop-shadow(0 2px 3px rgba(28,25,40,.25))}
+.tl-k{width:5px;height:5px;margin:-2.5px}
