@@ -269,3 +269,16 @@
   .ps-text-body{font-size:13.5px}
 }
 @media(prefers-reduced-motion:reduce){.ps-text{transition:none!important}}
+
+/* step cards: on hover a soft gradient in the card's own colour breathes in and out */
+.ps-steps .ps-card{position:relative;isolation:isolate;overflow:hidden}
+.ps-steps .ps-card>*{position:relative;z-index:1}
+.ps-steps .ps-card::before{content:"";position:absolute;inset:0;z-index:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 0%,color-mix(in srgb,var(--tone) 16%,transparent),transparent 70%),
+    linear-gradient(180deg,color-mix(in srgb,var(--tint) 85%,transparent),transparent 75%);
+  opacity:0;transition:opacity .45s ease}
+@media(hover:hover){
+  .ps-steps .ps-card:hover::before{opacity:1;animation:ps-breathe 2.4s ease-in-out .45s infinite}
+}
+@keyframes ps-breathe{0%,100%{opacity:1}50%{opacity:.45}}
+@media(prefers-reduced-motion:reduce){.ps-steps .ps-card:hover::before{animation:none}}
