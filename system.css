@@ -657,3 +657,66 @@
 .tl-cursor path{fill:#1f1f22!important;stroke:#fff!important;stroke-width:1.2}
 .tl-cursor{filter:drop-shadow(0 2px 3px rgba(28,25,40,.25))}
 .tl-k{width:5px;height:5px;margin:-2.5px}
+
+/* ---------- Timeline v3: closer to the references ----------
+   One quiet object on a neutral light ground: a compact white panel with a deep,
+   soft shadow, iridescent layer thumbnails, hairline grid, dark diamonds; a
+   floating white transport pill (dark play button, like the avatar pill ref)
+   that the cursor presses to play the comp. */
+.tl{background:radial-gradient(110% 120% at 50% 0%,#fbfbfb 0%,#f1f1f2 55%,#e9e9eb 100%)!important}
+.tl-panel{left:10cqw;right:10cqw;top:8cqh;bottom:auto;height:62cqh;border-radius:12px;background:#fff;
+  box-shadow:0 0 0 .5px rgba(0,0,0,.05),0 2px 6px -2px rgba(0,0,0,.06),0 18px 36px -18px rgba(0,0,0,.22)}
+.tl-top{display:none!important}
+.tl-ruler{top:0;height:12cqh;border-bottom:1px solid #f3f3f4}
+.tl-ruler i{background:#e6e6e8;height:30%}
+.tl-row{top:calc(12cqh + (var(--y) - 34) / 18 * 22cqh)!important;height:22cqh}
+.tl-row::after{background:#f5f5f6}
+.tl-row:last-of-type::after{display:none}
+.tl-tag{left:5cqw;top:50%;width:11cqw;height:13cqh;margin-top:-6.5cqh;border-radius:4px;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.06)}
+.tl-tag::before{display:none}
+.tl-row:nth-of-type(3) .tl-tag{background:linear-gradient(120deg,#ffd6e6,#ffc8a8 45%,#d9c8ff)}
+.tl-row:nth-of-type(4) .tl-tag{background:linear-gradient(120deg,#cfe4ff,#e2d4ff 55%,#ffe0ef)}
+.tl-row:nth-of-type(5) .tl-tag{background:linear-gradient(120deg,#e6dbff,#c6e3ff 50%,#d6fbe6)}
+.tl-row:nth-of-type(6) .tl-tag{background:linear-gradient(120deg,#ffe7c8,#ffd0de 50%,#e5d6ff)}
+.tl-bar{left:22cqw!important;width:73cqw!important;height:30%;top:35%;border-radius:999px;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--c) 30%,#fff),color-mix(in srgb,var(--c) 14%,#fff));box-shadow:none}
+.tl-k{width:5px;height:5px;margin:-2.5px;background:#1f1f22;box-shadow:0 0 0 1.5px #fff}
+.tl-head{top:0;width:1px;margin-left:-.5px;background:#1f1f22}
+.tl-head::before{top:2cqh;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#1f1f22;box-shadow:0 0 0 2px #fff}
+.tl-pill{left:35cqw;top:73cqh;width:30cqw;height:18cqh;display:flex!important;align-items:center;gap:6px;padding:0 10px 0 2px;border-radius:999px;background:#fff;z-index:3;
+  box-shadow:0 0 0 .5px rgba(0,0,0,.05),0 2px 4px -1px rgba(0,0,0,.06),0 12px 24px -12px rgba(0,0,0,.25);box-sizing:border-box}
+.tl-play{flex:none;display:grid;place-items:center;width:14cqh;height:14cqh;border-radius:50%;background:#1f1f22;box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
+.tl-play svg{width:55%;height:55%}
+.tl-play path{fill:#fff!important;stroke:none!important}
+.tl-play .q{opacity:0}
+.tl-time{flex:1;text-align:center;font:500 clamp(6px,2.7cqw,9.5px)/1 ui-monospace,"SF Mono",Menlo,monospace;color:#6e6e73;letter-spacing:.02em}
+.tl-cursor path{fill:#1f1f22!important;stroke:#fff!important;stroke-width:1.2}
+.tl-cursor{filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+
+/* choreography: nudge two keys → press play → comp plays → keys go back → leave */
+.ps-on .tl-play{animation:tl-press var(--T) linear infinite}
+.ps-on .tl-play .p{animation:tl-p var(--T) linear infinite}
+.ps-on .tl-play .q{animation:tl-q var(--T) linear infinite}
+@keyframes tl-press{0%,29.5%{transform:none}30.5%{transform:scale(.86)}32%,100%{transform:none}}
+@keyframes tl-p{0%,30.5%{opacity:1}31%,68%{opacity:0}68.5%,100%{opacity:1}}
+@keyframes tl-q{0%,30.5%{opacity:0}31%,68%{opacity:1}68.5%,100%{opacity:0}}
+@keyframes tl-head{0%,31%{left:22cqw;opacity:1}68%{left:95cqw;opacity:1}71%{left:95cqw;opacity:0}72%{left:22cqw;opacity:0}75%,100%{left:22cqw;opacity:1}}
+@keyframes tl-cursor{
+  0%,3%{transform:translate(100cqw,110cqh);opacity:1;animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  9%{transform:translate(56.4cqw,22.3cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  10%{transform:translate(56.4cqw,22.3cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  15%{transform:translate(64.4cqw,22.3cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  20%{transform:translate(62.8cqw,49.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  21%{transform:translate(62.8cqw,49.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  26%{transform:translate(53.2cqw,49.5cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  30%,40%{transform:translate(calc(35cqw + 2px + 7cqh),82cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  46%,68%{transform:translate(72cqw,90cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  74%{transform:translate(64.4cqw,22.3cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  75%{transform:translate(64.4cqw,22.3cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  80%{transform:translate(56.4cqw,22.3cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  85%{transform:translate(53.2cqw,49.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  86%{transform:translate(53.2cqw,49.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  91%{transform:translate(62.8cqw,49.5cqh);opacity:1;animation-timing-function:cubic-bezier(.5,0,.8,.4)}
+  97%{transform:translate(78cqw,120cqh);opacity:0}
+  100%{transform:translate(100cqw,110cqh);opacity:0}}
+@media(max-width:650px){.tl-pill{padding-right:6px}.tl-cursor{display:block}}
