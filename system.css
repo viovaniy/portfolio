@@ -664,7 +664,7 @@
    floating white transport pill (dark play button, like the avatar pill ref)
    that the cursor presses to play the comp. */
 .tl{background:radial-gradient(110% 120% at 50% 0%,#fbfbfb 0%,#f1f1f2 55%,#e9e9eb 100%)!important}
-.tl-panel{left:10cqw;right:10cqw;top:8cqh;bottom:auto;height:62cqh;border-radius:12px;background:#fff;
+.tl-panel{left:10cqw;right:10cqw;top:12cqh;bottom:auto;height:76cqh;border-radius:12px;background:#fff;
   box-shadow:0 0 0 .5px rgba(0,0,0,.05),0 2px 6px -2px rgba(0,0,0,.06),0 18px 36px -18px rgba(0,0,0,.22)}
 .tl-top{display:none!important}
 .tl-ruler{top:0;height:12cqh;border-bottom:1px solid #f3f3f4}
@@ -672,7 +672,7 @@
 .tl-row{top:calc(12cqh + (var(--y) - 34) / 18 * 22cqh)!important;height:22cqh}
 .tl-row::after{background:#f5f5f6}
 .tl-row:last-of-type::after{display:none}
-.tl-tag{left:5cqw;top:50%;width:11cqw;height:13cqh;margin-top:-6.5cqh;border-radius:4px;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.06)}
+.tl-tag{left:7cqw;top:50%;width:6cqw;height:11cqh;margin-top:-5.5cqh;border-radius:3px;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.06)}
 .tl-tag::before{display:none}
 .tl-row:nth-of-type(3) .tl-tag{background:linear-gradient(120deg,#ffd6e6,#ffc8a8 45%,#d9c8ff)}
 .tl-row:nth-of-type(4) .tl-tag{background:linear-gradient(120deg,#cfe4ff,#e2d4ff 55%,#ffe0ef)}
@@ -703,20 +703,19 @@
 @keyframes tl-head{0%,31%{left:22cqw;opacity:1}68%{left:95cqw;opacity:1}71%{left:95cqw;opacity:0}72%{left:22cqw;opacity:0}75%,100%{left:22cqw;opacity:1}}
 @keyframes tl-cursor{
   0%,3%{transform:translate(100cqw,110cqh);opacity:1;animation-timing-function:cubic-bezier(.3,0,.2,1)}
-  9%{transform:translate(56.4cqw,22.3cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
-  10%{transform:translate(56.4cqw,22.3cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
-  15%{transform:translate(64.4cqw,22.3cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
-  20%{transform:translate(62.8cqw,49.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
-  21%{transform:translate(62.8cqw,49.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
-  26%{transform:translate(53.2cqw,49.5cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
-  30%,40%{transform:translate(calc(35cqw + 2px + 7cqh),82cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
-  46%,68%{transform:translate(72cqw,90cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
-  74%{transform:translate(64.4cqw,22.3cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
-  75%{transform:translate(64.4cqw,22.3cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
-  80%{transform:translate(56.4cqw,22.3cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
-  85%{transform:translate(53.2cqw,49.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
-  86%{transform:translate(53.2cqw,49.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
-  91%{transform:translate(62.8cqw,49.5cqh);opacity:1;animation-timing-function:cubic-bezier(.5,0,.8,.4)}
+  9%{transform:translate(56.4cqw,29.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  10%{transform:translate(56.4cqw,29.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  15%{transform:translate(64.4cqw,29.5cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  20%{transform:translate(62.8cqw,62.9cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  21%{transform:translate(62.8cqw,62.9cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  26%{transform:translate(53.2cqw,62.9cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  31%,68%{transform:translate(84cqw,93cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  74%{transform:translate(64.4cqw,29.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  75%{transform:translate(64.4cqw,29.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  80%{transform:translate(56.4cqw,29.5cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  85%{transform:translate(53.2cqw,62.9cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  86%{transform:translate(53.2cqw,62.9cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  91%{transform:translate(62.8cqw,62.9cqh);opacity:1;animation-timing-function:cubic-bezier(.5,0,.8,.4)}
   97%{transform:translate(78cqw,120cqh);opacity:0}
   100%{transform:translate(100cqw,110cqh);opacity:0}}
 @media(max-width:650px){.tl-pill{padding-right:6px}.tl-cursor{display:block}}
