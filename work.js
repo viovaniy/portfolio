@@ -362,7 +362,7 @@
 
   const mod = (a, b) => ((a % b) + b) % b;
   // side cards (scaled to .86) sit 30px (16px on phones) away from the active one
-  const gap = () => { const w = slides[0].offsetWidth; const narrow = innerWidth <= 650; return narrow ? w + 14 : w * .93 + 30; };
+  const gap = () => { const w = slides[0].offsetWidth; const narrow = innerWidth <= 650; return narrow ? w * .93 + 12 : w * .93 + 30; /* phones: the neighbours peek in at the edges */ };
   const pad = x => String(x).padStart(2, '0');
   slides.forEach(sl => { sl.querySelector('.cg-count span').textContent = `/ ${pad(n)}`; });
 
