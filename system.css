@@ -871,3 +871,12 @@ html,body,body *:not(svg):not(svg *):not(.lang-flag){font-family:var(--font)!imp
 /* numbers that used a monospace face keep their alignment with tabular figures */
 .tl-tc,.tl-time,.ps-num,.ps-text-num,.cg-count,[data-im-time]{font-variant-numeric:tabular-nums}
 .dv-send{width:auto!important;padding:0 9px}
+
+/* Projects tab: centre the sentence on the folder's body, not on the empty space
+   above it that the papers rise into */
+@media(min-width:651px){.pj-copy{padding-top:calc(48px * var(--pjk,1))}}
+.about-body .pj-type,.pj-type{text-wrap:balance}
+/* cases: no "01 / 06" counter */
+.cg-count{display:none!important}
+/* cases: no film type above the title */
+.cg-meta{display:none!important}
