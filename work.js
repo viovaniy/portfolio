@@ -1,3 +1,6 @@
+// Safari (desktop and iOS, not Chrome/Firefox/Edge on iOS): some backdrop effects need a fallback.
+if (/Safari\//.test(navigator.userAgent) && !/Chrome|Chromium|CriOS|FxiOS|EdgiOS|Edg\/|Android/.test(navigator.userAgent)) document.documentElement.classList.add('is-safari');
+
 // Work — cinema gallery. Slides ride a spring (a little underdamped, so they
 // overshoot and settle like liquid) and stretch slightly with their speed.
 // Drag/swipe, arrows, ← → keys or the timeline switch cases; the timeline

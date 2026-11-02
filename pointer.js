@@ -19,6 +19,7 @@
   let lastTime = 0;
   let inside = false;
   let knownMouse = false;
+  let freeAt = 0; // when the cursor last left a button
 
   const allowed = () => finePointer.matches;
   const clamp = (value, limit) => Math.max(-limit, Math.min(limit, value));
@@ -34,6 +35,7 @@
     const next = element instanceof Element ? element.closest(targetSelector) : null;
     const enabled = next && !next.hasAttribute('data-pointer-passive') && next.getAttribute('aria-disabled') !== 'true' && !next.closest('[inert]') ? next : null;
     if (enabled === target) return;
+    if (target && !enabled) freeAt = performance.now();
     resetLabel();
     target = enabled;
     label = target?.querySelector('.magnetic-label') || null;
@@ -97,6 +99,12 @@
     } else {
       const size = pressed ? 14 : 18;
       Object.assign(destination, { x: position.x, y: position.y, width: size, height: size, radius: size / 2, opacity: 0.78 });
+      // Free cursor: glued to the mouse like the system pointer (no trailing).
+      // Only right after leaving a button does it spring back for a moment.
+      if (!pointer.classList.contains('on-dark') && performance.now() - freeAt > 110) {
+        state.x = position.x; state.y = position.y; velocity.x = velocity.y = 0;
+        paint();
+      }
     }
     // The entire dock surface absorbs the cursor, including gaps and padding.
     if (pointer.classList.contains('on-dark')) {
@@ -131,11 +139,12 @@
     lastTime = time;
     let unsettled = false;
     // Small integration steps keep the spring stable on slower displays.
-    const steps = Math.ceil(dt / 0.008);
+    const steps = Math.ceil(dt / 0.004);
     const step = dt / steps;
     for (const key of Object.keys(state)) {
-      const stiffness = key === 'x' || key === 'y' ? 950 : 520;
-      const damping = key === 'x' || key === 'y' ? 49 : 35;
+      // stiff, critically damped springs: quick and light, no floaty overshoot
+      const stiffness = key === 'x' || key === 'y' ? 2400 : 1500;
+      const damping = key === 'x' || key === 'y' ? 98 : 74;
       for (let i = 0; i < steps; i++) {
         velocity[key] += ((destination[key] - state[key]) * stiffness - velocity[key] * damping) * step;
         state[key] += velocity[key] * step;

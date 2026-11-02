@@ -514,3 +514,9 @@ html.fp-lock .ios-pointer{z-index:250}
  .fp-knob{transform:scale(1)}
 }
 @media(prefers-reduced-motion:reduce){.fp-backdrop,.fp-bar,.fp-close{transition:none}}
+
+/* Safari draws these stacked backdrop blurs as solid white, which hid the
+   neighbouring films completely. There the edges become a plain soft fade. */
+html.is-safari .cg-edge i{display:none}
+html.is-safari .cg-edge-l{background:linear-gradient(to left,rgba(255,255,255,0),rgba(255,255,255,.55))}
+html.is-safari .cg-edge-r{background:linear-gradient(to right,rgba(255,255,255,0),rgba(255,255,255,.55))}
