@@ -277,8 +277,10 @@
   background:radial-gradient(120% 90% at 50% 0%,color-mix(in srgb,var(--tone) 16%,transparent),transparent 70%),
     linear-gradient(180deg,color-mix(in srgb,var(--tint) 85%,transparent),transparent 75%);
   opacity:0;transition:opacity .45s ease}
+/* the chosen step breathes in its own colour; hovering another one just outlines it */
+.ps-steps .ps-card[aria-pressed="true"]::before{opacity:1;animation:ps-breathe 2.4s ease-in-out .45s infinite}
 @media(hover:hover){
-  .ps-steps .ps-card:hover::before{opacity:1;animation:ps-breathe 2.4s ease-in-out .45s infinite}
+  .ps-steps .ps-card[aria-pressed="false"]:hover{box-shadow:0 0 0 1.5px color-mix(in srgb,var(--tone) 35%,transparent),0 1px 2px rgba(28,25,40,.03)}
 }
 @keyframes ps-breathe{0%,100%{opacity:1}50%{opacity:.45}}
-@media(prefers-reduced-motion:reduce){.ps-steps .ps-card:hover::before{animation:none}}
+@media(prefers-reduced-motion:reduce){.ps-steps .ps-card::before{animation:none!important}}
