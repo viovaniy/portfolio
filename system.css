@@ -412,3 +412,6 @@
 .ps-steps .ps-card::before{transition:opacity .5s ease}
 /* collapsed: the pills sit in the middle of the space the paragraph leaves */
 .ps-pills{align-self:center;margin-top:0}
+/* the paragraph keeps clear of the round button and wraps evenly */
+.ps-text-body{padding-right:52px;text-wrap:pretty}
+@media(max-width:650px){.ps-text-body{padding-right:0}}

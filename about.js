@@ -555,5 +555,7 @@
     btn.setAttribute('aria-pressed', String(on));
     btn.setAttribute('aria-label', tr(on ? 'Expand' : 'Collapse'));
   });
+  // a mouse click shouldn't leave a focus ring (Safari shows one)
+  btn.addEventListener('pointerup', e => { if (e.pointerType === 'mouse') btn.blur(); });
   btn.setAttribute('aria-label', tr('Collapse'));
 })();
