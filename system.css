@@ -229,3 +229,43 @@
   transition:font-weight .35s cubic-bezier(.22,1,.36,1),color .35s ease}
 #work-title .wh-l.is-hot{color:#ff8db8}
 #work-title.wh-measure .wh-l{width:auto!important;font-weight:600!important}
+
+/* ---------- About → How I work: four steps, the chosen one explained below ---------- */
+.about-panel-process{padding:24px 30px 28px}
+.about-panel-process .ps-kicker{margin-bottom:8px}
+.about-panel-process .ps-statement{font-size:22px}
+.ps-steps{margin:20px 0 0;gap:10px}
+.ps-step{min-width:0;list-style:none}
+.ps-steps .ps-card{display:block;width:100%;margin:0;padding:12px 12px 12px;border:0;font:inherit;text-align:left;color:inherit;cursor:pointer;
+  transition:transform .45s cubic-bezier(.22,1,.36,1),box-shadow .3s ease}
+.ps-steps .ps-card-head{margin:0 0 10px;min-height:26px}
+.ps-steps .ps-label{line-height:1.2}
+.ps-steps .ps-card[aria-pressed="true"]{box-shadow:0 0 0 1.5px color-mix(in srgb,var(--tone) 55%,transparent),0 10px 22px -14px color-mix(in srgb,var(--tone) 60%,transparent)}
+.ps-steps .ps-card[aria-pressed="true"] .ps-label{color:var(--ps-ink,#1f1f22);font-weight:600}
+.ps-steps .ps-card:focus-visible{outline:2px solid #91baff;outline-offset:3px}
+/* placeholder for the step's animation (to be made later) */
+.ps-slot{display:block;height:74px;border-radius:12px;background:
+  repeating-linear-gradient(135deg,transparent 0 9px,color-mix(in srgb,var(--tone) 5%,transparent) 9px 10px),
+  color-mix(in srgb,var(--tint) 70%,#fff);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tone) 12%,transparent)}
+.ps-detail{display:grid;margin-top:12px;padding:16px 20px 18px;border-radius:18px;background:#fff;text-align:left;
+  box-shadow:0 0 0 1px rgba(28,25,40,.06),0 1px 2px rgba(28,25,40,.03),0 10px 24px -18px rgba(28,25,40,.22)}
+/* every step's text sits in the same cell, so the card is always as tall as the longest one */
+.ps-text{grid-area:1/1;opacity:0;visibility:hidden;transform:translateY(4px);transition:opacity .25s ease,transform .35s cubic-bezier(.22,1,.36,1),visibility 0s .25s}
+.ps-text.is-on{opacity:1;visibility:visible;transform:none;transition:opacity .35s ease .05s,transform .45s cubic-bezier(.22,1,.36,1) .05s,visibility 0s}
+.ps-text-head{margin:0 0 6px;font-size:15px;font-weight:600;letter-spacing:-.015em;color:var(--ink)}
+.ps-text-num{color:var(--tone);font-variant-numeric:tabular-nums}
+.ps-text-body{margin:0;font-size:14px;line-height:1.5;color:#6e6e73;text-wrap:pretty}
+@media(max-width:650px){
+  .about-panel-process{padding:20px 12px}
+  .about-panel-process .ps-statement{font-size:19px}
+  .ps-steps .ps-num{display:none}
+  .ps-steps{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px;margin-top:18px}
+  .ps-steps .ps-card{display:block!important;padding:10px;border-radius:14px}
+  .ps-steps .ps-card-head{margin:0 0 8px}
+  .ps-steps .ps-icon{display:grid!important;width:22px;height:22px;margin-right:7px}
+  .ps-steps .ps-label{font-size:12.5px}
+  .ps-slot{height:54px}
+  .ps-detail{padding:14px 15px 16px}
+  .ps-text-body{font-size:13.5px}
+}
+@media(prefers-reduced-motion:reduce){.ps-text{transition:none!important}}

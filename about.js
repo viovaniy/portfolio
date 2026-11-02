@@ -507,3 +507,25 @@
   document.addEventListener('visibilitychange',sync);
   sync();
 })();
+
+// How I work: pick a step, its full description shows in the card below.
+(() => {
+  const panel = document.getElementById('about-panel-3');
+  if (!panel) return;
+  const cards = [...panel.querySelectorAll('.ps-steps .ps-card')];
+  const texts = [...panel.querySelectorAll('.ps-text')];
+  const pick = i => {
+    cards.forEach((c, k) => c.setAttribute('aria-pressed', String(k === i)));
+    texts.forEach((t, k) => { t.classList.toggle('is-on', k === i); t.setAttribute('aria-hidden', String(k !== i)); });
+  };
+  cards.forEach((c, i) => {
+    c.addEventListener('click', () => pick(i));
+    c.addEventListener('keydown', e => {
+      const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+      if (!step) return;
+      e.preventDefault();
+      const n = (i + step + cards.length) % cards.length;
+      cards[n].focus(); pick(n);
+    });
+  });
+})();
