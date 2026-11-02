@@ -530,26 +530,30 @@
   });
 })();
 
-// How I work: "Collapse" turns the step descriptions into pills (and back),
-// with the card's height easing between the two.
+// How I work: the round button turns the step descriptions into pills (and back).
+// The paragraph is split into words so it can blow away word by word.
 (() => {
   const detail = document.querySelector('#about-panel-3 .ps-detail');
   const btn = detail?.querySelector('.ps-compact');
   if (!btn) return;
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let anim;
+  const tr = s => (window.t ? window.t(s) : s);
+  detail.querySelectorAll('.ps-text-body').forEach(body => {
+    const words = body.textContent.trim().split(/\s+/);
+    body.setAttribute('aria-label', body.textContent.trim());
+    body.textContent = '';
+    words.forEach((w, i) => {
+      const s = document.createElement('span');
+      s.className = 'w'; s.textContent = w; s.setAttribute('aria-hidden', 'true');
+      s.style.setProperty('--i', i);
+      s.style.setProperty('--dx', Math.round((Math.random() - .5) * 40));
+      body.append(s, ' ');
+    });
+  });
   btn.addEventListener('click', () => {
-    const from = detail.getBoundingClientRect().height;
     const on = !detail.classList.contains('is-compact');
     detail.classList.toggle('is-compact', on);
     btn.setAttribute('aria-pressed', String(on));
-    const body = detail.querySelector('.ps-text.is-on .ps-text-body');
-    if (!on && body) { body.classList.remove('is-in'); void body.offsetWidth; body.classList.add('is-in'); }
-    const to = detail.getBoundingClientRect().height;
-    anim?.cancel();
-    if (reduced.matches || Math.abs(from - to) < 1) return;
-    detail.style.overflow = 'hidden';
-    anim = detail.animate([{ height: from + 'px' }, { height: to + 'px' }], { duration: 420, easing: 'cubic-bezier(.22,1,.36,1)' });
-    anim.onfinish = anim.oncancel = () => { detail.style.overflow = ''; };
+    btn.setAttribute('aria-label', tr(on ? 'Expand' : 'Collapse'));
   });
+  btn.setAttribute('aria-label', tr('Collapse'));
 })();
