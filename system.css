@@ -415,3 +415,5 @@
 /* the paragraph keeps clear of the round button and wraps evenly */
 .ps-text-body{padding-right:52px;text-wrap:pretty}
 @media(max-width:650px){.ps-text-body{padding-right:0}}
+/* every line about the same length */
+.ps-text-body{text-wrap:balance}
