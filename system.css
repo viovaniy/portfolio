@@ -537,19 +537,19 @@
 /* panel coordinates → slot: x = 6 + px * .88 (cqw), y = 12 + py * .78 (cqh); kA row centre ≈ 26.5cqh, kB ≈ 59.5cqh */
 @keyframes tl-cursor{
   0%,3%{transform:translate(100cqw,110cqh);opacity:1;animation-timing-function:cubic-bezier(.3,0,.2,1)}
-  9%{transform:translate(56.6cqw,25.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
-  10%{transform:translate(56.6cqw,25.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
-  15%{transform:translate(65.4cqw,25.5cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
-  20%{transform:translate(64cqw,58.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
-  21%{transform:translate(64cqw,58.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
-  26%{transform:translate(53.4cqw,58.5cqh);animation-timing-function:cubic-bezier(.4,0,.2,1)}
+  9%{transform:translate(56.9cqw,38.6cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  10%{transform:translate(56.9cqw,38.6cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  15%{transform:translate(65.5cqw,38.6cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  20%{transform:translate(63.8cqw,68cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  21%{transform:translate(63.8cqw,68cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  26%{transform:translate(53.4cqw,68cqh);animation-timing-function:cubic-bezier(.4,0,.2,1)}
   31%,68%{transform:translate(82cqw,80cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
-  74%{transform:translate(65.4cqw,25.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
-  75%{transform:translate(65.4cqw,25.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
-  80%{transform:translate(56.6cqw,25.5cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
-  85%{transform:translate(53.4cqw,58.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
-  86%{transform:translate(53.4cqw,58.5cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
-  91%{transform:translate(64cqw,58.5cqh);opacity:1;animation-timing-function:cubic-bezier(.5,0,.8,.4)}
+  74%{transform:translate(65.5cqw,38.6cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  75%{transform:translate(65.5cqw,38.6cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  80%{transform:translate(56.9cqw,38.6cqh);animation-timing-function:cubic-bezier(.3,0,.2,1)}
+  85%{transform:translate(53.4cqw,68cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  86%{transform:translate(53.4cqw,68cqh);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  91%{transform:translate(63.8cqw,68cqh);opacity:1;animation-timing-function:cubic-bezier(.5,0,.8,.4)}
   97%{transform:translate(78cqw,120cqh);opacity:0}
   100%{transform:translate(100cqw,110cqh);opacity:0}}
 @keyframes tl-kA{
@@ -571,3 +571,49 @@
   92%,100%{left:66cqw;border-color:#8e8e93;background:#fff}}
 @keyframes tl-head{0%,30%{left:22cqw;opacity:1}68%{left:94cqw;opacity:1}72%{left:94cqw;opacity:0}73%{left:22cqw;opacity:0}78%,100%{left:22cqw;opacity:1}}
 @media(prefers-reduced-motion:reduce){.tl *{animation:none!important}}
+
+/* Timeline restyle: a dark After Effects panel floating on a glowing pink gradient,
+   glassy edges, AE label colours, real layer duration bars, blue playhead with glow */
+.tl{background:linear-gradient(160deg,#ffe8f2 0%,#ffb3d2 48%,#f45c9f 100%)!important}
+.tl-glow{inset:0;background:radial-gradient(70% 90% at 15% 0%,rgba(255,255,255,.75),transparent 60%),radial-gradient(60% 80% at 100% 100%,rgba(126,74,255,.35),transparent 70%)}
+.tl-panel{left:7cqw;right:7cqw;top:11cqh;bottom:9cqh;border-radius:10px;
+  background:linear-gradient(180deg,rgba(38,36,46,.96),rgba(22,21,28,.97));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 0 0 .5px rgba(255,255,255,.08),0 14px 28px -12px rgba(110,10,60,.55),0 4px 10px -4px rgba(110,10,60,.3)}
+.tl-top{left:0;right:0;top:0;height:15cqh;display:flex!important;align-items:center;gap:2.2cqw;padding:0 3cqw;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03)}
+.tl-top i{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.18)}
+.tl-top b{margin-left:1cqw;font-size:clamp(6px,2.6cqw,9px);font-weight:600;color:rgba(255,255,255,.7);letter-spacing:.01em}
+.tl-tc{margin-left:auto;font:600 clamp(6px,2.6cqw,9px)/1 ui-monospace,"SF Mono",Menlo,monospace;color:#5ab0ff;font-style:normal;letter-spacing:.02em}
+.tl-ruler{top:15cqh;height:11cqh;border-bottom:1px solid rgba(255,255,255,.06)}
+.tl-ruler i{background:rgba(255,255,255,.16)}
+.tl-row{top:calc(26cqh + (var(--y) - 34) * 1cqh * 1.02);height:17cqh}
+.tl-row::after{background:rgba(255,255,255,.04)}
+.tl-tag{background:rgba(255,255,255,.1)}
+.tl-tag::before{border-radius:1.5px;box-shadow:0 0 6px -1px var(--c)}
+/* the layer's duration bar spans the comp; keyframes sit on top of it */
+.tl-bar{left:21cqw!important;width:74cqw!important;height:68%;margin-top:0;top:16%;border-radius:4px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--c) 42%,transparent),color-mix(in srgb,var(--c) 26%,transparent));
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--c) 55%,transparent),inset 0 0 0 .5px color-mix(in srgb,var(--c) 50%,transparent);animation:none!important}
+.tl-k{width:6px;height:6px;margin:-3px;background:#e9e7ef;border:0;border-radius:1px;box-shadow:0 0 0 1px rgba(0,0,0,.35)}
+@keyframes tl-kA{
+  0%,9.5%{left:58cqw;background:#e9e7ef;box-shadow:0 0 0 1px rgba(0,0,0,.35)}
+  10%{left:58cqw;background:#ffd84d;box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 8px #ffd84d;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  15%{left:68cqw;background:#ffd84d;box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 8px #ffd84d}
+  16%,74.5%{left:68cqw;background:#e9e7ef;box-shadow:0 0 0 1px rgba(0,0,0,.35)}
+  75%{left:68cqw;background:#ffd84d;box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 8px #ffd84d;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  80%{left:58cqw;background:#ffd84d;box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 8px #ffd84d}
+  81%,100%{left:58cqw;background:#e9e7ef;box-shadow:0 0 0 1px rgba(0,0,0,.35)}}
+@keyframes tl-kB{
+  0%,20.5%{left:66cqw;background:#e9e7ef;box-shadow:0 0 0 1px rgba(0,0,0,.35)}
+  21%{left:66cqw;background:#ffd84d;box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 8px #ffd84d;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  26%{left:54cqw;background:#ffd84d;box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 8px #ffd84d}
+  27%,85.5%{left:54cqw;background:#e9e7ef;box-shadow:0 0 0 1px rgba(0,0,0,.35)}
+  86%{left:54cqw;background:#ffd84d;box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 8px #ffd84d;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  91%{left:66cqw;background:#ffd84d;box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 8px #ffd84d}
+  92%,100%{left:66cqw;background:#e9e7ef;box-shadow:0 0 0 1px rgba(0,0,0,.35)}}
+.tl-head{top:15cqh;background:#2d8cff;box-shadow:0 0 6px rgba(45,140,255,.9)}
+.tl-head::before{top:0;width:8px;height:7px;margin-left:-4px;border-radius:1.5px 1.5px 4px 4px;background:#2d8cff}
+.tl-cursor path{fill:#fff!important;stroke:#1f1f22!important;stroke-width:1}
+.tl-cursor{filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+@media(max-width:650px){.tl-top{display:none!important}.tl-ruler{top:0}.tl-row{top:calc(14cqh + (var(--y) - 34) * 1cqh * 1.15)}.tl-head{top:0}}
+
+@media(max-width:650px){.tl-cursor{display:none}}
