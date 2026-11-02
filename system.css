@@ -251,7 +251,7 @@
   box-shadow:0 0 0 1px rgba(28,25,40,.06),0 1px 2px rgba(28,25,40,.03),0 10px 24px -18px rgba(28,25,40,.22)}
 /* every step's text sits in the same cell, so the card is always as tall as the longest one */
 .ps-text{grid-area:1/1;opacity:0;visibility:hidden;transform:translateY(4px);transition:opacity .25s ease,transform .35s cubic-bezier(.22,1,.36,1),visibility 0s .25s}
-.ps-text.is-on{opacity:1;visibility:visible;transform:none;transition:opacity .35s ease .05s,transform .45s cubic-bezier(.22,1,.36,1) .05s,visibility 0s}
+.ps-text.is-on{opacity:1;visibility:inherit;transform:none;transition:opacity .35s ease .05s,transform .45s cubic-bezier(.22,1,.36,1) .05s,visibility 0s}
 .ps-text-head{margin:0 0 6px;font-size:15px;font-weight:600;letter-spacing:-.015em;color:var(--ink)}
 .ps-text-num{color:var(--tone);font-variant-numeric:tabular-nums}
 .ps-text-body{margin:0;font-size:14px;line-height:1.5;color:#6e6e73;text-wrap:pretty}
@@ -302,14 +302,22 @@
 .bf-pdf{position:absolute;left:7px;bottom:9cqh;padding:2px 4px;border-radius:3px;background:#ff3b30;color:#fff;font-size:7px;line-height:1;font-weight:700;letter-spacing:.02em;opacity:0;transform:scale(.4)}
 .bf-doc::after{content:"";position:absolute;top:0;right:0;width:9px;height:9px;border-radius:0 5px 0 4px;
   background:linear-gradient(225deg,#dfe7f5 50%,#c9d3e6 50%);opacity:0}
-.bf-env{left:50%;bottom:7cqh;width:46cqw;height:46cqh;opacity:0;transform:translate(-50%,24cqh)}
-.bf-env-back{z-index:1;border-radius:6px;background:linear-gradient(180deg,#bcd2ff,#a9c4fb)}
-.bf-env-front{z-index:3;perspective:200px}
-.bf-pocket{position:absolute;inset:0;border-radius:6px;background:linear-gradient(180deg,#eaf1ff,#d7e5ff);
-  clip-path:polygon(0 0,50% 52%,100% 0,100% 100%,0 100%);box-shadow:inset 0 -1px 0 rgba(255,255,255,.6)}
-.bf-flap{position:absolute;left:0;right:0;top:0;height:58%;background:linear-gradient(180deg,#cfdeff,#c1d5ff);
-  clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:50% 0;opacity:0;transform:rotateX(180deg)}
-
+.bf-env{left:50%;bottom:8cqh;width:44cqw;height:44cqh;opacity:0;transform:translate(-50%,24cqh)}
+/* frosted white envelope, Mail-icon style: soft blue-white gradient, faint creases */
+.bf-env-back{z-index:1;border-radius:7px;background:linear-gradient(180deg,#dde8fb,#cbdaf6);
+  box-shadow:0 8px 16px -8px rgba(40,90,190,.35),0 2px 4px -2px rgba(40,90,190,.2)}
+.bf-flap-open{position:absolute;left:0;bottom:100%;width:100%;height:56%;overflow:visible;opacity:0}
+.bf-flap-open path{fill:#d4e1f8!important}
+.bf-env-front{z-index:3}
+.bf-pocket{position:absolute;inset:0;border-radius:7px;overflow:hidden}
+.bf-pocket svg,.bf-flap{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
+.bf-pocket .bf-face{fill:#f4f8ff!important}
+.bf svg path{stroke:none!important}
+.bf svg path.bf-crease{fill:none!important;stroke:rgba(110,140,200,.22)!important;stroke-linecap:round;stroke-width:1;vector-effect:non-scaling-stroke}
+.bf-flap{height:62%;transform-origin:50% 0;transform:scaleY(-1);opacity:0;filter:drop-shadow(0 1.5px 1.5px rgba(60,100,180,.18))}
+.bf-flap path{fill:#fbfdff!important}
+.bf-pocket::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 .6px rgba(120,150,210,.25),inset 0 1px 0 #fff;pointer-events:none}
+.ps-on .bf-flap-open{animation:bf-flap-open var(--T) ease infinite}
 .ps-on .bf-doc{animation:bf-doc var(--T) cubic-bezier(.4,0,.2,1) infinite}
 .ps-on .bf-title{animation:bf-title var(--T) ease infinite}
 .ps-on .bf-l{animation:bf-l var(--T) cubic-bezier(.22,1,.36,1) infinite;animation-delay:calc(var(--k) * .28s)}
@@ -317,7 +325,7 @@
 .ps-on .bf-doc::after{animation:bf-fold var(--T) ease infinite}
 .ps-on .bf-pdf{animation:bf-pdf var(--T) cubic-bezier(.34,1.6,.5,1) infinite}
 .ps-on .bf-env{animation:bf-env var(--T) cubic-bezier(.4,0,.2,1) infinite}
-.ps-on .bf-flap{animation:bf-flap var(--T) cubic-bezier(.34,1.3,.5,1) infinite}
+.ps-on .bf-flap{animation:bf-flap var(--T) linear infinite}
 .ps-paused .bf *,.ps-paused .bf-doc::after{animation-play-state:paused!important}
 
 @keyframes bf-doc{
@@ -339,7 +347,8 @@
   91%{opacity:1;transform:translate(-50%,0)}
   96%{opacity:0;transform:translate(-50%,-150cqh)}
   100%{opacity:0;transform:translate(-50%,24cqh)}}
-@keyframes bf-flap{0%,29.5%{opacity:0;transform:rotateX(180deg)}30%{opacity:1;transform:rotateX(180deg)}33.5%,100%{opacity:1;transform:rotateX(0)}}
+@keyframes bf-flap{0%,29.8%{opacity:0;transform:scaleY(-1)}30%{opacity:1;transform:scaleY(-1);animation-timing-function:cubic-bezier(.5,0,.3,1)}33.5%,100%{opacity:1;transform:scaleY(1)}}
+@keyframes bf-flap-open{0%,24%{opacity:0}27%,29.8%{opacity:1}30%,100%{opacity:0}}
 @media(max-width:650px){.ps-slot{height:84px}.bf{--pw:34cqw}.bf-doc{padding-left:7px;padding-right:7px}.bf-dots{top:4px;left:6px}.bf-dots i{width:3px;height:3px}.bf .bf-title{margin:5px 0 4px}.bf-l{height:3px;margin-top:3px}.bf-pdf{font-size:6px}}
 @media(prefers-reduced-motion:reduce){
   .bf .bf-doc{opacity:1;transform:translate(-50%,0)}.bf .bf-title{opacity:1}.bf .bf-l{transform:none}
