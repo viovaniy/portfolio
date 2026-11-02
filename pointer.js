@@ -99,12 +99,6 @@
     } else {
       const size = pressed ? 14 : 18;
       Object.assign(destination, { x: position.x, y: position.y, width: size, height: size, radius: size / 2, opacity: 0.78 });
-      // Free cursor: glued to the mouse like the system pointer (no trailing).
-      // Only right after leaving a button does it spring back for a moment.
-      if (!pointer.classList.contains('on-dark') && performance.now() - freeAt > 110) {
-        state.x = position.x; state.y = position.y; velocity.x = velocity.y = 0;
-        paint();
-      }
     }
     // The entire dock surface absorbs the cursor, including gaps and padding.
     if (pointer.classList.contains('on-dark')) {
@@ -143,8 +137,9 @@
     const step = dt / steps;
     for (const key of Object.keys(state)) {
       // stiff, critically damped springs: quick and light, no floaty overshoot
-      const stiffness = key === 'x' || key === 'y' ? 2400 : 1500;
-      const damping = key === 'x' || key === 'y' ? 98 : 74;
+      // (about 18% softer than the snappiest setting: a light, barely-there follow)
+      const stiffness = key === 'x' || key === 'y' ? 1720 : 1080;
+      const damping = key === 'x' || key === 'y' ? 83 : 66;
       for (let i = 0; i < steps; i++) {
         velocity[key] += ((destination[key] - state[key]) * stiffness - velocity[key] * damping) * step;
         state[key] += velocity[key] * step;
