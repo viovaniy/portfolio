@@ -402,3 +402,13 @@
 .ps-detail.is-compact .ps-pill-arrow path{stroke-dashoffset:0;transition:stroke-dashoffset .35s ease;transition-delay:calc(300ms + var(--k) * 110ms)}
 @media(max-width:650px){.ps-compact{top:10px;right:10px;width:30px;height:30px}.ps-text-head{padding-right:40px}.ps-pill{min-height:28px;padding:5px 11px;font-size:12.5px}}
 @media(prefers-reduced-motion:reduce){.ps-text-body .w,.ps-pills li,.ps-pill-arrow path{transition:none!important}}
+
+/* step cards keep their soft shadow in every state; only the coloured ring
+   fades in (same number of shadow layers everywhere, so it truly animates) */
+.ps-steps .ps-card{box-shadow:0 0 0 1.5px color-mix(in srgb,var(--tone) 0%,transparent),var(--glass-edge),var(--glass-shadow)!important;
+  transition:box-shadow .35s cubic-bezier(.22,1,.36,1),transform .45s cubic-bezier(.22,1,.36,1)!important}
+@media(hover:hover){.ps-steps .ps-card[aria-pressed="false"]:hover{box-shadow:0 0 0 1.5px color-mix(in srgb,var(--tone) 38%,transparent),var(--glass-edge),var(--glass-shadow-hover)!important}}
+.ps-steps .ps-card[aria-pressed="true"]{box-shadow:0 0 0 1.5px color-mix(in srgb,var(--tone) 55%,transparent),var(--glass-edge),var(--glass-shadow-hover)!important}
+.ps-steps .ps-card::before{transition:opacity .5s ease}
+/* collapsed: the pills sit in the middle of the space the paragraph leaves */
+.ps-pills{align-self:center;margin-top:0}
